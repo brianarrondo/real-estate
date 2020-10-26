@@ -13,27 +13,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.realstate.domains.Apartament;
-import com.realstate.services.ApartamentService;
+import com.realstate.domains.Apartment;
+import com.realstate.services.ApartmentService;
 
 @RestController
 @RequestMapping("apartament")
-public class ApartamentController {
+public class ApartmentController {
 	
 	@Autowired
-	private ApartamentService apartamentService;
+	private ApartmentService apartmentService;
 	
 	@GetMapping("all")
-	public ResponseEntity<List<Apartament>> findAll() {
-		return ResponseEntity.ok(apartamentService.findAll());
+	public ResponseEntity<List<Apartment>> findAll() {
+		return ResponseEntity.ok(apartmentService.findAll());
 	}
 	
-	@GetMapping(value = "{apartamentId}")
-	public ResponseEntity<Apartament> findById(@PathVariable(value = "apartamentId") String apartamentId) {
-		Optional<Apartament> optionalApartament = apartamentService.findById(apartamentId);
+	@GetMapping(value = "{apartmentId}")
+	public ResponseEntity<Apartment> findById(@PathVariable(value = "apartmentId") String apartmentId) {
+		Optional<Apartment> optionalApartament = apartmentService.findById(apartmentId);
 		if (optionalApartament.isPresent()) {
 			return ResponseEntity.ok(optionalApartament.get());
 		} else {
@@ -41,35 +40,30 @@ public class ApartamentController {
 		}
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<Apartament>> findAllByEstateId(@RequestParam(value = "estateId") int estateId) {
-		return ResponseEntity.ok(apartamentService.findAllByEstate(estateId));
-	}
-	
 	@PostMapping
-	public ResponseEntity<Apartament> insert(@RequestBody Apartament newApartament) {
+	public ResponseEntity<Apartment> insert(@RequestBody Apartment newApartament) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(apartamentService.insert(newApartament));
+			return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.insert(newApartament));
 		} catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 	
 	@PutMapping
-	public ResponseEntity<Apartament> update(@RequestBody Apartament apartament) {
-		Optional<Apartament> optionalApartament = apartamentService.findById(apartament.getApartamentId());
+	public ResponseEntity<Apartment> update(@RequestBody Apartment apartment) {
+		Optional<Apartment> optionalApartament = apartmentService.findById(apartment.getApartamentId());
 		if (optionalApartament.isPresent()) {
-			return ResponseEntity.ok(apartamentService.update(apartament));
+			return ResponseEntity.ok(apartmentService.update(apartment));
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();		
 		} 
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<Apartament> delete(@RequestBody Apartament apartament) {
-		Optional<Apartament> optionalApartament = apartamentService.findById(apartament.getApartamentId());
+	public ResponseEntity<Apartment> delete(@RequestBody Apartment apartament) {
+		Optional<Apartment> optionalApartament = apartmentService.findById(apartament.getApartamentId());
 		if (optionalApartament.isPresent()) {
-			apartamentService.delete(apartament);
+			apartmentService.delete(apartament);
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

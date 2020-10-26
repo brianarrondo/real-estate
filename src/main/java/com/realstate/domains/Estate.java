@@ -1,6 +1,8 @@
 package com.realstate.domains;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,6 +17,7 @@ public class Estate implements Serializable {
 	private String name;
 	private String address;
 	private String description;
+	private List<Apartment> apartaments = new ArrayList<Apartment>();
 
 	public String getEstateId() {
 		return estateId;
@@ -39,5 +42,14 @@ public class Estate implements Serializable {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public List<Apartment> getApartaments() {
+		return apartaments;
+	}
+	public void setApartaments(List<Apartment> apartaments) {
+		this.apartaments = apartaments;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

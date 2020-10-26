@@ -1,7 +1,9 @@
 package com.realstate.domains;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,10 +12,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Lease implements Serializable {
 	@Id
 	private String leaseId;
-	private String tenantId;
-	private String apartamentId;
+	private Tenant tenant;
+	private Apartment apartment;
 	private Date startDate;
 	private Date endDate;
+	private List<RentalFee> rentalsFee = new ArrayList<RentalFee>();
 	private String description;
 
 	public String getLeaseId() {
@@ -22,17 +25,17 @@ public class Lease implements Serializable {
 	public void setLeaseId(String leaseId) {
 		this.leaseId = leaseId;
 	}
-	public String getTenantId() {
-		return tenantId;
+	public Tenant getTenant() {
+		return tenant;
 	}
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+	public void setTenant(Tenant tenant) {
+		this.tenant = tenant;
 	}
-	public String getApartamentId() {
-		return apartamentId;
+	public Apartment getApartment() {
+		return apartment;
 	}
-	public void setApartamentId(String apartamentId) {
-		this.apartamentId = apartamentId;
+	public void setApartment(Apartment apartment) {
+		this.apartment = apartment;
 	}
 	public Date getStartDate() {
 		return startDate;
@@ -52,7 +55,11 @@ public class Lease implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-
+	public List<RentalFee> getRentalsFee() {
+		return rentalsFee;
+	}
+	public void setRentalsFee(List<RentalFee> rentalsFee) {
+		this.rentalsFee = rentalsFee;
+	}
 }
 
