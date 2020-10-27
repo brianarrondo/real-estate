@@ -5,8 +5,9 @@ import java.util.Date;
 public class Payment {
 	private String paymentId;
 	private float amount;
-	private String leaseId;
+	private String rentalBillId;
 	private Date date;
+
 	public String getPaymentId() {
 		return paymentId;
 	}
@@ -20,10 +21,10 @@ public class Payment {
 		this.amount = amount;
 	}
 	public String getLeaseId() {
-		return leaseId;
+		return rentalBillId;
 	}
 	public void setLeaseId(String leaseId) {
-		this.leaseId = leaseId;
+		this.rentalBillId = leaseId;
 	}
 	public Date getDate() {
 		return date;

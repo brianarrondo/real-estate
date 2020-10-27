@@ -16,9 +16,15 @@ public class Lease implements Serializable {
 	private Apartment apartment;
 	private Date startDate;
 	private Date endDate;
-	private List<RentalFee> rentalsFee = new ArrayList<RentalFee>();
+	private boolean active;
+	private List<RentalFee> rentalFees = new ArrayList<RentalFee>();
+	private List<RentalBill> rentalBills = new ArrayList<RentalBill>();
 	private String description;
+	
+	/* Constructors */
+	public Lease() {}
 
+	/* Getters and Setters */
 	public String getLeaseId() {
 		return leaseId;
 	}
@@ -56,10 +62,33 @@ public class Lease implements Serializable {
 		this.description = description;
 	}
 	public List<RentalFee> getRentalsFee() {
-		return rentalsFee;
+		return rentalFees;
 	}
 	public void setRentalsFee(List<RentalFee> rentalsFee) {
-		this.rentalsFee = rentalsFee;
+		this.rentalFees = rentalsFee;
 	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	public List<RentalFee> getRentalFees() {
+		return rentalFees;
+	}
+	public void setRentalFees(List<RentalFee> rentalFees) {
+		this.rentalFees = rentalFees;
+	}
+	public List<RentalBill> getRentalBills() {
+		return rentalBills;
+	}
+	public void setRentalBills(List<RentalBill> rentalBills) {
+		this.rentalBills = rentalBills;
+	}
+	
+	/* Model Functions */
+//	public RentalBill generateRentalBill() {
+//		
+//	}
 }
 
