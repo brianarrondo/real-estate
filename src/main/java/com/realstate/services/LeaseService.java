@@ -15,13 +15,17 @@ public class LeaseService {
 
 	@Autowired
 	private LeaseRepository leaseRepository;
-	
+		
 	public List<Lease> findAll() {
 		return leaseRepository.findAll();
 	}
 	
 	public Optional<Lease> findById(String leaseId) {
 		return leaseRepository.findById(new ObjectId(leaseId));
+	}
+	
+	public boolean existById(String leaseId) {
+		return leaseRepository.existsById(new ObjectId(leaseId));
 	}
 	
 	public Lease insert(Lease newLease) {

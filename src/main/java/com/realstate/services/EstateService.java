@@ -16,6 +16,11 @@ public class EstateService {
 	@Autowired
 	private EstateRepository estateRepository;
 	
+	public Estate getNew(String name, String address, String description) {
+		Estate newEstate = new Estate(null, name, address, description);
+		return estateRepository.insert(newEstate);
+	}
+
 	public List<Estate> findAll() {
 		return estateRepository.findAll();
 	}

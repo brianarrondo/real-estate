@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.realstate.domains.RentalBill;
 
 @SpringBootTest
-class RentalBillTests {
+class RentalBillServiceTests {
 	
 	@Autowired
 	private RentalBillService rentalBillService;

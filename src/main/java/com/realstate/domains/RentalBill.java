@@ -32,7 +32,8 @@ public class RentalBill implements Serializable {
 		this.rentalBillId = rentalBillId;
 	}
 	
-	public RentalBill(String leaseId, Date date, float amount) {
+	public RentalBill(String rentalBillId, String leaseId, Date date, float amount) {
+		this.rentalBillId = rentalBillId;
 		this.leaseId = leaseId;
 		this.date = date;
 		this.amount = amount;

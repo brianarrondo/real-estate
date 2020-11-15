@@ -18,8 +18,7 @@ public class RentalBillService {
 	private RentalBillRepository rentalBillRepository;
 	
 	public RentalBill getNew(String leaseId, Date date, float amount) {
-		RentalBill newRentalBill = new RentalBill(leaseId, date, amount);
-		System.out.println(newRentalBill.toString());
+		RentalBill newRentalBill = new RentalBill(null, leaseId, date, amount);
 		return rentalBillRepository.insert(newRentalBill);
 	}
 	

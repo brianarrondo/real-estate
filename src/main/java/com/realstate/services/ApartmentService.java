@@ -8,14 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.realstate.domains.Apartment;
+import com.realstate.domains.Estate;
 import com.realstate.repositories.ApartmentRepository;
-
 
 @Service
 public class ApartmentService {
 
 	@Autowired
 	private ApartmentRepository apartmentRepository;
+	
+	public Apartment getNew(Estate estate, int rooms, String name, String description) {
+		Apartment apartment = new Apartment(null, estate, rooms, name, description);
+		return apartmentRepository.insert(apartment);
+	}
 	
 	public List<Apartment> findAll() {
 		return apartmentRepository.findAll();

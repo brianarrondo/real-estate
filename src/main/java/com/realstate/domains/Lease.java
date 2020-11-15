@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,17 +14,35 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Lease implements Serializable {
 	@Id
 	private String leaseId;
+	@NotNull(message = "cannot be null")
 	private Tenant tenant;
+	@NotNull(message = "cannot be null")
 	private Apartment apartment;
+	@NotNull(message = "cannot be null")
 	private Date startDate;
+	@NotNull(message = "cannot be null")
 	private Date endDate;
-	private boolean active;
+	private boolean active = true;
 	private List<RentalFee> rentalFees = new ArrayList<RentalFee>();
 	private List<RentalBill> rentalBills = new ArrayList<RentalBill>();
 	private String description;
 	
 	/* Constructors */
 	public Lease() {}
+	
+	public Lease(String leaseId, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
+			List<RentalFee> rentalFees, List<RentalBill> rentalBills, String description) {
+		super();
+		this.leaseId = leaseId;
+		this.tenant = tenant;
+		this.apartment = apartment;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.active = active;
+		this.rentalFees = rentalFees;
+		this.rentalBills = rentalBills;
+		this.description = description;
+	}
 
 	/* Getters and Setters */
 	public String getLeaseId() {
@@ -85,10 +105,4 @@ public class Lease implements Serializable {
 	public void setRentalBills(List<RentalBill> rentalBills) {
 		this.rentalBills = rentalBills;
 	}
-	
-	/* Model Functions */
-//	public RentalBill generateRentalBill() {
-//		
-//	}
 }
-

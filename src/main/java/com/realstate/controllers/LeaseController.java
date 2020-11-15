@@ -3,6 +3,7 @@ package com.realstate.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realstate.domains.Lease;
 import com.realstate.services.LeaseService;
 
@@ -24,6 +27,7 @@ public class LeaseController {
 	
 	@Autowired
 	private LeaseService leaseService;
+	ObjectMapper mapper = new ObjectMapper();
 	
 	@GetMapping("all")
 	public ResponseEntity<List<Lease>> findAll() {
@@ -41,11 +45,14 @@ public class LeaseController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Lease> insert(@RequestBody Lease newLease) {
+	public ResponseEntity<String> createNewLease(@RequestBody Lease newLease) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(leaseService.insert(newLease));
+			String newLeaseAsJson = mapper.writeValueAsString(leaseService.insert(newLease));
+			return ResponseEntity.status(HttpStatus.CREATED).body(newLeaseAsJson);
+		} catch (JsonProcessingException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': '"+ e.getMessage() +"'}");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': '"+ e.getMessage() +"'}");
 		}
 	}
 	

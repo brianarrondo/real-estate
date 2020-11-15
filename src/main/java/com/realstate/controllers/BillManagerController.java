@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.domains.RentalBill;
+import com.realstate.services.LeaseService;
 import com.realstate.services.RentalBillService;
 
 @RestController
-@RequestMapping("rentalbill")
-public class RentalBillController {
+@RequestMapping("billmanager")
+public class BillManagerController {
 	
 	@Autowired
 	private RentalBillService rentalBillService;
+	@Autowired
+	private LeaseService leaseService;
 	
 	@GetMapping(value = "{rentalBillId}")
 	public ResponseEntity<RentalBill> findById(@PathVariable("rentalBillId") String rentalBillId) {
@@ -37,14 +40,19 @@ public class RentalBillController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<RentalBill> insert(@RequestBody RentalBill newRentalBill) {
-		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(rentalBillService.insert(newRentalBill));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+	public ResponseEntity<RentalBill> generateBill(@RequestBody RentalBill newRentalBill) {
+		boolean leaseExist = leaseService.existById(newRentalBill.getLeaseId());
+		if (leaseExist) {
+			try {
+				return ResponseEntity.status(HttpStatus.CREATED).body(rentalBillService.insert(newRentalBill));
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
-	
+		
 	@PostMapping("all")
 	public ResponseEntity<List<RentalBill>> insertAll(@RequestBody List<RentalBill> newRentalBillList) {
 		try {
