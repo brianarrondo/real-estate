@@ -16,7 +16,18 @@ public class Tenant implements Serializable {
 	private String dni;
 	private String phone;
 	private String description;
+	
+	/* Constructors */
+	public Tenant(String tenantId, String fullName, String dni, String phone, String description) {
+		super();
+		this.tenantId = tenantId;
+		this.fullName = fullName;
+		this.dni = dni;
+		this.phone = phone;
+		this.description = description;
+	}
 
+	/* Getters and Setters */
 	public String getTenantId() {
 		return tenantId;
 	}

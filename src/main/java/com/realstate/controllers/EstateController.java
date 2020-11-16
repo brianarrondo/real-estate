@@ -1,7 +1,6 @@
 package com.realstate.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.domains.Estate;
+import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.services.EstateService;
 
 @RestController
@@ -32,10 +32,9 @@ public class EstateController {
 	
 	@GetMapping(value = "{estateId}")
 	public ResponseEntity<Estate> findById(@PathVariable("estateId") String estateId) {
-		Optional<Estate> optionalEstate = estateService.findById(estateId);
-		if (optionalEstate.isPresent()) {
-			return ResponseEntity.ok(optionalEstate.get());
-		} else {
+		try {
+			return ResponseEntity.ok(estateService.findById(estateId));
+		} catch (EstateDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -51,21 +50,19 @@ public class EstateController {
 
 	@PutMapping
 	public ResponseEntity<Estate> update(@RequestBody Estate estate) {
-		Optional<Estate> optionalEstate = estateService.findById(estate.getEstateId());
-		if (optionalEstate.isPresent()) {
+		try {
 			return ResponseEntity.ok(estateService.update(estate));
-		} else {
+		} catch (EstateDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
 	@DeleteMapping
 	public ResponseEntity<Estate> delete(@RequestBody Estate estate) {
-		Optional<Estate> optionalEstate = estateService.findById(estate.getEstateId());
-		if (optionalEstate.isPresent()) {
+		try {
 			estateService.delete(estate);
-			return  ResponseEntity.ok().build();
-		} else {
+			return ResponseEntity.ok().build();
+		} catch (EstateDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.realstate.domains.Estate;
+import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.EstateRepository;
 
 @Service
@@ -25,19 +26,36 @@ public class EstateService {
 		return estateRepository.findAll();
 	}
 
-	public Optional<Estate> findById(String estateId) {
-		return estateRepository.findById(new ObjectId(estateId));
+	public Estate findById(String estateId) throws EstateDoesNotExistException {
+		Optional<Estate> optionalEstate = estateRepository.findById(new ObjectId(estateId));
+		if (optionalEstate.isPresent()) {
+			return optionalEstate.get();
+		} else {
+			throw new EstateDoesNotExistException();
+		}
+	}
+	
+	public boolean existsById(String apartmentId) {
+		return estateRepository.existsById(new ObjectId(apartmentId));
 	}
 
 	public Estate insert(Estate newEstate) {
 		return estateRepository.insert(newEstate);
 	}
 
-	public Estate update(Estate estate) {
-		return estateRepository.save(estate);
+	public Estate update(Estate estate) throws EstateDoesNotExistException {
+		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
+			return estateRepository.save(estate);
+		} else {
+			throw new EstateDoesNotExistException();
+		}
 	}
 
-	public void delete(Estate estate) {
-		estateRepository.delete(estate);
+	public void delete(Estate estate) throws EstateDoesNotExistException {
+		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
+			estateRepository.delete(estate);
+		} else {
+			throw new EstateDoesNotExistException();
+		}
 	}
 }

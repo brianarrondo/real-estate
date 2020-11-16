@@ -1,5 +1,6 @@
 package com.realstate.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +8,14 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.realstate.domains.Apartment;
 import com.realstate.domains.Lease;
+import com.realstate.domains.RentalBill;
+import com.realstate.domains.RentalFee;
+import com.realstate.domains.Tenant;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
+import com.realstate.exceptions.LeaseDoesNotExistException;
+import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.repositories.LeaseRepository;
 
 @Service
@@ -15,28 +23,58 @@ public class LeaseService {
 
 	@Autowired
 	private LeaseRepository leaseRepository;
+	@Autowired
+	private TenantService tenantService;
+	@Autowired
+	private ApartmentService apartmentService;
+	
+	public Lease getNew(Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
+			List<RentalFee> rentalFees, List<RentalBill> rentalBills, String description) {
+		Lease lease = new Lease(null, tenant, apartment, startDate, endDate, active, rentalFees, rentalBills, description);
+		return leaseRepository.insert(lease);
+	}
 		
 	public List<Lease> findAll() {
 		return leaseRepository.findAll();
 	}
 	
-	public Optional<Lease> findById(String leaseId) {
-		return leaseRepository.findById(new ObjectId(leaseId));
+	public Lease findById(String leaseId) throws LeaseDoesNotExistException {
+		Optional<Lease> optionalLease = leaseRepository.findById(new ObjectId(leaseId));
+		if (optionalLease.isPresent()) {
+			return optionalLease.get();
+		} else {
+			throw new LeaseDoesNotExistException();
+		}
 	}
 	
 	public boolean existById(String leaseId) {
 		return leaseRepository.existsById(new ObjectId(leaseId));
 	}
 	
-	public Lease insert(Lease newLease) {
-		return leaseRepository.insert(newLease);
+	public Lease insert(Lease newLease) throws TenantDoesNotExistException, ApartmentDoesNotExistException {
+		if (!tenantService.existById(newLease.getTenant().getTenantId())) {
+			throw new TenantDoesNotExistException();
+		} else if (!apartmentService.existById(newLease.getApartment().getApartamentId())) {
+			throw new ApartmentDoesNotExistException();
+		} else {
+			return leaseRepository.insert(newLease);
+		}
 	}
 	
-	public Lease update(Lease lease) {
-		return leaseRepository.save(lease);
+	public Lease update(Lease lease) throws LeaseDoesNotExistException {
+		if (leaseRepository.existsById(new ObjectId(lease.getLeaseId()))) {
+			return leaseRepository.save(lease);
+		} else {
+			throw new LeaseDoesNotExistException();
+		}
 	}
 	
-	public void delete(Lease lease) {
-		leaseRepository.delete(lease);
+	public void delete(Lease lease) throws LeaseDoesNotExistException {
+		if (leaseRepository.existsById(new ObjectId(lease.getLeaseId()))) {
+			leaseRepository.delete(lease); 
+		} else {
+			throw new LeaseDoesNotExistException();
+		}
+		
 	}
 }

@@ -1,7 +1,6 @@
 package com.realstate.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.domains.Tenant;
+import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.services.TenantService;
 
 @RestController
@@ -33,10 +33,9 @@ public class TenantController {
 	
 	@GetMapping(value = "{tenantId}")
 	public ResponseEntity<Tenant> findById(@PathVariable("tenantId") String tenantId) {
-		Optional<Tenant> optionalTenant = tenantService.findById(tenantId);
-		if (optionalTenant.isPresent()) {
-			return ResponseEntity.ok(optionalTenant.get());
-		} else {
+		try {
+			return ResponseEntity.ok(tenantService.findById(tenantId));
+		} catch (TenantDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -57,22 +56,20 @@ public class TenantController {
 	
 	@PutMapping
 	public ResponseEntity<Tenant> update(@RequestBody Tenant tenant) {
-		Optional<Tenant> optionalTenant = tenantService.findById(tenant.getTenantId());
-		if (optionalTenant.isPresent()) {
+		try {
 			return ResponseEntity.ok(tenantService.update(tenant));
-		} else {
+		} catch (TenantDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 	
 	@DeleteMapping
 	public ResponseEntity<Tenant> delete(@RequestBody Tenant tenant) {
-		Optional<Tenant> optionalTenant = tenantService.findById(tenant.getTenantId());
-		if (optionalTenant.isPresent()) {
+		try {
 			tenantService.delete(tenant);
 			return ResponseEntity.ok().build();
-		} else {
+		} catch (TenantDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-	}
+	}	
 }

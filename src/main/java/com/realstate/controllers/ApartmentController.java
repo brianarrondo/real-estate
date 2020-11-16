@@ -1,7 +1,6 @@
 package com.realstate.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.domains.Apartment;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.services.ApartmentService;
 
 @RestController
-@RequestMapping("apartament")
+@RequestMapping("apartment")
 public class ApartmentController {
 	
 	@Autowired
@@ -32,40 +32,37 @@ public class ApartmentController {
 	
 	@GetMapping(value = "{apartmentId}")
 	public ResponseEntity<Apartment> findById(@PathVariable(value = "apartmentId") String apartmentId) {
-		Optional<Apartment> optionalApartament = apartmentService.findById(apartmentId);
-		if (optionalApartament.isPresent()) {
-			return ResponseEntity.ok(optionalApartament.get());
-		} else {
+		try {
+			return ResponseEntity.ok(apartmentService.findById(apartmentId));
+		} catch (ApartmentDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 	
 	@PostMapping
-	public ResponseEntity<Apartment> insert(@RequestBody Apartment newApartament) {
+	public ResponseEntity<Apartment> insert(@RequestBody Apartment newApartment) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.insert(newApartament));
+			return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.insert(newApartment));
 		} catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 	
 	@PutMapping
-	public ResponseEntity<Apartment> update(@RequestBody Apartment apartment) {
-		Optional<Apartment> optionalApartament = apartmentService.findById(apartment.getApartamentId());
-		if (optionalApartament.isPresent()) {
+	public ResponseEntity<Apartment> update(@RequestBody Apartment apartment) {	
+		try {
 			return ResponseEntity.ok(apartmentService.update(apartment));
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();		
-		} 
+		} catch (ApartmentDoesNotExistException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();	
+		}
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<Apartment> delete(@RequestBody Apartment apartament) {
-		Optional<Apartment> optionalApartament = apartmentService.findById(apartament.getApartamentId());
-		if (optionalApartament.isPresent()) {
-			apartmentService.delete(apartament);
+	public ResponseEntity<Apartment> delete(@RequestBody Apartment apartment) {
+		try {
+			apartmentService.delete(apartment);
 			return ResponseEntity.ok().build();
-		} else {
+		} catch (ApartmentDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}

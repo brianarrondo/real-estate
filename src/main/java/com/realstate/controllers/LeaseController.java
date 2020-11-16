@@ -1,9 +1,7 @@
 package com.realstate.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realstate.domains.Lease;
+import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.services.LeaseService;
 
 @RestController
@@ -36,10 +35,9 @@ public class LeaseController {
 	
 	@GetMapping(value = "{leaseId}")
 	public ResponseEntity<Lease> findById(@PathVariable(value = "leaseId") String leaseId) {
-		Optional<Lease> optionalLease = leaseService.findById(leaseId);
-		if (optionalLease.isPresent()) {
-			return ResponseEntity.ok(optionalLease.get());
-		} else {
+		try {
+			return ResponseEntity.ok(leaseService.findById(leaseId));
+		} catch (LeaseDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -58,22 +56,21 @@ public class LeaseController {
 	
 	@PutMapping
 	public ResponseEntity<Lease> update(@RequestBody Lease lease) {
-		Optional<Lease> optionalLease = leaseService.findById(lease.getLeaseId());
-		if (optionalLease.isPresent()) {
+		try {
 			return ResponseEntity.ok(leaseService.update(lease));
-		} else {
+		} catch (LeaseDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 	
 	@DeleteMapping
 	public ResponseEntity<Lease> delete(@RequestBody Lease lease) {
-		Optional<Lease> optionalLease = leaseService.findById(lease.getLeaseId());
-		if (optionalLease.isPresent()) {
+		try {
 			leaseService.delete(lease);
 			return ResponseEntity.ok().build();
-		} else {
+		} catch (LeaseDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		
 	}
 }

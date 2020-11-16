@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.realstate.domains.Apartment;
 import com.realstate.domains.Estate;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
+import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.ApartmentRepository;
 
 @Service
@@ -16,6 +18,8 @@ public class ApartmentService {
 
 	@Autowired
 	private ApartmentRepository apartmentRepository;
+	@Autowired
+	private EstateService estateService;
 	
 	public Apartment getNew(Estate estate, int rooms, String name, String description) {
 		Apartment apartment = new Apartment(null, estate, rooms, name, description);
@@ -26,19 +30,40 @@ public class ApartmentService {
 		return apartmentRepository.findAll();
 	}
 	
-	public Optional<Apartment> findById(String apartmentId) {
-		return apartmentRepository.findById(new ObjectId(apartmentId));
+	public Apartment findById(String apartmentId) throws ApartmentDoesNotExistException {
+		Optional<Apartment> optionalApartment = apartmentRepository.findById(new ObjectId(apartmentId));
+		if (optionalApartment.isPresent()) {
+			return optionalApartment.get();
+		} else {
+			throw new ApartmentDoesNotExistException();
+		}
+	}
+	
+	public boolean existById(String apartmentId) {
+		return apartmentRepository.existsById(new ObjectId(apartmentId));
 	}
 		
-	public Apartment insert(Apartment newApartment) {
-		return apartmentRepository.insert(newApartment);
+	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
+		if (estateService.existsById(newApartment.getEstate().getEstateId())) {
+			return apartmentRepository.insert(newApartment);
+		} else {
+			throw new EstateDoesNotExistException();
+		}
 	}
 	
-	public Apartment update(Apartment apartment) {
-		return apartmentRepository.save(apartment);
+	public Apartment update(Apartment apartment) throws ApartmentDoesNotExistException {
+		if (apartmentRepository.existsById(new ObjectId(apartment.getApartamentId()))) {
+			return apartmentRepository.save(apartment);
+		} else {
+			throw new ApartmentDoesNotExistException();
+		}
 	}
 	
-	public void delete(Apartment apartment) {
-		apartmentRepository.delete(apartment);
+	public void delete(Apartment apartment) throws ApartmentDoesNotExistException {
+		if (apartmentRepository.existsById(new ObjectId(apartment.getApartamentId()))) {
+			apartmentRepository.delete(apartment);
+		} else {
+			throw new ApartmentDoesNotExistException();
+		}
 	}
 }
