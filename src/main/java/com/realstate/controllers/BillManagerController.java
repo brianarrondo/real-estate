@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.domains.RentalBill;
+import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.services.LeaseService;
 import com.realstate.services.RentalBillService;
 
@@ -30,8 +31,11 @@ public class BillManagerController {
 	
 	@GetMapping(value = "{rentalBillId}")
 	public ResponseEntity<RentalBill> findById(@PathVariable("rentalBillId") String rentalBillId) {
-		Optional<RentalBill> optionalRentalBill = rentalBillService.findById(rentalBillId);
-		return optionalRentalBill.isPresent() ? ResponseEntity.ok(optionalRentalBill.get()) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		try {
+			return ResponseEntity.ok(rentalBillService.findById(rentalBillId));
+		} catch (RentalBillDoesNotExistException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 	
 	@GetMapping("all")
@@ -41,7 +45,7 @@ public class BillManagerController {
 	
 	@PostMapping
 	public ResponseEntity<RentalBill> generateBill(@RequestBody RentalBill newRentalBill) {
-		boolean leaseExist = leaseService.existById(newRentalBill.getLeaseId());
+		boolean leaseExist = leaseService.existsById(newRentalBill.getLeaseId());
 		if (leaseExist) {
 			try {
 				return ResponseEntity.status(HttpStatus.CREATED).body(rentalBillService.insert(newRentalBill));
@@ -64,12 +68,12 @@ public class BillManagerController {
 	
 	@PutMapping
 	public ResponseEntity<RentalBill> update(@RequestBody RentalBill rentalBill) {
-		return rentalBillService.existById(rentalBill.getRentalBillId()) ? ResponseEntity.ok(rentalBillService.update(rentalBill)) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		return rentalBillService.existsById(rentalBill.getRentalBillId()) ? ResponseEntity.ok(rentalBillService.update(rentalBill)) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
 	@DeleteMapping
 	public ResponseEntity<RentalBill> delete(@RequestBody RentalBill rentalBill) {
-		if (rentalBillService.existById(rentalBill.getRentalBillId())) {
+		if (rentalBillService.existsById(rentalBill.getRentalBillId())) {
 			rentalBillService.delete(rentalBill);
 			return ResponseEntity.ok().build();
 		} else {

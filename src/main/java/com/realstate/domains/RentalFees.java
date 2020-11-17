@@ -2,7 +2,7 @@ package com.realstate.domains;
 
 import java.util.Date;
 
-public class RentalFee {
+public class RentalFees {
 	private String rentalFeeId;
 	private float fee;
 	private Date startDate;

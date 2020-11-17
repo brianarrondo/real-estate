@@ -5,11 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.realstate.domains.RentalBill;
+import com.realstate.exceptions.LeaseDoesNotExistException;
+import com.realstate.exceptions.TenantDoesNotExistException;
 
 @SpringBootTest
 class RentalBillServiceTests {
@@ -18,14 +21,15 @@ class RentalBillServiceTests {
 	private RentalBillService rentalBillService;
 	
 	@Test
-	void test_rentall_bill_creation() {
+	void exceptionIsThrownWhenRentalBillCreatingWithoutLeaseTest() {
 		Date date = new Date();
-		String leaseId = "1";
+		String leaseId = (new ObjectId()).toHexString();
 		float amount = 10500;
-		RentalBill newRentalBill = rentalBillService.getNew(leaseId, date, amount);
+		Exception exception = assertThrows(LeaseDoesNotExistException.class, () -> {
+			rentalBillService.getNew(leaseId, date, amount);
+		});
 		
-		Optional<RentalBill> optionalRentalBill = rentalBillService.findById(newRentalBill.getRentalBillId());
-		assertEquals(newRentalBill, optionalRentalBill.get());
+		assertEquals(exception.getClass(), LeaseDoesNotExistException.class);
 	}
 
 }

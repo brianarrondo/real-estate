@@ -5,12 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.realstate.services.RentalBillService;
 
 @Document(collection = "rentall_bill")
 public class RentalBill implements Serializable {
@@ -20,17 +16,9 @@ public class RentalBill implements Serializable {
 	private Date date;
 	private float amount;
 	private List<Payment> payments = new ArrayList<Payment>();
-	
-	@Autowired
-	private RentalBillService rentalBillService;
-	
+		
 	/* Constructors */
 	public RentalBill() {}
-	
-	@PersistenceConstructor
-	public RentalBill(String rentalBillId) {
-		this.rentalBillId = rentalBillId;
-	}
 	
 	public RentalBill(String rentalBillId, String leaseId, Date date, float amount) {
 		this.rentalBillId = rentalBillId;
@@ -70,6 +58,7 @@ public class RentalBill implements Serializable {
 	public void setPayments(List<Payment> payments) {
 		this.payments = payments;
 	}
+
 	@Override
 	public String toString() {
 		return "RentalBill [rentalBillId=" + rentalBillId + ", leaseId=" + leaseId + ", date=" + date + ", amount="
@@ -85,7 +74,6 @@ public class RentalBill implements Serializable {
 		result = prime * result + ((leaseId == null) ? 0 : leaseId.hashCode());
 		result = prime * result + ((payments == null) ? 0 : payments.hashCode());
 		result = prime * result + ((rentalBillId == null) ? 0 : rentalBillId.hashCode());
-		result = prime * result + ((rentalBillService == null) ? 0 : rentalBillService.hashCode());
 		return result;
 	}
 
@@ -120,12 +108,6 @@ public class RentalBill implements Serializable {
 				return false;
 		} else if (!rentalBillId.equals(other.rentalBillId))
 			return false;
-		if (rentalBillService == null) {
-			if (other.rentalBillService != null)
-				return false;
-		} else if (!rentalBillService.equals(other.rentalBillService))
-			return false;
 		return true;
-	}
-	
+	}	
 }

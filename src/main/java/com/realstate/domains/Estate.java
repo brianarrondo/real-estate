@@ -111,6 +111,4 @@ public class Estate implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 }

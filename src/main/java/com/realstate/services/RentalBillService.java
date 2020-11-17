@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.realstate.domains.RentalBill;
+import com.realstate.exceptions.LeaseDoesNotExistException;
+import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.repositories.RentalBillRepository;
 
 @Service
@@ -16,25 +18,35 @@ public class RentalBillService {
 	
 	@Autowired
 	private RentalBillRepository rentalBillRepository;
+	@Autowired
+	private LeaseService leaseService;
 	
-	public RentalBill getNew(String leaseId, Date date, float amount) {
+	public RentalBill getNew(String leaseId, Date date, float amount) throws LeaseDoesNotExistException {
 		RentalBill newRentalBill = new RentalBill(null, leaseId, date, amount);
-		return rentalBillRepository.insert(newRentalBill);
+		return insert(newRentalBill);
 	}
 	
-	public Optional<RentalBill> findById(String rentalBillId) {
-		return rentalBillRepository.findById(new ObjectId(rentalBillId));
+	public RentalBill findById(String rentalBillId) throws RentalBillDoesNotExistException {
+		Optional<RentalBill> optionalBill = rentalBillRepository.findById(new ObjectId(rentalBillId));
+		if (optionalBill.isPresent()) {
+			return optionalBill.get();
+		} else {
+			throw new RentalBillDoesNotExistException();
+		}
 	}
 	
 	public List<RentalBill> findAll() {
 		return rentalBillRepository.findAll();
 	}
 	
-	public boolean existById(String rentalBillId) {
+	public boolean existsById(String rentalBillId) {
 		return rentalBillRepository.existsById(new ObjectId(rentalBillId));
 	}
 	
-	public RentalBill insert(RentalBill newRentalBill) {
+	public RentalBill insert(RentalBill newRentalBill) throws LeaseDoesNotExistException {
+		if (!leaseService.existsById(newRentalBill.getLeaseId())) {
+			throw new LeaseDoesNotExistException();
+		}
 		return rentalBillRepository.insert(newRentalBill);
 	}
 	

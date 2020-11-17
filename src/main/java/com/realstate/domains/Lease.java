@@ -23,7 +23,7 @@ public class Lease implements Serializable {
 	@NotNull(message = "cannot be null")
 	private Date endDate;
 	private boolean active = true;
-	private List<RentalFee> rentalFees = new ArrayList<RentalFee>();
+	private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
 	private List<RentalBill> rentalBills = new ArrayList<RentalBill>();
 	private String description;
 	
@@ -31,7 +31,7 @@ public class Lease implements Serializable {
 	public Lease() {}
 	
 	public Lease(String leaseId, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
-			List<RentalFee> rentalFees, List<RentalBill> rentalBills, String description) {
+			String description) {
 		super();
 		this.leaseId = leaseId;
 		this.tenant = tenant;
@@ -39,8 +39,6 @@ public class Lease implements Serializable {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.active = active;
-		this.rentalFees = rentalFees;
-		this.rentalBills = rentalBills;
 		this.description = description;
 	}
 
@@ -81,22 +79,16 @@ public class Lease implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<RentalFee> getRentalsFee() {
-		return rentalFees;
-	}
-	public void setRentalsFee(List<RentalFee> rentalsFee) {
-		this.rentalFees = rentalsFee;
-	}
 	public boolean isActive() {
 		return active;
 	}
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public List<RentalFee> getRentalFees() {
+	public List<RentalFees> getRentalFees() {
 		return rentalFees;
 	}
-	public void setRentalFees(List<RentalFee> rentalFees) {
+	public void setRentalFees(List<RentalFees> rentalFees) {
 		this.rentalFees = rentalFees;
 	}
 	public List<RentalBill> getRentalBills() {
