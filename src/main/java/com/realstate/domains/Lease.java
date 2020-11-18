@@ -24,7 +24,6 @@ public class Lease implements Serializable {
 	private Date endDate;
 	private boolean active = true;
 	private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
-	private List<RentalBill> rentalBills = new ArrayList<RentalBill>();
 	private String description;
 	
 	/* Constructors */
@@ -90,11 +89,5 @@ public class Lease implements Serializable {
 	}
 	public void setRentalFees(List<RentalFees> rentalFees) {
 		this.rentalFees = rentalFees;
-	}
-	public List<RentalBill> getRentalBills() {
-		return rentalBills;
-	}
-	public void setRentalBills(List<RentalBill> rentalBills) {
-		this.rentalBills = rentalBills;
 	}
 }
