@@ -13,7 +13,9 @@ import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
 import com.realstate.exceptions.TenantDoesNotExistException;
+import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
 import com.realstate.repositories.LeaseRepository;
+import com.realstate.repositories.RentalBillRepository;
 
 public class BaseServiceTests {
 	
@@ -31,6 +33,8 @@ public class BaseServiceTests {
 	public ApartmentService apartmentService;
 	@Autowired
 	public RentalBillService rentalBillService;
+	@Autowired
+	public RentalBillRepository rentalBillRepository;
 
 	public Lease getValidLease() throws TenantDoesNotExistException, ApartmentDoesNotExistException {
 		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
@@ -45,7 +49,7 @@ public class BaseServiceTests {
 		return newLease;
 	}
 	
-	public RentalBill setRentalBill(Lease lease, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException {
+	public RentalBill setRentalBill(Lease lease, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException {
 		Date date = new Date();
 		RentalBill newRentallBill = rentalBillService.generateRentalBill(lease.getLeaseId(), date, amount);
 		return newRentallBill;

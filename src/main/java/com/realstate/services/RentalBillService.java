@@ -18,7 +18,9 @@ import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
 import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
+import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
 import com.realstate.repositories.RentalBillRepository;
+import com.realstate.utils.Utils;
 
 @Service
 public class RentalBillService {
@@ -71,21 +73,36 @@ public class RentalBillService {
 		rentalBillRepository.delete(rentalBill);
 	}
 	
-	public boolean rentalBillIsPaid(RentalBill rentalBill) {
+	public float totalPaid(RentalBill rentalBill) {
 		List<Payment> payments = rentalBill.getPayments();
 		float totalPaid = 0;
 		for (Iterator<Payment> iterator = payments.iterator(); iterator.hasNext();) {
 			Payment payment = (Payment) iterator.next();
 			totalPaid += payment.getAmount();
 		}
-
-		return totalPaid >= rentalBill.getAmount();
+		return totalPaid;
 	}
 	
-	public RentalBill generateRentalBill(String leaseId, Date date, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException {
+	public boolean rentalBillIsPaid(RentalBill rentalBill) {
+		return totalPaid(rentalBill) >= rentalBill.getAmount();
+	}
+		
+	public boolean existRentalBillInMonth(String leaseId, Date dateNewRentalBill) {
+		List<RentalBill> rentalBillsForLease = rentalBillRepository.findAllByLeaseId(leaseId);
+		for (Iterator<RentalBill> iterator = rentalBillsForLease.iterator(); iterator.hasNext();) {
+			RentalBill rentalBill = (RentalBill) iterator.next();
+			if (Utils.sameMonthAndYear(dateNewRentalBill, rentalBill.getDate())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public RentalBill generateRentalBill(String leaseId, Date date, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException {
 		Lease lease = leaseService.findById(leaseId);
-		if (!lease.isActive()) { throw new LeaseIsNotActiveException(); }
 		if (date == null) { date = new Date(); }
+		if (!lease.isActive()) { throw new LeaseIsNotActiveException(); }
+		if (existRentalBillInMonth(leaseId, date)) { throw new ThereIsAlreadyARentalBillInMonthException(); }
 		RentalBill rentalBill = getNew(leaseId, date, amount);
 		return rentalBill;
 	}
@@ -93,7 +110,7 @@ public class RentalBillService {
 	public Payment generatePayment(String rentalBillId, float amountToPay, Date date) throws RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, LeaseDoesNotExistException {
 		RentalBill rentalBill = findById(rentalBillId);
 		if (date == null) { date = new Date(); }
-		if (amountToPay > rentalBill.getAmount()) {
+		if ((amountToPay > rentalBill.getAmount()) || (totalPaid(rentalBill) + amountToPay > rentalBill.getAmount())) {
 			throw new AmountPaymentHigherThanRentalBillException();
 		} else if (rentalBill.getAmount() == 0) {
 			throw new AmountToPaidIsZeroException();

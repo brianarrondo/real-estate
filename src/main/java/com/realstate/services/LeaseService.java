@@ -10,16 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.realstate.domains.Apartment;
 import com.realstate.domains.Lease;
-import com.realstate.domains.Payment;
-import com.realstate.domains.RentalBill;
 import com.realstate.domains.Tenant;
-import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
-import com.realstate.exceptions.AmountToPaidIsZeroException;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
-import com.realstate.exceptions.LeaseIsNotActiveException;
-import com.realstate.exceptions.RentalBillDoesNotExistException;
-import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
 import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.repositories.LeaseRepository;
 
@@ -29,13 +22,9 @@ public class LeaseService {
 	@Autowired
 	private TenantService tenantService;
 	@Autowired
-	private PaymentService paymentService;
-	@Autowired
 	private LeaseRepository leaseRepository;
 	@Autowired
 	private ApartmentService apartmentService;
-	@Autowired
-	private RentalBillService rentalBillService;
 	
 	public Lease getNew(Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
 			String description) throws TenantDoesNotExistException, ApartmentDoesNotExistException {

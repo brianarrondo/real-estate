@@ -14,13 +14,15 @@ import com.realstate.domains.Estate;
 import com.realstate.domains.Lease;
 import com.realstate.domains.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
+import com.realstate.exceptions.EstateDoesNotExistException;
+import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.TenantDoesNotExistException;
 
 @SpringBootTest
 class LeaseServiceTests extends BaseServiceTests {
 	
 	@Test
-	void leaseCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException {
+	void leaseCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException, LeaseDoesNotExistException {
 		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate, 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
@@ -42,19 +44,19 @@ class LeaseServiceTests extends BaseServiceTests {
 		assertTrue(leaseFromDb.isActive());
 		assertEquals(leaseFromDb.getDescription(), desc);
 		
-		try { tenantService.delete(tenant); } catch (Exception e) {}
-		try { estateService.delete(estate); } catch (Exception e) {}
-		try { apartmentService.delete(apartment); } catch (Exception e) {}
-		try { leaseService.delete(newLease); } catch (Exception e) {}
+		tenantService.delete(tenant);
+		estateService.delete(estate);
+		apartmentService.delete(apartment);
+		leaseService.delete(newLease);
 		
 	}
 	
 	@Test
-	void exceptionIsThrownWhenLeaseCreatingWithoutTenantTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException {
+	void exceptionIsThrownWhenLeaseCreatingWithoutTenantTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
 		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate, 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
-		try { tenantService.delete(tenant); } catch (Exception e) {}
+		tenantService.delete(tenant);
 		
 		Date startDate = new Date();
 		Date endDate = new Date();
@@ -65,16 +67,16 @@ class LeaseServiceTests extends BaseServiceTests {
 		
 		assertEquals(exception.getClass(), TenantDoesNotExistException.class);
 		
-		try { estateService.delete(estate); } catch (Exception e) {}
-		try { apartmentService.delete(apartment); } catch (Exception e) {}
+		estateService.delete(estate);
+		apartmentService.delete(apartment);
 	}
 	
 	@Test
-	void exceptionIsThrownWhenLeaseCreatingWithoutApartmentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException {
+	void exceptionIsThrownWhenLeaseCreatingWithoutApartmentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
 		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate, 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
-		try { apartmentService.delete(apartment); } catch (Exception e) {}
+		apartmentService.delete(apartment);
 		
 		Date startDate = new Date();
 		Date endDate = new Date();
@@ -85,7 +87,7 @@ class LeaseServiceTests extends BaseServiceTests {
 		
 		assertEquals(exception.getClass(), ApartmentDoesNotExistException.class);
 		
-		try { estateService.delete(estate); } catch (Exception e) {}
-		try { tenantService.delete(tenant); } catch (Exception e) {}
+		estateService.delete(estate);
+		tenantService.delete(tenant);
 	}
 }
