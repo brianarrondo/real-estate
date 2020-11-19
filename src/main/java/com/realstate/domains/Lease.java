@@ -20,7 +20,6 @@ public class Lease implements Serializable {
 	private Apartment apartment;
 	@NotNull(message = "cannot be null")
 	private Date startDate;
-	@NotNull(message = "cannot be null")
 	private Date endDate;
 	private boolean active = true;
 	private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
