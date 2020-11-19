@@ -65,11 +65,17 @@ public class RentalBillService {
 		return rentalBillRepository.insert(rentalBillList);
 	}
 	
-	public RentalBill update(RentalBill rentalBill) {
+	public RentalBill update(RentalBill rentalBill) throws RentalBillDoesNotExistException {
+		if (!rentalBillRepository.existsById(new ObjectId(rentalBill.getRentalBillId()))) {
+			throw new RentalBillDoesNotExistException();
+		}
 		return rentalBillRepository.save(rentalBill);
 	}
 	
-	public void delete(RentalBill rentalBill) {
+	public void delete(RentalBill rentalBill) throws RentalBillDoesNotExistException {
+		if (!rentalBillRepository.existsById(new ObjectId(rentalBill.getRentalBillId()))) {
+			throw new RentalBillDoesNotExistException();
+		}
 		rentalBillRepository.delete(rentalBill);
 	}
 	
