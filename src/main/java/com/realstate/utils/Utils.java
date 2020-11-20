@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class Utils {
-	static ObjectMapper mapper = new ObjectMapper();
+	static ObjectMapper mapper = new ObjectMapper().configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false);
 	
 	public static boolean sameMonthAndYear(Date date1, Date date2) {
 		Calendar calendar1 = Calendar.getInstance();

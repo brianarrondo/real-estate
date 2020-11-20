@@ -12,6 +12,7 @@ import com.realstate.domains.Apartment;
 import com.realstate.domains.Lease;
 import com.realstate.domains.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
+import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.repositories.LeaseRepository;
@@ -26,8 +27,13 @@ public class LeaseService {
 	@Autowired
 	private ApartmentService apartmentService;
 	
-	public Lease getNew(Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
-			String description) throws TenantDoesNotExistException, ApartmentDoesNotExistException {
+	public Lease getNew(String tenantId, String apartmentId, Date startDate, Date endDate, boolean active,
+			String description) throws TenantDoesNotExistException, ApartmentDoesNotExistException, InvalidParametersException {
+		if (tenantId == null || apartmentId == null || startDate == null || endDate == null) {
+			throw new InvalidParametersException();
+		}
+		Tenant tenant = tenantService.findById(tenantId);
+		Apartment apartment = apartmentService.findById(apartmentId);
 		Lease lease = new Lease(null, tenant, apartment, startDate, endDate, active, description);
 		return insert(lease);
 	}

@@ -1,7 +1,9 @@
 package com.realstate.controllers;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,15 +54,13 @@ public class BillManagerController {
 	
 	@PostMapping("generate_bill")
 	public ResponseEntity<String> generateRentalBill(@RequestBody Map<String, String> parsedJson) {
-		if (!parsedJson.containsKey("leaseId") || !parsedJson.containsKey("amount")) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': 'Los parametros son invalidos.'}");
-		}
-		
-		String leaseId = parsedJson.get("leaseId");
-		Date date = new Date();
-		float amount = Float.parseFloat(parsedJson.get("amount"));
-		
 		try {
+			String dateString = parsedJson.get("date");
+			String leaseId = parsedJson.get("leaseId");
+			float amount = Float.parseFloat(parsedJson.get("amount"));
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
+			Date date = formatter.parse(dateString);
 			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(rentalBillService.generateRentalBill(leaseId, date, amount)));
 		} catch (LeaseDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
@@ -71,15 +71,13 @@ public class BillManagerController {
 	
 	@PostMapping("generate_payment")
 	public ResponseEntity<String> generatePayment(@RequestBody Map<String, String> parsedJson) {
-		if (!parsedJson.containsKey("rentalBillId") || !parsedJson.containsKey("amount")) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': 'Los parametros son invalidos.'}");
-		}
-		
-		String rentalBillId = parsedJson.get("rentalBillId");
-		Date date = new Date();
-		float amountToPay = Float.parseFloat(parsedJson.get("amount"));
-		
 		try {
+			String dateString = parsedJson.get("date");
+			String rentalBillId = parsedJson.get("rentalBillId");
+			float amountToPay = Float.parseFloat(parsedJson.get("amount"));
+
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
+			Date date = formatter.parse(dateString);
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(rentalBillId, amountToPay, date)));
 		} catch (RentalBillDoesNotExistException | LeaseDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));

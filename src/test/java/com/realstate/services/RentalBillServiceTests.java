@@ -17,9 +17,11 @@ import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
+import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
 import com.realstate.exceptions.PaymentDoesNotExistException;
+import com.realstate.exceptions.RentalBillDateIsOutOfLeaseDateException;
 import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
 import com.realstate.exceptions.TenantDoesNotExistException;
@@ -41,7 +43,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 
 	@Test
-	void rentalBillCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void rentalBillCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease =  getValidLease();
 		Date date = new Date();
 		float amount = 10.500f;
@@ -61,7 +63,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 	
 	@Test
-	void rentalBillIsNotCreatedWhenAlreadyExistsInMonthTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void rentalBillIsNotCreatedWhenAlreadyExistsInMonthTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease =  getValidLease();
 		String leaseId = lease.getLeaseId();
 		Calendar calendar = Calendar.getInstance(); 
@@ -88,7 +90,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 	
 	@Test
-	void twoRentalBillsWithDifferentMonthsAreCreatedTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void twoRentalBillsWithDifferentMonthsAreCreatedTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease =  getValidLease();
 		String leaseId = lease.getLeaseId();
 		Calendar calendar = Calendar.getInstance(); 
@@ -113,7 +115,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 	
 	@Test
-	void payARentalBillWithOnePaymentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void payARentalBillWithOnePaymentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease = getValidLease();
 		float rentalBillAmount = 10000f;
 		RentalBill rentalBill = setRentalBill(lease, rentalBillAmount);
@@ -142,7 +144,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 	
 	@Test
-	void payARentalBillWithTwoPaymentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void payARentalBillWithTwoPaymentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease = getValidLease();
 		float rentalBillAmount = 10000f;
 		RentalBill rentalBill = setRentalBill(lease, rentalBillAmount);
@@ -178,7 +180,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 	}
 	
 	@Test
-	void exceptionIsThrownWhenPaymentAmountIsHighThanRentalBillAmountTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException {
+	void exceptionIsThrownWhenPaymentAmountIsHighThanRentalBillAmountTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, LeaseIsNotActiveException, RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, PaymentDoesNotExistException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Lease lease = getValidLease();
 		float rentalBillAmount = 10000f;
 		RentalBill rentalBill = setRentalBill(lease, rentalBillAmount);

@@ -14,8 +14,10 @@ import com.realstate.domains.Payment;
 import com.realstate.domains.RentalBill;
 import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
+import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
+import com.realstate.exceptions.RentalBillDateIsOutOfLeaseDateException;
 import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
 import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
@@ -104,25 +106,28 @@ public class RentalBillService {
 		return false;
 	}
 	
-	public RentalBill generateRentalBill(String leaseId, Date date, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException {
+	public RentalBill generateRentalBill(String leaseId, Date date, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
+		if (leaseId == null || date == null) { throw new InvalidParametersException(); }
 		Lease lease = leaseService.findById(leaseId);
-		if (date == null) { date = new Date(); }
+		if (lease.getStartDate().compareTo(date) > 0 || lease.getEndDate().compareTo(date) < 0) { throw new RentalBillDateIsOutOfLeaseDateException(); }
 		if (!lease.isActive()) { throw new LeaseIsNotActiveException(); }
 		if (existRentalBillInMonth(leaseId, date)) { throw new ThereIsAlreadyARentalBillInMonthException(); }
 		RentalBill rentalBill = getNew(leaseId, date, amount);
 		return rentalBill;
 	}
 	
-	public Payment generatePayment(String rentalBillId, float amountToPay, Date date) throws RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, LeaseDoesNotExistException {
+	public Payment generatePayment(String rentalBillId, float amountToPay, Date date) throws RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, LeaseDoesNotExistException, InvalidParametersException {
+		if (rentalBillId == null || date == null) { throw new InvalidParametersException(); }
 		RentalBill rentalBill = findById(rentalBillId);
-		if (date == null) { date = new Date(); }
-		if ((amountToPay > rentalBill.getAmount()) || (totalPaid(rentalBill) + amountToPay > rentalBill.getAmount())) {
+		
+		if(rentalBillIsPaid(rentalBill)) {
+			throw new RentalBillHasAlreadyBeenPaidException();
+		} else if ((amountToPay > rentalBill.getAmount()) || (totalPaid(rentalBill) + amountToPay > rentalBill.getAmount())) {
 			throw new AmountPaymentHigherThanRentalBillException();
 		} else if (rentalBill.getAmount() == 0) {
 			throw new AmountToPaidIsZeroException();
-		} else if(rentalBillIsPaid(rentalBill)) {
-			throw new RentalBillHasAlreadyBeenPaidException();
 		}
+		
 		Payment newPayment = paymentService.getNew(amountToPay, rentalBillId, date);
 		rentalBill.getPayments().add(newPayment);
 		update(rentalBill);
