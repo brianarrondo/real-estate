@@ -50,10 +50,10 @@ public class BillManagerController {
 		}
 	}
 	
-	@PostMapping
+	@PostMapping("generate_bill")
 	public ResponseEntity<String> generateRentalBill(@RequestBody Map<String, String> parsedJson) {
 		if (!parsedJson.containsKey("leaseId") || !parsedJson.containsKey("amount")) {
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': 'Los parametros son invalidos.'}");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': 'Los parametros son invalidos.'}");
 		}
 		
 		String leaseId = parsedJson.get("leaseId");
@@ -69,6 +69,25 @@ public class BillManagerController {
 		}
 	}
 	
+	@PostMapping("generate_payment")
+	public ResponseEntity<String> generatePayment(@RequestBody Map<String, String> parsedJson) {
+		if (!parsedJson.containsKey("rentalBillId") || !parsedJson.containsKey("amount")) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{'msg': 'Los parametros son invalidos.'}");
+		}
+		
+		String rentalBillId = parsedJson.get("rentalBillId");
+		Date date = new Date();
+		float amountToPay = Float.parseFloat(parsedJson.get("amount"));
+		
+		try {
+			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(rentalBillId, amountToPay, date)));
+		} catch (RentalBillDoesNotExistException | LeaseDoesNotExistException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+		}
+	}
+	
 	@PostMapping("all")
 	public ResponseEntity<String> insertAll(@RequestBody List<RentalBill> newRentalBillList) {
 		try {
@@ -77,6 +96,7 @@ public class BillManagerController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(Utils.getResponseMsg(e));
 		}
 	}
+	
 	
 	@PutMapping
 	public ResponseEntity<String> update(@RequestBody RentalBill rentalBill) {
