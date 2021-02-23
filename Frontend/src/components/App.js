@@ -10,15 +10,13 @@ import TenantCreation from "./tenant/TenantCreation";
 const App = () => {
 
 	return (
-		<div className="ui container">
+		<div className="container">
 			<BrowserRouter>
 				<Header />
-				<div>
 					<Route path="/" exact component={Home} />
 					<Route path="/estate/all" exact component={EstateList} />
 					<Route path="/tenant/all" exact component={TenantList} />
 					<Route path="/tenant/creation" exact component={TenantCreation} />
-				</div>
 			</BrowserRouter>
 		</div>
 	);

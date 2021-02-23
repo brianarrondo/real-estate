@@ -27,4 +27,15 @@ export default class TenantService extends baseService {
                console.log(e)
             });
     }
+
+    static deleteTenant(bodyParams, callback) {
+        const config = { data: bodyParams };
+        axios.delete(this.baseURI + this.resource, config)
+            .then((response) => {
+                callback(response);
+            })
+            .catch((e) => {
+                console.log(e)
+            });
+    }
 }

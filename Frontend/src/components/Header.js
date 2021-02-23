@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Styles from "../css/styles.css";
 
 const Header = () => {
     return (
-        <div className="container">
-            <nav className="navbar navbar-expand-lg navbar-light bg-light header">
+        <div className="container header">
+            <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="#">RealEstate</a>
+                    <a className="navbar-brand" href="#">Bienes Raíces</a>
                     {/* Barra responsive */}
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
@@ -24,7 +25,6 @@ const Header = () => {
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <li><Link to="/tenant/all" className="dropdown-item">Listar</Link></li>
                                     <li><Link to="/tenant/creation" className="dropdown-item">Crear</Link></li>
-                                    <li><Link to="/" className="dropdown-item">Borrar</Link></li>
                                 </ul>
                             </li>
                         </ul>
@@ -32,8 +32,6 @@ const Header = () => {
                 </div>
             </nav>
         </div>
-
-
     );
 };
 

@@ -1,16 +1,29 @@
-import React from 'react';
+import { useState } from 'react';
 import TenantService from "../../services/TenantService";
 
+import { AlertList } from "react-bs-notifier";
 import { useForm } from 'react-hook-form';
 
 const TenantCreation = () => {
+    const [addedSuccessfully, setAddedSuccessfully] = useState(false);
     const { register, handleSubmit, errors } = useForm();
 
     const callback = () => {
-        return (<div className="alert alert-primary" role="alert">
-            This is a primary alert with <a href="#" className="alert-link">an example link</a>. Give it a click if you
-            like.
-        </div>);
+        alert('An essay was submitted: ');
+        return(
+            <AlertList
+                position={"top-right"}
+                alerts={[{
+                    id: 1,
+                    type: "info",
+                    message: "Hello, world"
+                }]}
+                timeout={5}
+                dismissTitle="Begone!"
+                //onDismiss={onDismissed}
+            />
+        );
+        setAddedSuccessfully(true);
     };
 
     const createTenant = (formData) => {
@@ -22,23 +35,23 @@ const TenantCreation = () => {
             <form onSubmit={handleSubmit((formData) => createTenant(formData))}>
 
                 <div className="form-group row">
-                    <label htmlFor="name" className="col-sm-2 col-form-label">Nombre</label>
-                    <div className="col-sm-10"><input type="text" className="form-control" name="fullName" placeholder="Nombre" ref={register} /></div>
+                    <label htmlFor="name" className="col-sm-1 col-form-label form-label">Nombre</label>
+                    <div className="col-sm-5"><input type="text" className="form-control" name="fullName" placeholder="Nombre" ref={register} /></div>
                 </div>
                 <br />
                 <div className="form-group row">
-                    <label htmlFor="dni" className="col-sm-2 col-form-label">DNI</label>
-                    <div className="col-sm-10"><input type="text" className="form-control" name="dni" placeholder="DNI" ref={register} /></div>
+                    <label htmlFor="dni" className="col-sm-1 col-form-label form-label">DNI</label>
+                    <div className="col-sm-5"><input type="text" className="form-control" name="dni" placeholder="DNI" ref={register} /></div>
                 </div>
                 <br />
                 <div className="form-group row">
-                    <label htmlFor="phone" className="col-sm-2 col-form-label">Teléfono</label>
-                    <div className="col-sm-10"><input type="text" className="form-control" name="phone" placeholder="Telefono" ref={register} /></div>
+                    <label htmlFor="phone" className="col-sm-1 col-form-label form-label">Teléfono</label>
+                    <div className="col-sm-5"><input type="text" className="form-control" name="phone" placeholder="Telefono" ref={register} /></div>
                 </div>
                 <br />
                 <div className="form-group row">
-                    <label htmlFor="desc" className="col-sm-2 col-form-label">Descripción</label>
-                    <div className="col-sm-10"><input type="text" className="form-control" name="description" placeholder="Descripcion" ref={register} /></div>
+                    <label htmlFor="desc" className="col-sm-1 col-form-label form-label">Descripción</label>
+                    <div className="col-sm-5"><textarea type="text" className="form-control" name="description" placeholder="Descripcion" ref={register} /></div>
                 </div>
                 <br />
                 <div className="row">

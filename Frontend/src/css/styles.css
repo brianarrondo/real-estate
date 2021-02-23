@@ -3,7 +3,20 @@
 	color: black;
 }
 
+.form-label {
+	padding-left: 20px;
+}
+
 .header {
 	margin-bottom: 20px;
 	margin-top: 20px;
+}
+
+.header-nav {
+	background-color: black;
+	color: white;
+}
+
+.bold {
+	font-weight: bold;
 }
