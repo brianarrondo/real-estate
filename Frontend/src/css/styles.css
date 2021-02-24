@@ -20,3 +20,28 @@
 .bold {
 	font-weight: bold;
 }
+
+.align-center {
+	text-align: center;
+}
+
+.basic-padding-20 {
+	padding: 20px 20px 20px 20px;
+}
+
+.basic-padding-10 {
+	padding: 10px 10px 10px 10px;
+}
+
+hr {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	border: 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.inner-floating-message {
+	margin: 0 auto;
+}

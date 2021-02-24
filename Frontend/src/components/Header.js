@@ -24,7 +24,7 @@ const Header = () => {
                                    role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#">Inquilinos</a>
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <li><Link to="/tenant/all" className="dropdown-item">Listar</Link></li>
-                                    <li><Link to="/tenant/creation" className="dropdown-item">Crear</Link></li>
+                                    <li><Link to="/tenant/creation" className="dropdown-item">Agregar</Link></li>
                                 </ul>
                             </li>
                         </ul>
