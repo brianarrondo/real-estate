@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TenantService from "../../services/TenantService";
 import Utils from "../../utils/Utils";
 
@@ -6,29 +6,52 @@ import { useForm } from 'react-hook-form';
 import Alert from "../utils/Alert";
 
 const TenantCreation = () => {
-    const { register, handleSubmit, errors, reset } = useForm();
     const [tenantCreated, setTenantCreated] = useState(null);
+    const [showTenantCreationAlert, setShowTenantCreationAlert] = useState(false);
+    const [errorOnTenantCreationRequest, setErrorOnTenantCreationRequest] = useState(false);
+    const { register, handleSubmit, errors, reset } = useForm();
 
     const createTenant = (formData) => {
-        TenantService.createTenant(formData, () => { setTenantCreated(formData.fullName) });
-        reset();
+        TenantService.createTenant(formData,
+                () => {
+                    setTenantCreated(formData);
+                    setShowTenantCreationAlert(true);
+                    reset();
+                },
+                (error) => {
+                    setErrorOnTenantCreationRequest(error);
+                }
+            );
     };
 
-    const showSuccessTenantCreationAlert = () => {
-        if (tenantCreated != null) {
-            return (
-                <div key={Utils.generateKey(tenantCreated)}>
-                    <Alert type="success">
-                       El inquilino <strong>{tenantCreated}</strong> fue agregado con éxito <i className="bi bi-check-square"></i>
-                    </Alert>
-                </div>
-            );
-        }
+    /* Alerta para la creacion exitosa del objeto */
+    const displaySuccessTenantCreationAlert = () => {
+        let tenantName = tenantCreated ? tenantCreated.fullName : "";
+        return (
+            <div key={Utils.generateKey(tenantName)}>
+                <Alert type="success" show={showTenantCreationAlert} setShow={setShowTenantCreationAlert}>
+                    <i className="bi bi-check-circle"></i> El inquilino <strong>{tenantName}</strong> fue agregado con éxito
+                </Alert>
+            </div>
+        );
+    };
+
+    /* Alerta para errores al realizar el request de creacion del objeto */
+    const displayErrorTenantCreationAlert = () => {
+        let errorMsg = errorOnTenantCreationRequest ? errorOnTenantCreationRequest.message : "";
+        return (
+            <div key={Utils.generateKey("error")}>
+                <Alert type="danger" show={errorOnTenantCreationRequest} setShow={setErrorOnTenantCreationRequest}>
+                    <i className="bi bi-exclamation-circle"></i> Hubo un error en la creación del Inquilino: "{errorMsg}"
+                </Alert>
+            </div>
+        );
     };
 
     return (
         <div className="container">
-            {showSuccessTenantCreationAlert()}
+            {displaySuccessTenantCreationAlert()}
+            {displayErrorTenantCreationAlert()}
 
             <form onSubmit={handleSubmit((formData) => createTenant(formData))} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
                 <div>

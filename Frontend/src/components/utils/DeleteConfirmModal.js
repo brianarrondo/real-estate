@@ -1,6 +1,6 @@
 import React from "react";
 
-const DeleteConfirmModal = ({ title, onClick, id, children }) => {
+const DeleteConfirmModal = ({ id, title, onClick, children }) => {
 
     return(
         <div className="modal fade" id={id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
