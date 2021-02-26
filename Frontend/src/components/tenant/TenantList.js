@@ -15,6 +15,8 @@ const TenantList = () => {
 	const [tenantToEdit, setTenantToEdit] = useState(null);
 	const [showTenantEditionAlert, setShowTenantEditionAlert] = useState(null);
 
+	const [errorOnRequest, setErrorOnRequest] = useState(null);
+
 	useEffect(() => {
 		getAllTenants();
 	}, []);
@@ -24,28 +26,38 @@ const TenantList = () => {
 	};
 
 	const deleteTenant = (tenant) => {
-		TenantService.deleteTenant(tenant, () => {
-			setShowTenantDeletionAlert(true);
-			getAllTenants();
-		});
+		TenantService.deleteTenant(tenant,
+			(response) => {
+				setShowTenantDeletionAlert(true);
+				getAllTenants();
+			},
+			(error) => {
+				setErrorOnRequest(error);
+			}
+		);
 	};
 
 	const editTenant = (tenant) => {
-		TenantService.editTenant(tenant, () => {
-			setShowTenantEditionAlert(true);
-			getAllTenants();
-		});
+		TenantService.editTenant(tenant,
+			(response) => {
+				setShowTenantEditionAlert(true);
+				getAllTenants();
+			},
+			(error) => {
+				setErrorOnRequest(error);
+			}
+		);
 	};
 
 	/* Function que construye el componente que incluye los inputs del form con parametros customs */
-	const TenantEditFormBuilder = (register, tenant) => {
+	const TenantEditFormBuilder = (register, errors, tenant) => {
 		return (
-			<TenantEditForm register={register} tenant={tenant} />
+			<TenantEditForm register={register} errors={errors} tenant={tenant} />
 		);
 	};
 
 	/* Muestra el modal flotante para confirmar la eliminacion del objeto */
-	const showDeleteConfirmModal = () => {
+	const displayDeleteConfirmModal = () => {
 		return (
 			<DeleteConfirmModal title="Borrar Inquilino" onClick={() => deleteTenant(tenantToDelete)} id="confirmDeleteModal">
 				¿Está seguro que desea borrar el inquilino <span className="bold"> {tenantToDelete && tenantToDelete.fullName} </span>?
@@ -54,7 +66,7 @@ const TenantList = () => {
 	};
 
 	/* Muestra el modal flotante para editar el objeto */
-	const showEditModal = () => {
+	const displayEditModal = () => {
 		return(
 			<TenantEdition
 				title="Editar Inquilino"
@@ -73,7 +85,7 @@ const TenantList = () => {
 		let tenantName = tenantToDelete ? tenantToDelete.fullName : "";
 		return (
 			<div key={Utils.generateKey(tenantToDelete)}>
-				<Alert type="success" show={showTenantDeletionAlert} setShow={setShowTenantDeletionAlert}>
+				<Alert type="success" show={showTenantDeletionAlert} onClose={() => setShowTenantDeletionAlert(false)}>
 					<i className="bi bi-check-circle"></i> El inquilino <strong>{tenantName}</strong> ha sido borrado con éxito
 				</Alert>
 			</div>
@@ -84,8 +96,20 @@ const TenantList = () => {
 	const displayTenantEditionSuccessAlert = () => {
 		return (
 			<div key={Utils.generateKey("")}>
-				<Alert type="success" show={showTenantEditionAlert} setShow={setShowTenantEditionAlert}>
+				<Alert type="success" show={showTenantEditionAlert} onClose={() => setShowTenantEditionAlert(false)}>
 					<i className="bi bi-check-circle"></i> El inquilino ha sido modificado exitosamente
+				</Alert>
+			</div>
+		);
+	};
+
+	/* Alerta para errores al realizar el request */
+	const displayErrorTenantCreationAlert = () => {
+		let errorMsg = errorOnRequest ? errorOnRequest.message : "";
+		return (
+			<div key={Utils.generateKey("error")}>
+				<Alert type="danger" show={errorOnRequest} onClose={() => setErrorOnRequest(null)}>
+					<i className="bi bi-exclamation-circle"></i> Hubo un error: "{errorMsg}"
 				</Alert>
 			</div>
 		);
@@ -141,11 +165,12 @@ const TenantList = () => {
 					</table>
 				</div>
 
-				{showDeleteConfirmModal()}
-				{showEditModal()}
+				{displayDeleteConfirmModal()}
+				{displayEditModal()}
 
 				{displayTenantDeletionSuccessAlert()}
 				{displayTenantEditionSuccessAlert()}
+				{displayErrorTenantCreationAlert()}
 
 			</div>
 		</div>

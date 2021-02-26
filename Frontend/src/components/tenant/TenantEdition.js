@@ -20,10 +20,10 @@ const TenantEdition = ({ title, id, confirmButtonText, submitFunction, oldTenant
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form onSubmit={handleSubmit((formData) => {submit(formData)} )} id="modalForm">
+                    <form onSubmit={handleSubmit((formData) => {submit(formData)} )} id="modalForm" noValidate>
 
                         {/* Notar que el children (inputs del form) los construimos a partir de una funcion y parametros customs */}
-                        {childrenBuilder(register, oldTenant)}
+                        {childrenBuilder(register, errors, oldTenant)}
 
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

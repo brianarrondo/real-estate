@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TenantService from "../../services/TenantService";
 import Utils from "../../utils/Utils";
 
@@ -29,7 +29,7 @@ const TenantCreation = () => {
         let tenantName = tenantCreated ? tenantCreated.fullName : "";
         return (
             <div key={Utils.generateKey(tenantName)}>
-                <Alert type="success" show={showTenantCreationAlert} setShow={setShowTenantCreationAlert}>
+                <Alert type="success" show={showTenantCreationAlert} onClose={() => setShowTenantCreationAlert(false)}>
                     <i className="bi bi-check-circle"></i> El inquilino <strong>{tenantName}</strong> fue agregado con éxito
                 </Alert>
             </div>
@@ -41,7 +41,7 @@ const TenantCreation = () => {
         let errorMsg = errorOnTenantCreationRequest ? errorOnTenantCreationRequest.message : "";
         return (
             <div key={Utils.generateKey("error")}>
-                <Alert type="danger" show={errorOnTenantCreationRequest} setShow={setErrorOnTenantCreationRequest}>
+                <Alert type="danger" show={errorOnTenantCreationRequest} onClose={() => setErrorOnTenantCreationRequest(null)}>
                     <i className="bi bi-exclamation-circle"></i> Hubo un error en la creación del Inquilino: "{errorMsg}"
                 </Alert>
             </div>
@@ -53,7 +53,11 @@ const TenantCreation = () => {
             {displaySuccessTenantCreationAlert()}
             {displayErrorTenantCreationAlert()}
 
-            <form onSubmit={handleSubmit((formData) => createTenant(formData))} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+            <form
+                onSubmit={handleSubmit((formData) => createTenant(formData))}
+                className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light"
+                noValidate
+            >
                 <div>
                     <h3>Agregar nuevo Inquilino</h3>
                 </div>
@@ -62,7 +66,16 @@ const TenantCreation = () => {
 
                 <div className="form-group row justify-content-center">
                     <label htmlFor="name" className="col-sm-2 col-md-2 col-lg-1 col-form-label form-label">Nombre</label>
-                    <div className="col-sm-7 col-md-5"><input type="text" className="form-control" name="fullName" placeholder="Nombre" ref={register} /></div>
+                    <div className="col-sm-7 col-md-5">
+                        <input
+                            type="text"
+                            className={"form-control" + (errors.fullName ? " is-invalid" : "")}
+                            name="fullName"
+                            placeholder="Nombre"
+                            ref={register({required: true})}
+                        />
+                        <div className="invalid-feedback">Debe completar el nombre</div>
+                    </div>
                 </div>
                 <br />
                 <div className="form-group row justify-content-center">
@@ -72,12 +85,24 @@ const TenantCreation = () => {
                 <br />
                 <div className="form-group row justify-content-center">
                     <label htmlFor="phone" className="col-sm-2 col-md-2 col-lg-1 col-form-label form-label">Teléfono</label>
-                    <div className="col-sm-7 col-md-5"><input type="text" className="form-control" name="phone" placeholder="Telefono" ref={register} /></div>
+                    <div className="col-sm-7 col-md-5">
+                        <input type="text" className="form-control" name="phone" placeholder="Telefono" ref={register} />
+                    </div>
+
                 </div>
                 <br />
                 <div className="form-group row justify-content-center">
                     <label htmlFor="desc" className="col-sm-2 col-md-2 col-lg-1 col-form-label form-label">Descripción</label>
-                    <div className="col-sm-7 col-md-5"><textarea type="text" className="form-control" name="description" placeholder="Descripcion" ref={register} /></div>
+                    <div className="col-sm-7 col-md-5">
+                        <input
+                            type="text"
+                            className={"form-control" + (errors.description ? " is-invalid" : " ")}
+                            name="description"
+                            placeholder="Descripcion"
+                            ref={register({maxLength: 10})}
+                        />
+                        <div className="invalid-feedback">Se superó el máximo de carácteres permitidos (50)</div>
+                    </div>
                 </div>
                 <br />
                 <div className="form-group row justify-content-center">
