@@ -71,7 +71,7 @@ const TenantList = () => {
 			<TenantEdition
 				title="Editar Inquilino"
 				confirmButtonText="Guardar"
-				id="editModal"
+				id='editModal'
 				submitFunction={editTenant}
 				oldTenant={tenantToEdit}
 				childrenBuilder={TenantEditFormBuilder}
@@ -104,7 +104,7 @@ const TenantList = () => {
 	};
 
 	/* Alerta para errores al realizar el request */
-	const displayErrorTenantCreationAlert = () => {
+	const displayTenantErrorCreationAlert = () => {
 		let errorMsg = errorOnRequest ? errorOnRequest.message : "";
 		return (
 			<div key={Utils.generateKey("error")}>
@@ -170,7 +170,7 @@ const TenantList = () => {
 
 				{displayTenantDeletionSuccessAlert()}
 				{displayTenantEditionSuccessAlert()}
-				{displayErrorTenantCreationAlert()}
+				{displayTenantErrorCreationAlert()}
 
 			</div>
 		</div>

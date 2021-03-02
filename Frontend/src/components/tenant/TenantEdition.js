@@ -4,9 +4,15 @@ import { useForm } from 'react-hook-form';
 const TenantEdition = ({ title, id, confirmButtonText, submitFunction, oldTenant, childrenBuilder }) => {
     const { register, handleSubmit, errors } = useForm();
 
+    const closeModal = () => {
+        let modal = window.bootstrap.Modal.getInstance(document.getElementById(id));
+        modal.toggle();
+    };
+
     const submit = (formData) => {
         formData.tenantId = oldTenant.tenantId;
         submitFunction(formData);
+        closeModal();
     };
 
     return(
@@ -21,7 +27,6 @@ const TenantEdition = ({ title, id, confirmButtonText, submitFunction, oldTenant
                     </div>
 
                     <form onSubmit={handleSubmit((formData) => {submit(formData)} )} id="modalForm" noValidate>
-
                         {/* Notar que el children (inputs del form) los construimos a partir de una funcion y parametros customs */}
                         {childrenBuilder(register, errors, oldTenant)}
 
