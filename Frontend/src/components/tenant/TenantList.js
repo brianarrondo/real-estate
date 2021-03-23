@@ -4,7 +4,6 @@ import Utils from "../../utils/Utils";
 
 import DeleteConfirmModal from "../utils/DeleteConfirmModal";
 import Alert from "../utils/Alert";
-import TenantEdition from "./TenantEdition";
 import TenantEditForm from "./TenantEditForm";
 
 const TenantList = () => {
@@ -12,6 +11,7 @@ const TenantList = () => {
 	const [tenantToDelete, setTenantToDelete] = useState(null);
 	const [showTenantDeletionAlert, setShowTenantDeletionAlert] = useState(null);
 
+	const [showTenantEditionModal, setShowTenantEditionModal] = useState(false);
 	const [tenantToEdit, setTenantToEdit] = useState(null);
 	const [showTenantEditionAlert, setShowTenantEditionAlert] = useState(null);
 
@@ -37,46 +37,12 @@ const TenantList = () => {
 		);
 	};
 
-	const editTenant = (tenant) => {
-		TenantService.editTenant(tenant,
-			(response) => {
-				setShowTenantEditionAlert(true);
-				getAllTenants();
-			},
-			(error) => {
-				setErrorOnRequest(error);
-			}
-		);
-	};
-
-	/* Function que construye el componente que incluye los inputs del form con parametros customs */
-	const TenantEditFormBuilder = (register, errors, tenant) => {
-		return (
-			<TenantEditForm register={register} errors={errors} tenant={tenant} />
-		);
-	};
-
 	/* Muestra el modal flotante para confirmar la eliminacion del objeto */
-	const displayDeleteConfirmModal = () => {
+	const deleteConfirmModal = () => {
 		return (
-			<DeleteConfirmModal title="Borrar Inquilino" onClick={() => deleteTenant(tenantToDelete)} id="confirmDeleteModal">
+			<DeleteConfirmModal title="Borrar Inquilino" onClick={() => deleteTenant(tenantToDelete)} id="deleteConfirmModal">
 				¿Está seguro que desea borrar el inquilino <span className="bold"> {tenantToDelete && tenantToDelete.fullName} </span>?
 			</DeleteConfirmModal>
-		);
-	};
-
-	/* Muestra el modal flotante para editar el objeto */
-	const displayEditModal = () => {
-		return(
-			<TenantEdition
-				title="Editar Inquilino"
-				confirmButtonText="Guardar"
-				id='editModal'
-				submitFunction={editTenant}
-				oldTenant={tenantToEdit}
-				childrenBuilder={TenantEditFormBuilder}
-			>
-			</TenantEdition>
 		);
 	};
 
@@ -91,18 +57,7 @@ const TenantList = () => {
 			</div>
 		);
 	};
-
-	/* Muestra la alerta flotante al editar correctamente un objeto */
-	const displayTenantEditionSuccessAlert = () => {
-		return (
-			<div key={Utils.generateKey("")}>
-				<Alert type="success" show={showTenantEditionAlert} onClose={() => setShowTenantEditionAlert(false)}>
-					<i className="bi bi-check-circle"></i> El inquilino ha sido modificado exitosamente
-				</Alert>
-			</div>
-		);
-	};
-
+	
 	/* Alerta para errores al realizar el request */
 	const displayTenantErrorCreationAlert = () => {
 		let errorMsg = errorOnRequest ? errorOnRequest.message : "";
@@ -115,6 +70,11 @@ const TenantList = () => {
 		);
 	};
 
+	function editOnClick(tenant) {
+		setTenantToEdit(tenant);
+		setShowTenantEditionModal(true);
+	}
+
 	/* Llenamos la tabla con los objetos correspondientes */
 	const tenantListComponents = tenants.map((tenant) => {
 		return (
@@ -124,12 +84,12 @@ const TenantList = () => {
 				<td>{tenant.phone}</td>
 				<td>{tenant.description}</td>
 				<td>
-					<a className="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" onClick={() =>  setTenantToEdit(tenant) }>
+					<a className="btn btn-dark btn-sm" onClick={() => editOnClick(tenant)}>
 						<i className="bi bi-pencil-fill"></i> Editar
 					</a>
 				</td>
 				<td>
-					<a className="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onClick={ () => setTenantToDelete(tenant) }>
+					<a className="btn btn-dark btn-sm" data-bs-toggle="modal" onClick={() => setTenantToDelete(tenant)}>
 						<i className="bi bi-x-square-fill"></i> Borrar
 					</a>
 				</td>
@@ -165,11 +125,11 @@ const TenantList = () => {
 					</table>
 				</div>
 
-				{displayDeleteConfirmModal()}
-				{displayEditModal()}
-
+				{deleteConfirmModal()}
 				{displayTenantDeletionSuccessAlert()}
-				{displayTenantEditionSuccessAlert()}
+
+				<TenantEditForm show={showTenantEditionModal} onHide={() => setShowTenantEditionModal(false)} tenant={tenantToEdit} callback={() => getAllTenants()} />
+
 				{displayTenantErrorCreationAlert()}
 
 			</div>
