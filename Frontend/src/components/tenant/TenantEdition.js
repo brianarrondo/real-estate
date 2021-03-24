@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantEditForm = ({ show, onHide, tenant, callback }) => {
+const TenantEdition = ({ show, onHide, tenant, callback }) => {
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
     let tenantPhone = React.createRef();
@@ -48,7 +48,7 @@ const TenantEditForm = ({ show, onHide, tenant, callback }) => {
                 <Modal.Body>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
-                            Email
+                            Nombre
                         </Form.Label>
                         <Col sm={9}>
                             <Form.Control type="text" ref={tenantFullName} defaultValue={tenant && tenant.fullName} placeholder="Nombre Completo" />
@@ -93,4 +93,4 @@ const TenantEditForm = ({ show, onHide, tenant, callback }) => {
     );
 };
 
-export default TenantEditForm;
+export default TenantEdition;

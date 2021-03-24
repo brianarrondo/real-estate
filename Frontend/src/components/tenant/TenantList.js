@@ -3,8 +3,9 @@ import TenantService from "../../services/TenantService";
 import Utils from "../../utils/Utils";
 
 import DeleteConfirmModal from "../utils/DeleteConfirmModal";
-import Alert from "../utils/Alert";
-import TenantEditForm from "./TenantEditForm";
+import AlertCustom from "../utils/AlertCustom";
+import TenantEdition from "./TenantEdition";
+import TenantDeletion from "./TenantDeletion";
 
 const TenantList = () => {
 	const [tenants, setTenants] = useState([]);
@@ -12,8 +13,9 @@ const TenantList = () => {
 	const [showTenantDeletionAlert, setShowTenantDeletionAlert] = useState(null);
 
 	const [showTenantEditionModal, setShowTenantEditionModal] = useState(false);
+	const [showTenantDeletionModal, setShowTenantDeletionModal] = useState(false);
+
 	const [tenantToEdit, setTenantToEdit] = useState(null);
-	const [showTenantEditionAlert, setShowTenantEditionAlert] = useState(null);
 
 	const [errorOnRequest, setErrorOnRequest] = useState(null);
 
@@ -25,54 +27,14 @@ const TenantList = () => {
 		TenantService.getAllTenants((response) => setTenants(response.data));
 	};
 
-	const deleteTenant = (tenant) => {
-		TenantService.deleteTenant(tenant,
-			(response) => {
-				setShowTenantDeletionAlert(true);
-				getAllTenants();
-			},
-			(error) => {
-				setErrorOnRequest(error);
-			}
-		);
-	};
-
-	/* Muestra el modal flotante para confirmar la eliminacion del objeto */
-	const deleteConfirmModal = () => {
-		return (
-			<DeleteConfirmModal title="Borrar Inquilino" onClick={() => deleteTenant(tenantToDelete)} id="deleteConfirmModal">
-				¿Está seguro que desea borrar el inquilino <span className="bold"> {tenantToDelete && tenantToDelete.fullName} </span>?
-			</DeleteConfirmModal>
-		);
-	};
-
-	/* Muestra la alerta flotante al eliminar correctamente un objeto */
-	const displayTenantDeletionSuccessAlert = () => {
-		let tenantName = tenantToDelete ? tenantToDelete.fullName : "";
-		return (
-			<div key={Utils.generateKey(tenantToDelete)}>
-				<Alert type="success" show={showTenantDeletionAlert} onClose={() => setShowTenantDeletionAlert(false)}>
-					<i className="bi bi-check-circle"></i> El inquilino <strong>{tenantName}</strong> ha sido borrado con éxito
-				</Alert>
-			</div>
-		);
-	};
-	
-	/* Alerta para errores al realizar el request */
-	const displayTenantErrorCreationAlert = () => {
-		let errorMsg = errorOnRequest ? errorOnRequest.message : "";
-		return (
-			<div key={Utils.generateKey("error")}>
-				<Alert type="danger" show={errorOnRequest} onClose={() => setErrorOnRequest(null)}>
-					<i className="bi bi-exclamation-circle"></i> Hubo un error: "{errorMsg}"
-				</Alert>
-			</div>
-		);
-	};
-
 	function editOnClick(tenant) {
 		setTenantToEdit(tenant);
 		setShowTenantEditionModal(true);
+	}
+
+	function deleteOnClick(tenant) {
+		setTenantToDelete(tenant);
+		setShowTenantDeletionModal(true);
 	}
 
 	/* Llenamos la tabla con los objetos correspondientes */
@@ -89,7 +51,7 @@ const TenantList = () => {
 					</a>
 				</td>
 				<td>
-					<a className="btn btn-dark btn-sm" data-bs-toggle="modal" onClick={() => setTenantToDelete(tenant)}>
+					<a className="btn btn-dark btn-sm" onClick={() => deleteOnClick(tenant)}>
 						<i className="bi bi-x-square-fill"></i> Borrar
 					</a>
 				</td>
@@ -125,12 +87,23 @@ const TenantList = () => {
 					</table>
 				</div>
 
-				{deleteConfirmModal()}
-				{displayTenantDeletionSuccessAlert()}
-
-				<TenantEditForm show={showTenantEditionModal} onHide={() => setShowTenantEditionModal(false)} tenant={tenantToEdit} callback={() => getAllTenants()} />
-
-				{displayTenantErrorCreationAlert()}
+				<AlertCustom type="success" show={showTenantDeletionAlert} onClose={() => setShowTenantDeletionAlert(false)}> Borrando </AlertCustom>
+				<TenantEdition
+					show={showTenantEditionModal}
+					onHide={() => setShowTenantEditionModal(false)}
+					tenant={tenantToEdit}
+					callback={() => getAllTenants()}
+				/>
+				<TenantDeletion
+					show={showTenantDeletionModal}
+					onHide={() => setShowTenantDeletionModal(false)}
+					tenant={tenantToDelete}
+					callback={() => {
+							getAllTenants();
+							setShowTenantDeletionAlert(true);
+						}
+					}
+				/>
 
 			</div>
 		</div>
