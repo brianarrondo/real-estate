@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import TenantService from "../../services/TenantService";
-import Utils from "../../utils/Utils";
 
-import DeleteConfirmModal from "../utils/DeleteConfirmModal";
 import AlertCustom from "../utils/AlertCustom";
 import TenantEdition from "./TenantEdition";
 import TenantDeletion from "./TenantDeletion";
 
 const TenantList = () => {
 	const [tenants, setTenants] = useState([]);
+	const [tenantToEdit, setTenantToEdit] = useState(null);
 	const [tenantToDelete, setTenantToDelete] = useState(null);
-	const [showTenantDeletionAlert, setShowTenantDeletionAlert] = useState(null);
+	const [tenantEdited, setTenantEdited] = useState(null);
+
+	const [alertAction, setAlertAction] = useState(null);
+	const [showAlert, setShowAlert] = useState(false);
 
 	const [showTenantEditionModal, setShowTenantEditionModal] = useState(false);
 	const [showTenantDeletionModal, setShowTenantDeletionModal] = useState(false);
-
-	const [tenantToEdit, setTenantToEdit] = useState(null);
 
 	const [errorOnRequest, setErrorOnRequest] = useState(null);
 
@@ -59,6 +59,14 @@ const TenantList = () => {
 		);
 	});
 
+	const tenantEditionAlertChildren = () => {
+		return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantEdited && tenantEdited.fullName}</strong> ha sido modificado con éxito</div>);
+	};
+
+	const tenantDeletionAlertChildren = () => {
+		return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantToDelete && tenantToDelete.fullName}</strong> ha sido borrado con éxito</div>);
+	};
+
 	return (
 
 		<div className="container">
@@ -87,12 +95,21 @@ const TenantList = () => {
 					</table>
 				</div>
 
-				<AlertCustom type="success" show={showTenantDeletionAlert} onClose={() => setShowTenantDeletionAlert(false)}> Borrando </AlertCustom>
+				<AlertCustom type="success" show={showAlert} onClose={() => setShowAlert(false)}>
+					{alertAction === "edit"? tenantEditionAlertChildren() : (alertAction === "delete" ? tenantDeletionAlertChildren() : null)}
+				</AlertCustom>
+
 				<TenantEdition
 					show={showTenantEditionModal}
-					onHide={() => setShowTenantEditionModal(false)}
+					onHideCallback={() => setShowTenantEditionModal(false)}
 					tenant={tenantToEdit}
-					callback={() => getAllTenants()}
+					callback={() => {
+							getAllTenants();
+							setTenantEdited(tenantToEdit);
+							setAlertAction("edit");
+							setShowAlert(true);
+						}
+					}
 				/>
 				<TenantDeletion
 					show={showTenantDeletionModal}
@@ -100,7 +117,8 @@ const TenantList = () => {
 					tenant={tenantToDelete}
 					callback={() => {
 							getAllTenants();
-							setShowTenantDeletionAlert(true);
+							setAlertAction("delete");
+							setShowAlert(true);
 						}
 					}
 				/>

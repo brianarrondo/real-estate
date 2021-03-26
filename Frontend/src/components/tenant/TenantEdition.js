@@ -1,32 +1,50 @@
-import React from "react";
+import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantEdition = ({ show, onHide, tenant, callback }) => {
+const TenantEdition = ({ show, onHideCallback, tenant, callback }) => {
+    const [validated, setValidated] = useState(false);
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
     let tenantPhone = React.createRef();
     let tenantDescription = React.createRef();
 
+    function onHide() {
+        setValidated(false);
+        if (onHideCallback) onHideCallback();
+    }
+
     function handleSubmit(event) {
+        let validationOk = true;
+
         event.preventDefault();
-        TenantService.editTenant({
-                tenantId: tenant.tenantId,
-                fullName: tenantFullName.current.value,
-                dni: tenantDni.current.value,
-                phone: tenantPhone.current.value,
-                description: tenantDescription.current.value
-            },
-            (response) => {
-                onHide();
-                if (callback) callback();
-            },
-            (error) => {
-                //setErrorOnRequest(error);
-                console.log("ERROR AL REALIZAR EL REQUEST");
-            }
-        );
+
+        // realizamos la validacion del form
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            validationOk = false;
+        }
+        setValidated(true);
+
+        if (validationOk) {
+            TenantService.editTenant({
+                    tenantId: tenant.tenantId,
+                    fullName: tenantFullName.current.value,
+                    dni: tenantDni.current.value,
+                    phone: tenantPhone.current.value,
+                    description: tenantDescription.current.value
+                },
+                (response) => {
+                    onHide();
+                    if (callback) callback();
+                },
+                (error) => {
+                    //setErrorOnRequest(error);
+                    console.log("ERROR AL REALIZAR EL REQUEST");
+                }
+            );
+        }
     }
 
     return(
@@ -44,14 +62,15 @@ const TenantEdition = ({ show, onHide, tenant, callback }) => {
                 </Modal.Title>
             </Modal.Header>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} noValidate validated={validated}>
                 <Modal.Body>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
                             Nombre
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control type="text" ref={tenantFullName} defaultValue={tenant && tenant.fullName} placeholder="Nombre Completo" />
+                            <Form.Control type="text" ref={tenantFullName} defaultValue={tenant && tenant.fullName} placeholder="Nombre Completo" required />
+                            <Form.Control.Feedback type="invalid">Por favor ingresar el nombre del inquilino</Form.Control.Feedback>
                         </Col>
                     </Form.Group>
 
@@ -78,7 +97,7 @@ const TenantEdition = ({ show, onHide, tenant, callback }) => {
                             Descripción
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control type="text" ref={tenantDescription} defaultValue={tenant && tenant.description} placeholder="Descripcion" />
+                            <Form.Control type="text" ref={tenantDescription} defaultValue={tenant && tenant.description} placeholder="Descripcion" maxLength="70" />
                         </Col>
                     </Form.Group>
                 </Modal.Body>

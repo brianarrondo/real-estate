@@ -1,29 +1,22 @@
 import React, { useEffect } from "react";
-import Utils from "../../utils/Utils";
 import {Alert} from "react-bootstrap";
+import Styles from "../../css/styles.css";
 
 const AlertCustom = ({ children, type, show, onClose }) => {
-
-    let key = Utils.generateKey("success-alert");
+    let timeoutId;
 
     /* Luego de renderizar por primera vez, se lanza un timeout para cerrar la alerta */
     useEffect(() => {
         if (show) {
-            let alertNode = document.querySelector("#" + key);
-            let alert = new window.bootstrap.Alert(alertNode);
-
-            alertNode.addEventListener("closed.bs.alert", () => {
-                if (onClose) onClose();
-            });
-
-            setTimeout(() => {
-                alert.close();
-            }, 2000);
+            timeoutId = setTimeout(onClose, 2000);
+            return () => {
+                clearTimeout(timeoutId);
+            };
         }
-    }, []);
+    });
 
     return (
-        <Alert key={key} variant={type} onClose={onClose} show={show} dismissible transition>
+        <Alert variant={type} onClose={onClose} show={show} dismissible className="fixed-top opacity">
             <Alert.Heading>{children}</Alert.Heading>
         </Alert>
     );
