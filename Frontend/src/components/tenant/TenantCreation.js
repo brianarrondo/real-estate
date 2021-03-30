@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TenantService from "../../services/TenantService";
-import Utils from "../../utils/Utils";
 import AlertCustom from "../utils/AlertCustom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 
@@ -13,8 +12,8 @@ const TenantCreation = () => {
 
     const [validated, setValidated] = useState(false);
     const [tenantCreated, setTenantCreated] = useState(null);
-    const [showTenantCreationAlert, setShowTenantCreationAlert] = useState(false);
-    const [errorOnTenantCreationRequest, setErrorOnTenantCreationRequest] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [errorMsg, setErrorMsg] = useState(null);
     let tenant;
 
     function handleSubmit(event) {
@@ -42,16 +41,33 @@ const TenantCreation = () => {
                 () => {
                     setTenantCreated(tenant);
                     setValidated(false);
-                    setShowTenantCreationAlert(true);
+                    setErrorMsg(null);
+                    setShowAlert(true);
                     form.reset();
                 },
                 (error) => {
-                    {/* <i className="bi bi-exclamation-circle"></i> Hubo un error en la creación del Inquilino: "{errorMsg}" */}
-                    setErrorOnTenantCreationRequest(error);
+                    setErrorMsg(error.message);
+                    setShowAlert(true);
                 }
             );
         }
 
+    }
+
+    function getAlertType() {
+        if (errorMsg !== null) {
+            return "danger";
+        } else {
+            return "success";
+        }
+    }
+
+    function getAlertChild() {
+        if (errorMsg !== null) {
+            return (<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear el inquilino: "{errorMsg}"</div>);
+        } else {
+            return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantCreated && tenantCreated.fullName}</strong> fue agregado con éxito</div>)
+        }
     }
 
     return (
@@ -98,8 +114,8 @@ const TenantCreation = () => {
                     <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
             </Form>
 
-            <AlertCustom show={showTenantCreationAlert} onClose={() => setShowTenantCreationAlert(false)} type="success">
-                <i className="bi bi-check-circle"></i> El inquilino <strong>{tenantCreated && tenantCreated.fullName}</strong> fue agregado con éxito
+            <AlertCustom show={showAlert} onClose={() => setShowAlert(false)} type={getAlertType()}>
+                {getAlertChild()}
             </AlertCustom>
         </div>
 

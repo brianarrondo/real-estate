@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantEdition = ({ show, onHideCallback, tenant, callback }) => {
+const TenantEdition = ({ show, onHideCallback, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
@@ -37,11 +37,10 @@ const TenantEdition = ({ show, onHideCallback, tenant, callback }) => {
                 },
                 (response) => {
                     onHide();
-                    if (callback) callback();
+                    if (successCallback) successCallback();
                 },
                 (error) => {
-                    //setErrorOnRequest(error);
-                    console.log("ERROR AL REALIZAR EL REQUEST");
+                    if (errorCallback) errorCallback(error);
                 }
             );
         }

@@ -7,34 +7,63 @@ import TenantDeletion from "./TenantDeletion";
 
 const TenantList = () => {
 	const [tenants, setTenants] = useState([]);
-	const [tenantToEdit, setTenantToEdit] = useState(null);
-	const [tenantToDelete, setTenantToDelete] = useState(null);
+	const [tenantSelected, setTenantSelected] = useState(null);
 	const [tenantEdited, setTenantEdited] = useState(null);
 
-	const [alertAction, setAlertAction] = useState(null);
+	const [alertType, setAlertType] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 
 	const [showTenantEditionModal, setShowTenantEditionModal] = useState(false);
 	const [showTenantDeletionModal, setShowTenantDeletionModal] = useState(false);
-
-	const [errorOnRequest, setErrorOnRequest] = useState(null);
+	const [errorMsg, setErrorMsg] = useState(null);
 
 	useEffect(() => {
 		getAllTenants();
 	}, []);
 
 	const getAllTenants = () => {
-		TenantService.getAllTenants((response) => setTenants(response.data));
+		TenantService.getAllTenants(
+			(response) => {
+				setTenants(response.data);
+			},
+			(error) => {
+				setAlertType("listError");
+				setErrorMsg(error.message);
+				setShowAlert(true);
+			}
+		);
 	};
 
 	function editOnClick(tenant) {
-		setTenantToEdit(tenant);
+		setTenantSelected(tenant);
 		setShowTenantEditionModal(true);
 	}
 
 	function deleteOnClick(tenant) {
-		setTenantToDelete(tenant);
+		setTenantSelected(tenant);
 		setShowTenantDeletionModal(true);
+	}
+
+	function getAlertChild() {
+		if (alertType === "editSuccess") {
+			return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantEdited && tenantEdited.fullName}</strong> ha sido modificado con éxito</div>);
+		} else if(alertType === "deleteSuccess") {
+			return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantSelected && tenantSelected.fullName}</strong> ha sido borrado con éxito</div>);
+		} else if(alertType === "listError") {
+			return (<div><i className="bi bi-exclamation-circle"></i> Hubo un error al obtener el listado de inquilinos: "{errorMsg}"</div>);
+		} else if(alertType === "editionError") {
+			return (<div><i className="bi bi-exclamation-circle"></i> Hubo un error al editar el  inquilino: "{errorMsg}"</div>);
+		} else if(alertType === "deletionError") {
+			return (<div><i className="bi bi-exclamation-circle"></i> Hubo un error al borrar el  inquilino: "{errorMsg}"</div>);
+		}
+	}
+
+	function getAlertType() {
+		if (alertType === "listError" || alertType === "deletionError" || alertType === "editionError") {
+			return "danger";
+		} else if (alertType === "deleteSuccess" || alertType === "editSuccess") {
+			return "success";
+		}
 	}
 
 	/* Llenamos la tabla con los objetos correspondientes */
@@ -58,14 +87,6 @@ const TenantList = () => {
 			</tr>
 		);
 	});
-
-	const tenantEditionAlertChildren = () => {
-		return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantEdited && tenantEdited.fullName}</strong> ha sido modificado con éxito</div>);
-	};
-
-	const tenantDeletionAlertChildren = () => {
-		return (<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenantToDelete && tenantToDelete.fullName}</strong> ha sido borrado con éxito</div>);
-	};
 
 	return (
 
@@ -95,18 +116,24 @@ const TenantList = () => {
 					</table>
 				</div>
 
-				<AlertCustom type="success" show={showAlert} onClose={() => setShowAlert(false)}>
-					{alertAction === "edit"? tenantEditionAlertChildren() : (alertAction === "delete" ? tenantDeletionAlertChildren() : null)}
+				<AlertCustom type={getAlertType()} show={showAlert} onClose={() => setShowAlert(false)}>
+					{getAlertChild()}
 				</AlertCustom>
 
 				<TenantEdition
 					show={showTenantEditionModal}
 					onHideCallback={() => setShowTenantEditionModal(false)}
-					tenant={tenantToEdit}
-					callback={() => {
+					tenant={tenantSelected}
+					successCallback={() => {
 							getAllTenants();
-							setTenantEdited(tenantToEdit);
-							setAlertAction("edit");
+							setTenantEdited(tenantSelected);
+							setAlertType("editSuccess");
+							setShowAlert(true);
+						}
+					}
+					errorCallback={(error) => {
+							setAlertType("editionError");
+							setErrorMsg(error.message);
 							setShowAlert(true);
 						}
 					}
@@ -114,10 +141,16 @@ const TenantList = () => {
 				<TenantDeletion
 					show={showTenantDeletionModal}
 					onHide={() => setShowTenantDeletionModal(false)}
-					tenant={tenantToDelete}
-					callback={() => {
+					tenant={tenantSelected}
+					successCallback={() => {
 							getAllTenants();
-							setAlertAction("delete");
+							setAlertType("deleteSuccess");
+							setShowAlert(true);
+						}
+					}
+					errorCallback={(error) => {
+							setAlertType("deletionError");
+							setErrorMsg(error.message);
 							setShowAlert(true);
 						}
 					}

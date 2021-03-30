@@ -3,17 +3,16 @@ import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantDeletion = ({show, onHide, tenant, callback}) => {
+const TenantDeletion = ({show, onHide, tenant, successCallback, errorCallback}) => {
 
     function deleteTenant(tenant) {
         TenantService.deleteTenant(tenant,
                 (response) => {
                     if(onHide) onHide();
-                    if(callback) callback();
+                    if(successCallback) successCallback();
                 },
                 (error) => {
-                    //setErrorOnRequest(error);
-                    console.log("ERROR AL REALIZAR EL REQUEST" + error);
+                    if (errorCallback) errorCallback(error);
                 }
             );
     }

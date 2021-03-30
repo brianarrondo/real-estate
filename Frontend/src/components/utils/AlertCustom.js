@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {Alert} from "react-bootstrap";
-import Styles from "../../css/styles.css";
 
 const AlertCustom = ({ children, type, show, onClose }) => {
     let timeoutId;
