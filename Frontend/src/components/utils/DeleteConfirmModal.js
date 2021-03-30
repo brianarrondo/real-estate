@@ -1,9 +1,9 @@
 import React from "react";
 
-const DeleteConfirmModal = ({ title, onClick, children }) => {
+const DeleteConfirmModal = ({ id, title, onClick, children }) => {
 
     return(
-        <div className="modal fade" id="confirmDeleteModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal fade" id={id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
