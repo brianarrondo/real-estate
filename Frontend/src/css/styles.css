@@ -45,3 +45,8 @@ hr {
 .opacity {
 	opacity: 0.9;
 }
+
+.login-header {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
