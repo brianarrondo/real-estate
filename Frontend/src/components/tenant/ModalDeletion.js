@@ -3,12 +3,12 @@ import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantDeletion = ({show, onHide, tenant, successCallback, errorCallback}) => {
+const ModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) => {
 
     function deleteTenant(tenant) {
         TenantService.deleteTenant(tenant,
                 (response) => {
-                    if(onHide) onHide();
+                    setModalShow(false);
                     if(successCallback) successCallback();
                 },
                 (error) => {
@@ -18,14 +18,7 @@ const TenantDeletion = ({show, onHide, tenant, successCallback, errorCallback}) 
     }
 
     return (
-        <Modal
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            show={show}
-            onHide={onHide}
-        >
-
+       <>
             <Modal.Header closeButton>
                 <Modal.Title>
                     Borrar Inquilino
@@ -37,12 +30,11 @@ const TenantDeletion = ({show, onHide, tenant, successCallback, errorCallback}) 
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="secondary" onClick={onHide}>Cerrar</Button>
+                <Button variant="secondary" onClick={() => setModalShow(false)}>Cerrar</Button>
                 <Button variant="success" onClick={() => deleteTenant(tenant)}>Borrar</Button>
             </Modal.Footer>
-
-        </Modal>
+       </>
     );
 };
 
-export default TenantDeletion;
+export default ModalDeletion;

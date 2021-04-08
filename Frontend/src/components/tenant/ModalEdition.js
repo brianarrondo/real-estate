@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import TenantService from "../../services/TenantService";
 
-const TenantEdition = ({ show, onHideCallback, tenant, successCallback, errorCallback }) => {
+const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
@@ -12,7 +12,7 @@ const TenantEdition = ({ show, onHideCallback, tenant, successCallback, errorCal
 
     function onHide() {
         setValidated(false);
-        if (onHideCallback) onHideCallback();
+        setModalShow(false);
     }
 
     function handleSubmit(event) {
@@ -47,14 +47,7 @@ const TenantEdition = ({ show, onHideCallback, tenant, successCallback, errorCal
     }
 
     return(
-        <Modal
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            show={show}
-            onHide={onHide}
-        >
-
+        <>
             <Modal.Header closeButton>
                 <Modal.Title>
                    Editar Inquilino
@@ -106,9 +99,8 @@ const TenantEdition = ({ show, onHideCallback, tenant, successCallback, errorCal
                     <Button variant="success" type="submit">Editar</Button>
                 </Modal.Footer>
             </Form>
-
-        </Modal>
+        </>
     );
 };
 
-export default TenantEdition;
+export default ModalEdition;
