@@ -25,6 +25,10 @@
 	text-align: center;
 }
 
+.basic-margin-10 {
+	margin: 10px 10px 10px 10px;
+}
+
 .basic-padding-20 {
 	padding: 20px 20px 20px 20px;
 }
@@ -46,7 +50,25 @@ hr {
 	opacity: 0.9;
 }
 
-.login-header {
-	padding-top: 10px;
-	padding-bottom: 10px;
+/* Login */
+
+.vertical-center {
+	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+	min-height: 100vh; /* These two lines are counted as one :-)       */
+
+	display: flex;
+	align-items: center;
+}
+
+.login-background {
+	background: url('../img/login-background.jpg') no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	-o-background-size: cover;
+}
+
+.login-box-background {
+	background: rgba(255, 255, 255, 0.5);
+	border: 0px;
 }

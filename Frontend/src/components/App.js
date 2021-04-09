@@ -12,7 +12,7 @@ import GenericAlert from "./utils/GenericAlert";
 
 const App = () => {
 
-	const [token, setToken] = useState(true);
+	const [token, setToken] = useState(false);
 
 	if(!token) {
 		return <Login setToken={setToken} />
