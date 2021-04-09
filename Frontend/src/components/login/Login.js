@@ -16,8 +16,8 @@ const Login = () => {
     return (
             <div className="d-flex justify-content-center vertical-center login-background basic-padding-10">
 
-                <Col xl={4} lg={7} md={7} sm={12} className="shadow rounded text-center bi-symmetry-vertical login-box-background">
-                    <div>
+                <Col xl={4} lg={7} md={7} sm={12} className="shadow rounded text-center login-box-background">
+                    <div className="padding-top-30 bi-symmetry-vertical">
                         <h2>Login RealEstate</h2>
                         <hr />
                     </div>

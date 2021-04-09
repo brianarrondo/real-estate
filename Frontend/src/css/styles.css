@@ -72,3 +72,7 @@ hr {
 	background: rgba(255, 255, 255, 0.5);
 	border: 0px;
 }
+
+.padding-top-30 {
+	padding-top: 30px;
+}
