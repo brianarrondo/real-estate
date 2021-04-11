@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.realstate.domains.RentalBill;
+import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.services.RentalBillService;
@@ -37,9 +37,9 @@ public class BillManagerController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.findById(rentalBillId)));
 		} catch (RentalBillDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class BillManagerController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.findAll()));
 		} catch (JsonProcessingException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -63,9 +63,9 @@ public class BillManagerController {
 			Date date = formatter.parse(dateString);
 			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(rentalBillService.generateRentalBill(leaseId, date, amount)));
 		} catch (LeaseDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -80,9 +80,9 @@ public class BillManagerController {
 			Date date = formatter.parse(dateString);
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(rentalBillId, amountToPay, date)));
 		} catch (RentalBillDoesNotExistException | LeaseDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class BillManagerController {
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(rentalBillService.insertAll(newRentalBillList)));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -101,9 +101,9 @@ public class BillManagerController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.update(rentalBill)));
 		} catch (RentalBillDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -113,9 +113,9 @@ public class BillManagerController {
 			rentalBillService.delete(rentalBill);
 			return ResponseEntity.ok().build();
 		} catch (RentalBillDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 }
