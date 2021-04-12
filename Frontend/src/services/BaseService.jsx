@@ -5,7 +5,7 @@ export default class BaseService {
     static baseURI = "http://localhost:8080";
 
     static getConfig() {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem("token");
         return {
             headers: {
                 "Authorization": token,
