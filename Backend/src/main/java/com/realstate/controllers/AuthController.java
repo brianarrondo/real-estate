@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.realstate.dto.LoginDto;
-import com.realstate.entities.User;
+import com.realstate.dto.UserLoggedDto;
 import com.realstate.exceptions.LoginException;
 import com.realstate.services.AuthService;
 import com.realstate.utils.Utils;
@@ -24,7 +24,7 @@ public class AuthController {
 
 	@PostMapping
 	public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-		User user;
+		UserLoggedDto user;
 		
 		if (loginDto.getUserName() == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg("userName is null"));
 		if (loginDto.getUserPassword() == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg("userPassword is null"));

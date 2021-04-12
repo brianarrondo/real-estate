@@ -1,21 +1,25 @@
-package com.realstate.entities;
+package com.realstate.dto;
 
-import java.io.Serializable;
+import com.realstate.entities.User;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "user")
-public class User implements Serializable {
+public class UserLoggedDto {
 	
-	private static final long serialVersionUID = 42L;
-	
-	@Id
 	private String userId;
 	private String name;
 	private String password;
 	private String email;
+	private String token;
 	private boolean active;
+	
+	/* Constructor */
+	public UserLoggedDto(User user, String token) {
+		userId = user.getUserId();
+		name = user.getName();
+		password = user.getPassword();
+		email = user.getEmail();
+		active = user.isActive();
+		this.token = token;
+	}
 	
 	/* Getters and Setters */
 	public String getUserId() {
@@ -23,6 +27,12 @@ public class User implements Serializable {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 	public String getName() {
 		return name;
