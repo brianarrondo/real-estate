@@ -9,10 +9,10 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.realstate.domains.Apartment;
-import com.realstate.domains.Estate;
-import com.realstate.domains.Lease;
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Apartment;
+import com.realstate.entities.Estate;
+import com.realstate.entities.Lease;
+import com.realstate.entities.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;

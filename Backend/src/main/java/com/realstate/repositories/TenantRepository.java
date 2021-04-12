@@ -6,7 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Tenant;
 
 @Repository
 public interface TenantRepository extends MongoRepository<Tenant, ObjectId> {

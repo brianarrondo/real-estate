@@ -10,9 +10,9 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.realstate.domains.Lease;
-import com.realstate.domains.Payment;
-import com.realstate.domains.RentalBill;
+import com.realstate.entities.Lease;
+import com.realstate.entities.Payment;
+import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
