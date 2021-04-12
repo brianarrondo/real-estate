@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Estate;
+import com.realstate.entities.Estate;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.EstateRepository;
 

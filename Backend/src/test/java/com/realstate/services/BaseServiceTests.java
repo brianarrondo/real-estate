@@ -5,11 +5,11 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.realstate.domains.Apartment;
-import com.realstate.domains.Estate;
-import com.realstate.domains.Lease;
-import com.realstate.domains.RentalBill;
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Apartment;
+import com.realstate.entities.Estate;
+import com.realstate.entities.Lease;
+import com.realstate.entities.RentalBill;
+import com.realstate.entities.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;

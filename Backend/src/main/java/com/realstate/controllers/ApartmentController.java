@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.realstate.domains.Apartment;
+import com.realstate.entities.Apartment;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.services.ApartmentService;
 

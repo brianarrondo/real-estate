@@ -9,9 +9,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Lease;
-import com.realstate.domains.Payment;
-import com.realstate.domains.RentalBill;
+import com.realstate.entities.Lease;
+import com.realstate.entities.Payment;
+import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
 import com.realstate.exceptions.InvalidParametersException;

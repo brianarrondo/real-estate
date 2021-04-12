@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.realstate.domains.Estate;
+import com.realstate.entities.Estate;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.services.EstateService;
 

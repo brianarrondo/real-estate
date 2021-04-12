@@ -1,4 +1,4 @@
-package com.realstate.domains;
+package com.realstate.entities;
 
 import java.io.Serializable;
 import java.util.Date;

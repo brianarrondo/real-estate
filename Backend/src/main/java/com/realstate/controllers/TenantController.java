@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Tenant;
 import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.services.TenantService;
 
