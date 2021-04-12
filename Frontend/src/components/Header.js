@@ -1,5 +1,4 @@
 import React from 'react';
-import Styles from "../css/styles.css";
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
@@ -17,6 +16,9 @@ const Header = () => {
                             <NavDropdown.Item as={Link} to="/tenant/creation">Agregar</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
+                    <Navbar.Collapse className="justify-content-end">
+                        <Nav className="justify-content-end"><Nav.Link as={Link} to="/logout">Cerrar Sesión</Nav.Link></Nav>
+                    </Navbar.Collapse>
                 </Navbar.Collapse>
             </Navbar>
         </div>

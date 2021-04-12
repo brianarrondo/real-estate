@@ -3,6 +3,7 @@ package com.realstate.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.realstate.services.AuthService;
 import com.realstate.utils.Utils;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequestMapping("login")
 public class AuthController {
 	
@@ -33,7 +35,7 @@ public class AuthController {
 			user = authService.login(loginDto.getUserName(), loginDto.getUserPassword());
 			return ResponseEntity.ok(Utils.objToJson(user));
 		} catch (LoginException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Utils.getExceptionResponseMsg(e));
 		} catch (JsonProcessingException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}

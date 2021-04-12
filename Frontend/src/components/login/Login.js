@@ -1,16 +1,28 @@
 import React from "react";
 import {Col, Form} from "react-bootstrap";
+import LoginService from "../../services/LoginService";
 
-const Login = () => {
+const Login = ({saveToken}) => {
     let userName = React.createRef();
     let password = React.createRef();
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log("user: " + userName.current.value);
-        console.log("password: " + password.current.value);
-
-        // TODO: enviar request al servicio de login
+        LoginService.login(
+            {
+                "userName": userName.current.value,
+                "userPassword": password.current.value
+            },
+            (response) => {
+                if (response.data) {
+                    saveToken(response.data.token);
+                }
+            },
+            (error) => {
+                console.log("error de autenticacion: ", error);
+            }
+        )
+        ;
     }
 
     return (

@@ -28,6 +28,7 @@ public class RealStateApplication {
 				.addFilterAfter(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/login").permitAll()
+				.antMatchers(HttpMethod.OPTIONS).permitAll()
 				.anyRequest().authenticated();
 		}
 	}
