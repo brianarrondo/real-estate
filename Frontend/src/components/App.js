@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route } from "react-router-dom";
+import {BrowserRouter, Redirect, Route} from "react-router-dom";
 
 import Header from "./Header";
 
@@ -27,7 +27,7 @@ const App = () => {
 	return (
 		<div className="container">
 			<BrowserRouter>
-
+				<Redirect to="/" />
 				<GenericAlert>
 					<GenericModal>
 						<Header />

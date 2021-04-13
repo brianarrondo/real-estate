@@ -1,15 +1,24 @@
 import React, {useEffect} from "react";
 import TokenLogger from "./TokenLogger";
 import {Container} from "react-bootstrap";
+import {Redirect} from "react-router-dom";
 
 const Logout = () => {
     const { deleteToken } = TokenLogger();
 
-    useEffect(() => deleteToken(), []);
+    const refreshPage = () => {
+        window.location.reload();
+    }
+
+    useEffect(() => {
+        deleteToken();
+        refreshPage();
+    }, []);
 
     return (
         <Container>
-            Deslogueandose...
+            <div className="text-center">Deslogueandose...</div>
+            <Redirect to="/" />
         </Container>
     );
 }
