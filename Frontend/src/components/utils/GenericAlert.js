@@ -18,14 +18,14 @@ const GenericAlert = ({children}) => {
         setAlertContent: setAlertContent,
     };
 
-    const onClose = () => {
+    function onClose() {
         setShowAlert(false);
-    };
+    }
 
     /* Luego de renderizar por primera vez, se lanza un timeout para cerrar la alerta */
     useEffect(() => {
         if (showAlert) {
-            const timeoutId = setTimeout(onClose, 2000);
+            const timeoutId = setTimeout(() => onClose(), 2000);
             return () => {
                 clearTimeout(timeoutId);
             };
@@ -34,7 +34,7 @@ const GenericAlert = ({children}) => {
 
     return (
         <AlertContext.Provider value={context}>
-            <Alert variant={alertType} onClose show={showAlert} dismissible className="fixed-top opacity">
+            <Alert variant={alertType} onClose={() => onClose()} show={showAlert} dismissible className="fixed-top opacity">
                 <Alert.Heading>{alertContent}</Alert.Heading>
             </Alert>
             {children}

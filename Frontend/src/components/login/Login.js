@@ -1,11 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Col, Form} from "react-bootstrap";
 import LoginService from "../../services/LoginService";
-import { useHistory } from "react-router-dom";
+import {AlertContext} from "../utils/GenericAlert";
 
 const Login = ({saveToken}) => {
     let userName = React.createRef();
     let password = React.createRef();
+    const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -20,7 +21,16 @@ const Login = ({saveToken}) => {
                 }
             },
             (error) => {
-                console.log("error de autenticacion: ", error);
+                if (error.response && error.response.status === 401) {
+                    setAlertType("warning");
+                    const msg = error.response.data.msg;
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Acceso no autorizado: "{msg}"</div>);
+                } else {
+                    setAlertType("danger");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al loguearse: "{error.message}"</div>);
+                }
             }
         )
         ;

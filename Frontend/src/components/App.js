@@ -21,7 +21,11 @@ const App = () => {
 	const { token, saveToken } = TokenLogger();
 
 	if(!token) {
-		return <Login saveToken={saveToken} />
+		return (
+			<GenericAlert>
+				<Login saveToken={saveToken} />
+			</GenericAlert>
+		);
 	}
 
 	return (
