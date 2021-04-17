@@ -1,6 +1,4 @@
-import axios from 'axios';
 import baseService from './BaseService';
-
 
 export default class TenantService extends baseService {
 
