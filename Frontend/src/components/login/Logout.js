@@ -1,20 +1,12 @@
-import React, {useEffect} from "react";
-import TokenLogger from "./TokenLogger";
+import React, {useContext, useEffect} from "react";
+import {TokenLoggerContext} from "./TokenLogger";
 import {Container} from "react-bootstrap";
-import {useHistory} from "react-router-dom";
 
 const Logout = () => {
-    const { deleteToken } = TokenLogger();
-    const history = useHistory();
-
-    const refreshPage = () => {
-        window.location.reload();
-    }
+    const { deleteToken } = useContext(TokenLoggerContext);
 
     useEffect(() => {
         deleteToken();
-        history.push("/login");
-        refreshPage();
     }, []);
 
     return (

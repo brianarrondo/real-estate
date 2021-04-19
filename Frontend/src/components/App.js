@@ -16,35 +16,26 @@ import GenericModal from "./utils/GenericModal";
 import GenericAlert from "./utils/GenericAlert";
 
 import Styles from "../css/styles.css";
+import PrivateRoute from "./route/PrivateRoute";
 
 const App = () => {
-	const { token, saveToken } = TokenLogger();
-
-	if(!token) {
-		return (
-			<GenericAlert>
-				<Login saveToken={saveToken} />
-			</GenericAlert>
-		);
-	}
-
 	return (
-		<div className="container">
+		<TokenLogger>
 			<BrowserRouter>
 				<Redirect to="/" />
 				<GenericAlert>
 					<GenericModal>
 						<Header />
-						<Route path="/" exact component={Home} />
-						<Route path="/estate/all" exact component={EstateList} />
-						<Route path="/tenant/all" exact component={TenantList} />
-						<Route path="/tenant/creation" exact component={TenantCreation} />
-						<Route path="/logout" exact component={Logout} />
+						<PrivateRoute token path="/" exact component={Home} />
+						<PrivateRoute token path="/estate/all" exact component={EstateList} />
+						<PrivateRoute token path="/tenant/all" exact component={TenantList} />
+						<PrivateRoute token path="/tenant/creation" exact component={TenantCreation} />
+						<PrivateRoute token path="/logout" exact component={Logout} />
+						<Route path="/login" exact component={Login} />
 					</GenericModal>
 				</GenericAlert>
-
 			</BrowserRouter>
-		</div>
+		</TokenLogger>
 	);
 };
 

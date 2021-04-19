@@ -1,6 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-const TokenLogger = () => {
+export const TokenLoggerContext = React.createContext({
+    saveToken: null,
+    deleteToken: null,
+    token: null
+});
+
+const TokenLogger = ({ children }) => {
     const getToken = () => {
         return localStorage.getItem('token');
     };
@@ -17,11 +23,17 @@ const TokenLogger = () => {
         setToken(null);
     };
 
-    return {
-        saveToken: saveToken,
-        deleteToken: deleteToken,
+    const context = {
+        saveToken,
+        deleteToken,
         token
-    }
-}
+    };
+
+    return (
+        <TokenLoggerContext.Provider value={context}>
+            {children}
+        </TokenLoggerContext.Provider>
+    );
+};
 
 export default TokenLogger;

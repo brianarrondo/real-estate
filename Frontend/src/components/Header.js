@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {TokenLoggerContext} from "./login/TokenLogger";
 
 const Header = () => {
-    return (
+    const { token } = useContext(TokenLoggerContext);
+
+    if (token) return (
         <div className="container header">
             <Navbar bg="dark" variant="dark" expand="lg">
                 <Navbar.Brand href="#home">Inmobiliaria</Navbar.Brand>
@@ -23,6 +26,7 @@ const Header = () => {
             </Navbar>
         </div>
     );
+    return null;
 };
 
 export default Header;
