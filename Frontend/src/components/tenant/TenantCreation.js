@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
-import TenantService from "../../services/TenantService";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
+import {ServicesContext} from "../../services/Services";
 
 const TenantCreation = () => {
     let tenantFullName = React.createRef();
@@ -10,6 +10,7 @@ const TenantCreation = () => {
     let tenantDescription = React.createRef();
     let form = React.createRef();
 
+    const { tenantService } = useContext(ServicesContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [validated, setValidated] = useState(false);
 
@@ -34,7 +35,7 @@ const TenantCreation = () => {
                 description: tenantDescription.current.value
             };
 
-            TenantService.createTenant(tenant,
+            tenantService.createTenant(tenant,
                 () => {
                     setAlertType("success");
                     setShowAlert(true);

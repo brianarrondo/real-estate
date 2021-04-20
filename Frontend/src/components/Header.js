@@ -1,10 +1,12 @@
-import React from 'react';
-import Styles from "../css/styles.css";
+import React, {useContext} from 'react';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {TokenLoggerContext} from "./login/TokenLogger";
 
 const Header = () => {
-    return (
+    const { token } = useContext(TokenLoggerContext);
+
+    if (token) return (
         <div className="container header">
             <Navbar bg="dark" variant="dark" expand="lg">
                 <Navbar.Brand href="#home">Inmobiliaria</Navbar.Brand>
@@ -17,10 +19,14 @@ const Header = () => {
                             <NavDropdown.Item as={Link} to="/tenant/creation">Agregar</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
+                    <Navbar.Collapse className="justify-content-end">
+                        <Nav className="justify-content-end"><Nav.Link as={Link} to="/logout">Cerrar Sesión</Nav.Link></Nav>
+                    </Navbar.Collapse>
                 </Navbar.Collapse>
             </Navbar>
         </div>
     );
+    return null;
 };
 
 export default Header;

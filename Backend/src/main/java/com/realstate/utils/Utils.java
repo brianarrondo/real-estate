@@ -29,6 +29,6 @@ public class Utils {
 	}
 	
 	public static String getResponseMsg(String msg) {
-		return "{'msg': '"+ msg +"'}";
+		return "{\"msg\": \""+ msg +"\"}";
 	}
 }
