@@ -1,19 +1,20 @@
 import React, {useContext} from "react";
 import {Col, Form} from "react-bootstrap";
-import LoginService from "../../services/LoginService";
 import {AlertContext} from "../utils/GenericAlert";
 import {TokenLoggerContext} from "./TokenLogger";
 import {Redirect} from "react-router-dom";
+import {ServicesContext} from "../../services/Services";
 
 const Login = () => {
     let userName = React.createRef();
     let password = React.createRef();
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
+    const { loginService } = useContext(ServicesContext);
     const { token, saveToken } = useContext(TokenLoggerContext);
 
     function handleSubmit(event) {
         event.preventDefault();
-        LoginService.login(
+        loginService.login(
             {
                 "userName": userName.current.value,
                 "userPassword": password.current.value

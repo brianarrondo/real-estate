@@ -1,12 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
-import TenantService from "../../services/TenantService";
+import {ServicesContext} from "../../services/Services";
 
 const ModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) => {
-
+    const { tenantService } = useContext(ServicesContext);
     function deleteTenant(tenant) {
-        TenantService.deleteTenant(tenant,
+        tenantService.deleteTenant(tenant,
                 (response) => {
                     setModalShow(false);
                     if(successCallback) successCallback();

@@ -1,11 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import {ModalContext} from "../utils/GenericModal";
 import {AlertContext} from "../utils/GenericAlert";
-import TenantService from "../../services/TenantService";
 import ModalEdition from "./ModalEdition";
 import ModalDeletion from "./ModalDeletion";
+import {ServicesContext} from "../../services/Services";
 
 const TenantListTable = () => {
+    const { tenantService } = useContext(ServicesContext);
     const {setModalShow, setModalContent} = useContext(ModalContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [tenants, setTenants] = useState([]);
@@ -15,7 +16,7 @@ const TenantListTable = () => {
     }, []);
 
     const getAllTenants = () => {
-        TenantService.getAllTenants(
+        tenantService.getAllTenants(
             (response) => {
                 setTenants(response.data);
             },

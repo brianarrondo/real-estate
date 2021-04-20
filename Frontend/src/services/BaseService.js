@@ -2,20 +2,37 @@ import axios from "axios";
 
 export default class BaseService {
 
-    static baseURI = "http://localhost:8080";
+    baseURI = "http://localhost:8080";
 
-    static getConfig() {
-        const token = localStorage.getItem("token");
-        return {
-            headers: {
-                "Authorization": token,
-                "Access-Control-Allow-Origin": "*"
+    constructor(unauthorizedCallback) {
+        // Interceptamos los requests que retornan 401 (acceso no autorizado)
+        axios.interceptors.response.use(
+            (response) => {
+                return response;
+            },
+            (error) => {
+                if (error && error.response && error.response.status === 401) {
+                    if(unauthorizedCallback) unauthorizedCallback();
+                    error.message = "La sesión expiró. Debe loguearse nuevamente";
+                }
+                return Promise.reject(error);
             }
-        };
+        );
+        // Seteamos el token de autenticacion en todos los requests
+        axios.interceptors.request.use(
+            (config) => {
+                const token = localStorage.getItem("token");
+                if (token) config.headers.Authorization = token;
+                return config;
+            },
+            (error) => {
+                return Promise.reject(error);
+            }
+        );
     }
 
-    static doGet(resource, queryParams, successCallback, errorCallback) {
-        axios.get(this.baseURI + resource, this.getConfig())
+    doGet(resource, queryParams, successCallback, errorCallback) {
+        axios.get(this.baseURI + resource)
             .then((response) => {
                 if (response.data.length > 0 && successCallback) {
                     successCallback(response);
@@ -26,8 +43,8 @@ export default class BaseService {
             });
     }
 
-    static doPost(resource, bodyParams, successCallback, errorCallback) {
-        axios.post(this.baseURI + resource, bodyParams, this.getConfig())
+    doPost(resource, bodyParams, successCallback, errorCallback) {
+        axios.post(this.baseURI + resource, bodyParams)
             .then((response) => {
                 if (successCallback) successCallback(response);
             })
@@ -36,9 +53,8 @@ export default class BaseService {
             });
     }
 
-    static doDelete(resource, bodyParams, successCallback, errorCallback) {
-        let config = this.getConfig();
-        config.data = bodyParams;
+    doDelete(resource, bodyParams, successCallback, errorCallback) {
+        const config = { data: bodyParams };
         axios.delete(this.baseURI + resource, config)
             .then((response) => {
                 if (successCallback) successCallback(response);
@@ -48,8 +64,8 @@ export default class BaseService {
             });
     }
 
-    static doPut(resource, bodyParams, successCallback, errorCallback) {
-        axios.put(this.baseURI + resource, bodyParams, this.getConfig())
+    doPut(resource, bodyParams, successCallback, errorCallback) {
+        axios.put(this.baseURI + resource, bodyParams)
             .then((response) => {
                 if (successCallback) successCallback(response);
             })

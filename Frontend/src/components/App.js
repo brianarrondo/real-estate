@@ -17,24 +17,29 @@ import GenericAlert from "./utils/GenericAlert";
 
 import Styles from "../css/styles.css";
 import PrivateRoute from "./route/PrivateRoute";
+import Services from "../services/Services";
 
 const App = () => {
 	return (
 		<TokenLogger>
-			<BrowserRouter>
-				<Redirect to="/" />
-				<GenericAlert>
-					<GenericModal>
-						<Header />
-						<PrivateRoute token path="/" exact component={Home} />
-						<PrivateRoute token path="/estate/all" exact component={EstateList} />
-						<PrivateRoute token path="/tenant/all" exact component={TenantList} />
-						<PrivateRoute token path="/tenant/creation" exact component={TenantCreation} />
-						<PrivateRoute token path="/logout" exact component={Logout} />
-						<Route path="/login" exact component={Login} />
-					</GenericModal>
-				</GenericAlert>
-			</BrowserRouter>
+			<Services>
+
+				<BrowserRouter>
+					<Redirect to="/" />
+					<GenericAlert>
+						<GenericModal>
+							<Header />
+							<PrivateRoute path="/" exact component={Home} />
+							<PrivateRoute path="/estate/all" exact component={EstateList} />
+							<PrivateRoute path="/tenant/all" exact component={TenantList} />
+							<PrivateRoute path="/tenant/creation" exact component={TenantCreation} />
+							<PrivateRoute path="/logout" exact component={Logout} />
+							<Route path="/login" exact component={Login} />
+						</GenericModal>
+					</GenericAlert>
+				</BrowserRouter>
+
+			</Services>
 		</TokenLogger>
 	);
 };

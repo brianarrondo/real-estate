@@ -1,10 +1,14 @@
 import baseService from "./BaseService";
 
-export default class TenantService extends baseService {
+export default class LoginService extends baseService {
 
-    static baseResourcePath = "/login";
+    baseResourcePath = "/login";
 
-    static login(bodyParams, successCallback, errorCallback) {
+    constructor() {
+        super();
+    }
+
+    login(bodyParams, successCallback, errorCallback) {
         this.doPost(this.baseResourcePath, bodyParams, successCallback, errorCallback);
     }
 }

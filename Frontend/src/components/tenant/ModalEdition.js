@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
-import TenantService from "../../services/TenantService";
+import {ServicesContext} from "../../services/Services";
 
 const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
@@ -9,6 +9,7 @@ const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) 
     let tenantDni = React.createRef();
     let tenantPhone = React.createRef();
     let tenantDescription = React.createRef();
+    const { tenantService } = useContext(ServicesContext);
 
     function onHide() {
         setValidated(false);
@@ -28,7 +29,7 @@ const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) 
         setValidated(true);
 
         if (validationOk) {
-            TenantService.editTenant({
+            tenantService.editTenant({
                     tenantId: tenant.tenantId,
                     fullName: tenantFullName.current.value,
                     dni: tenantDni.current.value,
