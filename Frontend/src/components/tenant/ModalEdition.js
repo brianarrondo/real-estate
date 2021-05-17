@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
+import Tenant from "../../models/Tenant";
 
 const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
@@ -29,13 +30,14 @@ const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) 
         setValidated(true);
 
         if (validationOk) {
-            tenantService.editTenant({
-                    tenantId: tenant.tenantId,
-                    fullName: tenantFullName.current.value,
-                    dni: tenantDni.current.value,
-                    phone: tenantPhone.current.value,
-                    description: tenantDescription.current.value
-                },
+            tenantService.editTenant(
+                new Tenant(
+                    tenant.tenantId,
+                    tenantFullName.current.value,
+                    tenantDni.current.value,
+                    tenantPhone.current.value,
+                    tenantDescription.current.value
+                ),
                 (response) => {
                     onHide();
                     if (successCallback) successCallback();

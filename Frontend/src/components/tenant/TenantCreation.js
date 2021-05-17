@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import {Button, Col, Form, Row} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
+import Tenant from "../../models/Tenant";
 
 const TenantCreation = () => {
     let tenantFullName = React.createRef();
@@ -28,12 +29,13 @@ const TenantCreation = () => {
 
 
         if (validationOk) {
-            let tenant = {
-                fullName: tenantFullName.current.value,
-                dni: tenantDni.current.value,
-                phone: tenantPhone.current.value,
-                description: tenantDescription.current.value
-            };
+            let tenant = new Tenant(
+                null,
+                tenantFullName.current.value,
+                tenantDni.current.value,
+                tenantPhone.current.value,
+                tenantDescription.current.value
+            );
 
             tenantService.createTenant(tenant,
                 () => {
