@@ -1,6 +1,6 @@
 import BaseService from "./BaseService";
 
-class EstateService extends BaseService{
+class EstateService extends BaseService {
     baseResourcePath = "/estate";
 
     constructor(unauthorizedCallback) {
