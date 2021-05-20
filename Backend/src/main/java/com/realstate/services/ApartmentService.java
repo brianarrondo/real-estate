@@ -30,6 +30,10 @@ public class ApartmentService {
 		return apartmentRepository.findAll();
 	}
 	
+	public List<Apartment> findAllNoEstateAssigned() {
+		return apartmentRepository.findByEstateIsNull();
+	}
+	
 	public Apartment findById(String apartmentId) throws ApartmentDoesNotExistException {
 		Optional<Apartment> optionalApartment = apartmentRepository.findById(new ObjectId(apartmentId));
 		if (optionalApartment.isPresent()) {
