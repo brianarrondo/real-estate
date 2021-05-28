@@ -10,5 +10,5 @@ import com.realstate.entities.Apartment;
 
 @Repository
 public interface ApartmentRepository extends MongoRepository<Apartment, ObjectId>{
-	public List<Apartment> findByEstateIsNull();
+	public List<Apartment> findByEstateIdIsNull();
 }

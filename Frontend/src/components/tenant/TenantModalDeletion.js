@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 
-const ModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) => {
+const TenantModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) => {
     const { tenantService } = useContext(ServicesContext);
     function deleteTenant(tenant) {
         tenantService.deleteTenant(tenant,
@@ -37,4 +37,4 @@ const ModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) =
     );
 };
 
-export default ModalDeletion;
+export default TenantModalDeletion;

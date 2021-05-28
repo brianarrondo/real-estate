@@ -4,7 +4,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
 
-const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
+const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
@@ -106,4 +106,4 @@ const ModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) 
     );
 };
 
-export default ModalEdition;
+export default TenantModalEdition;

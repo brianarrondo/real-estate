@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import {ModalContext} from "../utils/GenericModal";
 import {AlertContext} from "../utils/GenericAlert";
-import ModalEdition from "./ModalEdition";
-import ModalDeletion from "./ModalDeletion";
+import TenantModalEdition from "./TenantModalEdition";
+import TenantModalDeletion from "./TenantModalDeletion";
 import {ServicesContext} from "../../services/Services";
 
 const TenantListTable = () => {
     const { tenantService } = useContext(ServicesContext);
-    const {setModalShow, setModalContent} = useContext(ModalContext);
+    const {setModalShow, setModalContent, setSize} = useContext(ModalContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [tenants, setTenants] = useState([]);
 
@@ -30,7 +30,7 @@ const TenantListTable = () => {
 
     function editOnClick(tenant) {
         setModalContent(
-            <ModalEdition
+            <TenantModalEdition
                 setModalShow={setModalShow}
                 tenant={tenant}
                 successCallback={() => {
@@ -46,12 +46,13 @@ const TenantListTable = () => {
                 }}
             />
         )
+        setSize("lg");
         setModalShow(true)
     }
 
     function deleteOnClick(tenant) {
         setModalContent(
-            <ModalDeletion
+            <TenantModalDeletion
                 setModalShow={setModalShow}
                 tenant={tenant}
                 successCallback={() => {
@@ -67,6 +68,7 @@ const TenantListTable = () => {
                 }}
             />
         )
+        setSize("lg");
         setModalShow(true);
     }
 

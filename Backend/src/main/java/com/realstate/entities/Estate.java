@@ -20,12 +20,13 @@ public class Estate implements Serializable {
 	private List<Apartment> apartments = new ArrayList<Apartment>();
 	
 	/* Constructors */
-	public Estate(String estateId, String name, String address, String description) {
+	public Estate(String estateId, String name, String address, String description, List<Apartment> apartments) {
 		super();
 		this.estateId = estateId;
 		this.name = name;
 		this.address = address;
 		this.description = description;
+		this.apartments = apartments;
 	}
 	
 	/* Getters and Setters */
@@ -53,11 +54,11 @@ public class Estate implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Apartment> getApartaments() {
+	public List<Apartment> getApartments() {
 		return apartments;
 	}
-	public void setApartaments(List<Apartment> apartaments) {
-		this.apartments = apartaments;
+	public void setApartments(List<Apartment> apartments) {
+		this.apartments = apartments;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

@@ -44,7 +44,7 @@ public class EstateController {
 	@PostMapping
 	public ResponseEntity<Estate> insert(@RequestBody Estate newEstate) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(estateService.insert(newEstate));
+			return ResponseEntity.status(HttpStatus.CREATED).body(estateService.createEstate(newEstate));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}

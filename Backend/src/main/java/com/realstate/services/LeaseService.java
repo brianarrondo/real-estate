@@ -58,7 +58,7 @@ public class LeaseService {
 	public Lease insert(Lease newLease) throws TenantDoesNotExistException, ApartmentDoesNotExistException {
 		if (!tenantService.existById(newLease.getTenant().getTenantId())) {
 			throw new TenantDoesNotExistException();
-		} else if (!apartmentService.existById(newLease.getApartment().getApartamentId())) {
+		} else if (!apartmentService.existById(newLease.getApartment().getApartmentId())) {
 			throw new ApartmentDoesNotExistException();
 		} else {
 			return leaseRepository.insert(newLease);
