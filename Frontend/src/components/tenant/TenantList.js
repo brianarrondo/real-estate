@@ -3,7 +3,6 @@ import TenantListTable from "./TenantListTable";
 
 const TenantList = () => {
 	return (
-
 		<div className="container">
 			<div className="basic-padding-10 shadow rounded-bottom border border-light">
 				<div>

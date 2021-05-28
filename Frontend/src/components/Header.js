@@ -14,11 +14,18 @@ const Header = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to="/">Inicio</Nav.Link>
-                        <NavDropdown title="Inquilinos" id="basic-nav-dropdown">
+
+                        <NavDropdown title="Inquilinos" id="tenant">
                             <NavDropdown.Item as={Link} to="/tenant/all">Listar</NavDropdown.Item>
                             <NavDropdown.Item as={Link} to="/tenant/creation">Agregar</NavDropdown.Item>
                         </NavDropdown>
+
+                        <NavDropdown title="Propiedad" id="estate">
+                            <NavDropdown.Item as={Link} to="/estate/all">Listar</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/estate/creation">Agregar</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
+
                     <Navbar.Collapse className="justify-content-end">
                         <Nav className="justify-content-end"><Nav.Link as={Link} to="/logout">Cerrar Sesión</Nav.Link></Nav>
                     </Navbar.Collapse>

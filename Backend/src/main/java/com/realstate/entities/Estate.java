@@ -17,15 +17,16 @@ public class Estate implements Serializable {
 	private String name;
 	private String address;
 	private String description;
-	private List<Apartment> apartaments = new ArrayList<Apartment>();
+	private List<Apartment> apartments = new ArrayList<Apartment>();
 	
 	/* Constructors */
-	public Estate(String estateId, String name, String address, String description) {
+	public Estate(String estateId, String name, String address, String description, List<Apartment> apartments) {
 		super();
 		this.estateId = estateId;
 		this.name = name;
 		this.address = address;
 		this.description = description;
+		this.apartments = apartments;
 	}
 	
 	/* Getters and Setters */
@@ -53,11 +54,11 @@ public class Estate implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Apartment> getApartaments() {
-		return apartaments;
+	public List<Apartment> getApartments() {
+		return apartments;
 	}
-	public void setApartaments(List<Apartment> apartaments) {
-		this.apartaments = apartaments;
+	public void setApartments(List<Apartment> apartments) {
+		this.apartments = apartments;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -68,7 +69,7 @@ public class Estate implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + ((apartaments == null) ? 0 : apartaments.hashCode());
+		result = prime * result + ((apartments == null) ? 0 : apartments.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((estateId == null) ? 0 : estateId.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -89,10 +90,10 @@ public class Estate implements Serializable {
 				return false;
 		} else if (!address.equals(other.address))
 			return false;
-		if (apartaments == null) {
-			if (other.apartaments != null)
+		if (apartments == null) {
+			if (other.apartments != null)
 				return false;
-		} else if (!apartaments.equals(other.apartaments))
+		} else if (!apartments.equals(other.apartments))
 			return false;
 		if (description == null) {
 			if (other.description != null)

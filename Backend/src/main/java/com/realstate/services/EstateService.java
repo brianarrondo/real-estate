@@ -7,7 +7,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.realstate.entities.Apartment;
 import com.realstate.entities.Estate;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.EstateRepository;
 
@@ -16,9 +18,11 @@ public class EstateService {
 	
 	@Autowired
 	private EstateRepository estateRepository;
+	@Autowired
+	private ApartmentService apartmentService;
 	
 	public Estate getNew(String name, String address, String description) {
-		Estate newEstate = new Estate(null, name, address, description);
+		Estate newEstate = new Estate(null, name, address, description, null);
 		return estateRepository.insert(newEstate);
 	}
 
@@ -37,6 +41,17 @@ public class EstateService {
 	
 	public boolean existsById(String apartmentId) {
 		return estateRepository.existsById(new ObjectId(apartmentId));
+	}
+	
+	public Estate createEstate(Estate newEstate) throws ApartmentDoesNotExistException {
+		Estate estateInserted = insert(newEstate);
+		List<Apartment> apartments = estateInserted.getApartments();
+		for (int i = 0; i < apartments.size(); i++) {
+			Apartment a = apartments.get(i);
+			a.setEstateId(estateInserted.getEstateId());
+			apartmentService.update(a);
+		}
+		return estateInserted;
 	}
 
 	public Estate insert(Estate newEstate) {

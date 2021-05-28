@@ -10,33 +10,33 @@ public class Apartment implements Serializable {
 	
 	@Id
 	private String apartmentId;
-	private Estate estate;
+	private String estateId;
 	private int rooms;
 	private String name;
 	private String description;
 	
 	/* Constructors */
-	public Apartment(String apartmentId, Estate estate, int rooms, String name, String description) {
+	public Apartment(String apartmentId, String estateId, int rooms, String name, String description) {
 		super();
 		this.apartmentId = apartmentId;
-		this.estate = estate;
+		this.estateId = estateId;
 		this.rooms = rooms;
 		this.name = name;
 		this.description = description;
 	}
 
 	/* Getters and Setters */
-	public String getApartamentId() {
+	public String getApartmentId() {
 		return apartmentId;
 	}
-	public void setApartamentId(String apartmentId) {
+	public void setApartmentId(String apartmentId) {
 		this.apartmentId = apartmentId;
 	}
-	public Estate getEstate() {
-		return estate;
+	public String getEstateId() {
+		return estateId;
 	}
-	public void setEstate(Estate estate) {
-		this.estate = estate;
+	public void setEstateId(String estateId) {
+		this.estateId = estateId;
 	}
 	public int getRooms() {
 		return rooms;
@@ -63,7 +63,7 @@ public class Apartment implements Serializable {
 		int result = 1;
 		result = prime * result + ((apartmentId == null) ? 0 : apartmentId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((estate == null) ? 0 : estate.hashCode());
+		result = prime * result + ((estateId == null) ? 0 : estateId.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + rooms;
 		return result;
@@ -88,10 +88,10 @@ public class Apartment implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (estate == null) {
-			if (other.estate != null)
+		if (estateId == null) {
+			if (other.estateId != null)
 				return false;
-		} else if (!estate.equals(other.estate))
+		} else if (!estateId.equals(other.estateId))
 			return false;
 		if (name == null) {
 			if (other.name != null)

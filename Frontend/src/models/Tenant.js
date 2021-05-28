@@ -1,9 +1,4 @@
 export default class Tenant {
-    tenantId;
-    fullName;
-    dni;
-    phone;
-    description;
 
     constructor(tenantId, fullName, dni, phone, description) {
         this.tenantId = tenantId;

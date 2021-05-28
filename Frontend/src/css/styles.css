@@ -51,7 +51,6 @@ hr {
 }
 
 /* Login */
-
 .vertical-center {
 	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
 	min-height: 100vh; /* These two lines are counted as one :-)       */
@@ -75,4 +74,8 @@ hr {
 
 .padding-top-30 {
 	padding-top: 30px;
+}
+
+.detail-table-padding {
+	padding-bottom: 15px;
 }

@@ -12,15 +12,15 @@ export default class TenantService extends baseService {
         this.doGet(this.baseResourcePath + "/all", {}, successCallback, errorCallback);
     }
 
-    createTenant(bodyParams, successCallback, errorCallback) {
-        this.doPost(this.baseResourcePath, bodyParams, successCallback, errorCallback);
+    createTenant(tenant, successCallback, errorCallback) {
+        this.doPost(this.baseResourcePath, tenant, successCallback, errorCallback);
     }
 
-    deleteTenant(bodyParams, successCallback, errorCallback) {
-        this.doDelete(this.baseResourcePath, bodyParams, successCallback, errorCallback);
+    deleteTenant(tenant, successCallback, errorCallback) {
+        this.doDelete(this.baseResourcePath, tenant, successCallback, errorCallback);
     }
 
-    editTenant(bodyParams, successCallback, errorCallback) {
-        this.doPut(this.baseResourcePath, bodyParams, successCallback, errorCallback)
+    editTenant(tenant, successCallback, errorCallback) {
+        this.doPut(this.baseResourcePath, tenant, successCallback, errorCallback)
     }
 }

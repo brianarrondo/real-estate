@@ -18,6 +18,7 @@ import GenericAlert from "./utils/GenericAlert";
 import Styles from "../css/styles.css";
 import PrivateRoute from "./route/PrivateRoute";
 import Services from "../services/Services";
+import EstateCreation from "./estate/EstateCreation";
 
 const App = () => {
 	return (
@@ -31,6 +32,7 @@ const App = () => {
 							<Header />
 							<PrivateRoute path="/" exact component={Home} />
 							<PrivateRoute path="/estate/all" exact component={EstateList} />
+							<PrivateRoute path="/estate/creation" exact component={EstateCreation} />
 							<PrivateRoute path="/tenant/all" exact component={TenantList} />
 							<PrivateRoute path="/tenant/creation" exact component={TenantCreation} />
 							<PrivateRoute path="/logout" exact component={Logout} />
