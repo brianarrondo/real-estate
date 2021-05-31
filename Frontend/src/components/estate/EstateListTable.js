@@ -3,6 +3,7 @@ import {ModalContext} from "../utils/GenericModal";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import EstateModalDetail from "./EstateModalDetail";
+import EstateModalDeletion from "./EstateModalDeletion";
 
 const EstateListTable = () => {
     const { estateService } = useContext(ServicesContext);
@@ -27,12 +28,30 @@ const EstateListTable = () => {
         );
     };
 
-    function editOnClick() {
+    function editOnClick(estate) {
         //TODO
     }
 
-    function deleteOnClick() {
-        //TODO
+    function deleteOnClick(estate) {
+        setModalContent(
+            <EstateModalDeletion
+                setModalShow={setModalShow}
+                estate={estate}
+                successCallback={() => {
+                    setAlertType("success");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-check-circle"/> La propiedad <strong>{estate && estate.name}</strong> ha sido borrada con éxito</div>);
+                    getAllEstates();
+                }}
+                errorCallback={(error) => {
+                    setAlertType("danger");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-exclamation-circle"/> Hubo un error al borrar la propiedad: "{error.message}"</div>);
+                }}
+            />
+        )
+        setSize("lg");
+        setModalShow(true);
     }
 
     function seeDetailOnClick(estate) {

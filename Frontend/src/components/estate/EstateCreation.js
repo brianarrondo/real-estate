@@ -56,6 +56,7 @@ const EstateCreation = () => {
                     setValidated(false);
                     form.reset();
                     setEstateApartments([]);
+                    getEstatesApartments();
                 },
                 (error) => {
                     setAlertType("danger");
@@ -66,19 +67,25 @@ const EstateCreation = () => {
         }
     }
 
-    useEffect(() => {
+    function getEstatesApartments() {
         apartmentService.getAllWithNoEstateAssigned(
             (response) => {
                 setApartments(response.data);
             },
             (error) => {
-                //TODO error
+                setAlertType("danger");
+                setShowAlert(true);
+                setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al obtener los departamentos: "{error.message}"</div>);
             }
         );
+    }
+
+    useEffect(() => {
+        getEstatesApartments();
     }, []);
 
     function getOptions() {
-        return apartments && apartments.map(a => { return {label: a.name + " [" + a.apartmentId + "]", value: a.apartmentId}})
+        return apartments.map(a => { return {label: a.name + " [" + a.apartmentId + "]", value: a.apartmentId}});
     }
 
     return (
