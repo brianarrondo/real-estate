@@ -47,11 +47,7 @@ public class ApartmentService {
 	}
 		
 	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
-		if (estateService.existsById(newApartment.getEstateId())) {
-			return apartmentRepository.insert(newApartment);
-		} else {
-			throw new EstateDoesNotExistException();
-		}
+		return apartmentRepository.insert(newApartment);
 	}
 	
 	public Apartment update(Apartment apartment) throws ApartmentDoesNotExistException {

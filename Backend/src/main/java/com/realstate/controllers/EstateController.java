@@ -55,7 +55,7 @@ public class EstateController {
 	public ResponseEntity<Estate> update(@RequestBody Estate estate) {
 		try {
 			return ResponseEntity.ok(estateService.update(estate));
-		} catch (EstateDoesNotExistException e) {
+		} catch (EstateDoesNotExistException | ApartmentDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}

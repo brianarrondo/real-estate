@@ -43,14 +43,22 @@ public class EstateService {
 		return estateRepository.existsById(new ObjectId(apartmentId));
 	}
 	
-	public Estate createEstate(Estate newEstate) throws ApartmentDoesNotExistException {
+	public Estate createEstate(Estate newEstate) throws ApartmentDoesNotExistException, EstateDoesNotExistException {
+		// Insertamos el estate sin los apartments
+		List<Apartment> apartments = newEstate.getApartments();
+		newEstate.setApartments(null);
 		Estate estateInserted = insert(newEstate);
-		List<Apartment> apartments = estateInserted.getApartments();
-		for (int i = 0; i < apartments.size(); i++) {
-			Apartment a = apartments.get(i);
-			a.setEstateId(estateInserted.getEstateId());
-			apartmentService.update(a);
+
+		// Insertamos los apartments
+		for (Apartment apartment : apartments) {
+			apartment.setEstateId(estateInserted.getEstateId());
+			apartmentService.insert(apartment);
 		}
+		
+		// Le insertamos los apartments creados al estate
+		newEstate.setApartments(apartments);
+		update(newEstate);
+
 		return estateInserted;
 	}
 
@@ -58,8 +66,12 @@ public class EstateService {
 		return estateRepository.insert(newEstate);
 	}
 
-	public Estate update(Estate estate) throws EstateDoesNotExistException {
+	public Estate update(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
+			for (Apartment apartment : estate.getApartments()) {
+				apartment.setEstateId(estate.getEstateId());
+				apartmentService.update(apartment);
+			}
 			return estateRepository.save(estate);
 		} else {
 			throw new EstateDoesNotExistException();
@@ -69,8 +81,7 @@ public class EstateService {
 	public void delete(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
 			for (Apartment apartment : estate.getApartments()) {
-				apartment.setEstateId(null);
-				apartmentService.update(apartment);
+				apartmentService.delete(apartment);
 			}
 			estateRepository.delete(estate);
 		} else {
