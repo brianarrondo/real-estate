@@ -1,65 +1,109 @@
-import { useState } from 'react';
-import TenantService from "../../services/TenantService";
-
-import { AlertList } from "react-bs-notifier";
-import { useForm } from 'react-hook-form';
+import React, {useContext, useState} from 'react';
+import {Button, Col, Form, Row} from "react-bootstrap";
+import {AlertContext} from "../utils/GenericAlert";
+import {ServicesContext} from "../../services/Services";
+import Tenant from "../../models/Tenant";
 
 const TenantCreation = () => {
-    const [addedSuccessfully, setAddedSuccessfully] = useState(false);
-    const { register, handleSubmit, errors } = useForm();
+    let tenantFullName = React.createRef();
+    let tenantDni = React.createRef();
+    let tenantPhone = React.createRef();
+    let tenantDescription = React.createRef();
+    let form = React.createRef();
 
-    const callback = () => {
-        alert('An essay was submitted: ');
-        return(
-            <AlertList
-                position={"top-right"}
-                alerts={[{
-                    id: 1,
-                    type: "info",
-                    message: "Hello, world"
-                }]}
-                timeout={5}
-                dismissTitle="Begone!"
-                //onDismiss={onDismissed}
-            />
-        );
-        setAddedSuccessfully(true);
-    };
+    const { tenantService } = useContext(ServicesContext);
+    const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
+    const [validated, setValidated] = useState(false);
 
-    const createTenant = (formData) => {
-        TenantService.createTenant(formData, callback);
-    };
+    function handleSubmit(event) {
+        let validationOk = true;
+
+        event.preventDefault();
+
+        // realizamos la validacion del form
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            validationOk = false;
+        }
+        setValidated(true);
+
+
+        if (validationOk) {
+            let tenant = new Tenant(
+                null,
+                tenantFullName.current.value,
+                tenantDni.current.value,
+                tenantPhone.current.value,
+                tenantDescription.current.value
+            );
+
+            tenantService.createTenant(tenant,
+                () => {
+                    setAlertType("success");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenant && tenant.fullName}</strong> fue agregado con éxito</div>);
+                    setValidated(false);
+                    form.reset();
+                },
+                (error) => {
+                    setAlertType("danger");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear el inquilino: "{error.message}"</div>);
+                }
+            );
+        }
+
+    }
 
     return (
         <div className="container">
-            <form onSubmit={handleSubmit((formData) => createTenant(formData))}>
-
-                <div className="form-group row">
-                    <label htmlFor="name" className="col-sm-1 col-form-label form-label">Nombre</label>
-                    <div className="col-sm-5"><input type="text" className="form-control" name="fullName" placeholder="Nombre" ref={register} /></div>
-                </div>
-                <br />
-                <div className="form-group row">
-                    <label htmlFor="dni" className="col-sm-1 col-form-label form-label">DNI</label>
-                    <div className="col-sm-5"><input type="text" className="form-control" name="dni" placeholder="DNI" ref={register} /></div>
-                </div>
-                <br />
-                <div className="form-group row">
-                    <label htmlFor="phone" className="col-sm-1 col-form-label form-label">Teléfono</label>
-                    <div className="col-sm-5"><input type="text" className="form-control" name="phone" placeholder="Telefono" ref={register} /></div>
-                </div>
-                <br />
-                <div className="form-group row">
-                    <label htmlFor="desc" className="col-sm-1 col-form-label form-label">Descripción</label>
-                    <div className="col-sm-5"><textarea type="text" className="form-control" name="description" placeholder="Descripcion" ref={register} /></div>
-                </div>
-                <br />
-                <div className="row">
-                    <div className="col-sm-10"><button type="submit" className="btn btn-primary">Crear</button></div>
+            <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+                <div>
+                    <h3>Agregar inquilino</h3>
+                    <hr />
                 </div>
 
-            </form>
+                <Form.Group as={Row} className="justify-content-center">
+                    <Form.Label column sm={3}>
+                        Nombre
+                    </Form.Label>
+                    <Col sm={8}>
+                        <Form.Control type="text" ref={tenantFullName} placeholder="Nombre Completo" required />
+                        <Form.Control.Feedback type="invalid">Por favor ingresar el nombre del inquilino</Form.Control.Feedback>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="justify-content-center">
+                    <Form.Label column sm={3}>
+                        DNI
+                    </Form.Label>
+                    <Col sm={8}>
+                        <Form.Control type="text" ref={tenantDni} placeholder="DNI" />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="justify-content-center">
+                    <Form.Label column sm={3}>
+                        Teléfono
+                    </Form.Label>
+                    <Col sm={8}>
+                        <Form.Control type="text" ref={tenantPhone} placeholder="Telefono" />
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="justify-content-center">
+                    <Form.Label column sm={3}>
+                        Descripción
+                    </Form.Label>
+                    <Col sm={8}>
+                        <Form.Control type="text" ref={tenantDescription} placeholder="Descripcion" maxLength="70" />
+                    </Col>
+                </Form.Group>
+
+                <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
+            </Form>
         </div>
+
     );
 };
 

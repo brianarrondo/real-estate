@@ -7,8 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Apartment;
-import com.realstate.domains.Estate;
+import com.realstate.entities.Apartment;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.ApartmentRepository;
@@ -21,13 +20,17 @@ public class ApartmentService {
 	@Autowired
 	private EstateService estateService;
 	
-	public Apartment getNew(Estate estate, int rooms, String name, String description) {
-		Apartment apartment = new Apartment(null, estate, rooms, name, description);
+	public Apartment getNew(String estateId, int rooms, String name, String description) {
+		Apartment apartment = new Apartment(null, estateId, rooms, name, description);
 		return apartmentRepository.insert(apartment);
 	}
 	
 	public List<Apartment> findAll() {
 		return apartmentRepository.findAll();
+	}
+	
+	public List<Apartment> findAllNoEstateAssigned() {
+		return apartmentRepository.findByEstateIdIsNull();
 	}
 	
 	public Apartment findById(String apartmentId) throws ApartmentDoesNotExistException {
@@ -44,15 +47,11 @@ public class ApartmentService {
 	}
 		
 	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
-		if (estateService.existsById(newApartment.getEstate().getEstateId())) {
-			return apartmentRepository.insert(newApartment);
-		} else {
-			throw new EstateDoesNotExistException();
-		}
+		return apartmentRepository.insert(newApartment);
 	}
 	
 	public Apartment update(Apartment apartment) throws ApartmentDoesNotExistException {
-		if (apartmentRepository.existsById(new ObjectId(apartment.getApartamentId()))) {
+		if (apartmentRepository.existsById(new ObjectId(apartment.getApartmentId()))) {
 			return apartmentRepository.save(apartment);
 		} else {
 			throw new ApartmentDoesNotExistException();
@@ -60,7 +59,7 @@ public class ApartmentService {
 	}
 	
 	public void delete(Apartment apartment) throws ApartmentDoesNotExistException {
-		if (apartmentRepository.existsById(new ObjectId(apartment.getApartamentId()))) {
+		if (apartmentRepository.existsById(new ObjectId(apartment.getApartmentId()))) {
 			apartmentRepository.delete(apartment);
 		} else {
 			throw new ApartmentDoesNotExistException();

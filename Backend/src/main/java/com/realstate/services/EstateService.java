@@ -7,7 +7,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Estate;
+import com.realstate.entities.Apartment;
+import com.realstate.entities.Estate;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.EstateRepository;
 
@@ -16,9 +18,11 @@ public class EstateService {
 	
 	@Autowired
 	private EstateRepository estateRepository;
+	@Autowired
+	private ApartmentService apartmentService;
 	
 	public Estate getNew(String name, String address, String description) {
-		Estate newEstate = new Estate(null, name, address, description);
+		Estate newEstate = new Estate(null, name, address, description, null);
 		return estateRepository.insert(newEstate);
 	}
 
@@ -38,21 +42,47 @@ public class EstateService {
 	public boolean existsById(String apartmentId) {
 		return estateRepository.existsById(new ObjectId(apartmentId));
 	}
+	
+	public Estate createEstate(Estate newEstate) throws ApartmentDoesNotExistException, EstateDoesNotExistException {
+		// Insertamos el estate sin los apartments
+		List<Apartment> apartments = newEstate.getApartments();
+		newEstate.setApartments(null);
+		Estate estateInserted = insert(newEstate);
+
+		// Insertamos los apartments
+		for (Apartment apartment : apartments) {
+			apartment.setEstateId(estateInserted.getEstateId());
+			apartmentService.insert(apartment);
+		}
+		
+		// Le insertamos los apartments creados al estate
+		newEstate.setApartments(apartments);
+		update(newEstate);
+
+		return estateInserted;
+	}
 
 	public Estate insert(Estate newEstate) {
 		return estateRepository.insert(newEstate);
 	}
 
-	public Estate update(Estate estate) throws EstateDoesNotExistException {
+	public Estate update(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
+			for (Apartment apartment : estate.getApartments()) {
+				apartment.setEstateId(estate.getEstateId());
+				apartmentService.update(apartment);
+			}
 			return estateRepository.save(estate);
 		} else {
 			throw new EstateDoesNotExistException();
 		}
 	}
 
-	public void delete(Estate estate) throws EstateDoesNotExistException {
+	public void delete(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
+			for (Apartment apartment : estate.getApartments()) {
+				apartmentService.delete(apartment);
+			}
 			estateRepository.delete(estate);
 		} else {
 			throw new EstateDoesNotExistException();

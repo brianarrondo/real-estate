@@ -5,11 +5,11 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.realstate.domains.Apartment;
-import com.realstate.domains.Estate;
-import com.realstate.domains.Lease;
-import com.realstate.domains.RentalBill;
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Apartment;
+import com.realstate.entities.Estate;
+import com.realstate.entities.Lease;
+import com.realstate.entities.RentalBill;
+import com.realstate.entities.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
@@ -42,7 +42,7 @@ public class BaseServiceTests {
 	public Lease getValidLease() throws TenantDoesNotExistException, ApartmentDoesNotExistException, InvalidParametersException {
 		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
-		Apartment apartment = apartmentService.getNew(estate, 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
+		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
 		
 		Calendar calendar = Calendar.getInstance(); 
 		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1);
@@ -50,7 +50,7 @@ public class BaseServiceTests {
 		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
 		Date endDate = calendar.getTime();
 		String desc = "Descripcion de contrato";
-		Lease newLease = leaseService.getNew(tenant.getTenantId(), apartment.getApartamentId(), startDate, endDate, true, desc);
+		Lease newLease = leaseService.getNew(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
 		
 		return newLease;
 	}

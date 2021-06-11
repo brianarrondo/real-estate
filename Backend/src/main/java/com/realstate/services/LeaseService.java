@@ -8,9 +8,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Apartment;
-import com.realstate.domains.Lease;
-import com.realstate.domains.Tenant;
+import com.realstate.entities.Apartment;
+import com.realstate.entities.Lease;
+import com.realstate.entities.Tenant;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
@@ -58,7 +58,7 @@ public class LeaseService {
 	public Lease insert(Lease newLease) throws TenantDoesNotExistException, ApartmentDoesNotExistException {
 		if (!tenantService.existById(newLease.getTenant().getTenantId())) {
 			throw new TenantDoesNotExistException();
-		} else if (!apartmentService.existById(newLease.getApartment().getApartamentId())) {
+		} else if (!apartmentService.existById(newLease.getApartment().getApartmentId())) {
 			throw new ApartmentDoesNotExistException();
 		} else {
 			return leaseRepository.insert(newLease);

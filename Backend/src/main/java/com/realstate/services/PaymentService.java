@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.realstate.domains.Payment;
+import com.realstate.entities.Payment;
 import com.realstate.exceptions.PaymentDoesNotExistException;
 import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.repositories.PaymentRepository;

@@ -10,9 +10,10 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.realstate.domains.Lease;
-import com.realstate.domains.Payment;
-import com.realstate.domains.RentalBill;
+import com.realstate.entities.Estate;
+import com.realstate.entities.Lease;
+import com.realstate.entities.Payment;
+import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
@@ -56,7 +57,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(rentallBillFromDb.getPayments().size(), 0);
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(newRentalBill);
@@ -83,7 +85,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(exception.getClass(), ThereIsAlreadyARentalBillInMonthException.class);
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(newRentalBill);
@@ -107,7 +110,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(rentalBillsForLease.get(1), newRentalBill2);
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(newRentalBill1);
@@ -136,7 +140,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(paymentFromDb.getRentalBillId(), rentalBill.getRentalBillId());
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(rentalBill);
@@ -171,7 +176,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(paymentFromDb2.getRentalBillId(), rentalBill.getRentalBillId());
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(rentalBill);
@@ -205,7 +211,8 @@ class RentalBillServiceTests extends BaseServiceTests {
 		assertEquals(exception.getClass(), AmountPaymentHigherThanRentalBillException.class);
 		
 		leaseService.delete(lease);
-		estateService.delete(lease.getApartment().getEstate());
+		Estate estate = estateService.findById(lease.getApartment().getEstateId());
+		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenant());
 		rentalBillService.delete(rentalBill);

@@ -24,7 +24,11 @@ public class Utils {
 		return mapper.writeValueAsString(obj);
 	}
 	
-	public static String getResponseMsg(Exception e) {
-		return "{'msg': '"+ e.getMessage() +"'}";
+	public static String getExceptionResponseMsg(Exception e) {
+		return getResponseMsg(e.getMessage());
+	}
+	
+	public static String getResponseMsg(String msg) {
+		return "{\"msg\": \""+ msg +"\"}";
 	}
 }

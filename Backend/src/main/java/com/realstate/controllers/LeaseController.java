@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.realstate.domains.Lease;
+import com.realstate.entities.Lease;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.TenantDoesNotExistException;
@@ -37,7 +37,7 @@ public class LeaseController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(leaseService.findAll()));
 		} catch (JsonProcessingException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -46,9 +46,9 @@ public class LeaseController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(leaseService.findById(leaseId)));
 		} catch (LeaseDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -66,9 +66,9 @@ public class LeaseController {
 			Date startDate = formatter.parse(startDateString);
 			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(leaseService.getNew(tenantId, apartmentId, startDate, endDate, true, description)));
 		} catch (TenantDoesNotExistException | ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -77,9 +77,9 @@ public class LeaseController {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(leaseService.update(lease)));
 		} catch (LeaseDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 	
@@ -89,9 +89,9 @@ public class LeaseController {
 			leaseService.delete(lease);
 			return ResponseEntity.ok().build();
 		} catch (LeaseDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
 	}
 }
