@@ -1,16 +1,16 @@
-import React, {useEffect} from "react";
+import React, {useState, useContext, createRef, useRef} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row, Table} from "react-bootstrap";
-import Services, {ServicesContext} from "../../services/Services";
-import Tenant from "../../models/Tenant";
+import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
 
 const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallback }) => {
-    let apartmentsToEdit = [];
-    let estateName = React.createRef();
-    let estateAddress = React.createRef();
-    let estateDescription = React.createRef();
-    const { estateService } = React.useContext(ServicesContext);
+    let apartmentsToEdit = useRef(JSON.parse(JSON.stringify(estate.apartments)));
+    let estateName = createRef();
+    let estateAddress = createRef();
+    let estateDescription = createRef();
+    const { estateService } = useContext(ServicesContext);
+    const [validated, setValidated] = useState(false);
 
     function onHide() {
         setModalShow(false);
@@ -40,41 +40,50 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
     };
 
     function handleSubmit(e) {
+        let validationOk = true;
         e.preventDefault();
-        estateService.editEstate(
-            new Estate(
-                estate.estateId,
-                estateName.current.value,
-                estateAddress.current.value,
-                estateDescription.current.value,
-                apartmentsToEdit
-            ),
-            (response) => {
-                onHide();
-                if (successCallback) successCallback();
-            },
-            (error) => {
-                if (errorCallback) errorCallback(error);
-            }
-        );
-    };
 
-    useEffect(() => {
-        apartmentsToEdit = JSON.parse(JSON.stringify(estate.apartments));
-    }, []);
+        // realizamos la validacion del form
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            validationOk = false;
+        }
+        setValidated(true);
 
-    const apartmentsListComponents = (estate.apartments || []).map((a, index) => {
+        if (validationOk) {
+            estateService.editEstate(
+                new Estate(
+                    estate.estateId,
+                    estateName.current.value,
+                    estateAddress.current.value,
+                    estateDescription.current.value,
+                    apartmentsToEdit.current
+                ),
+                (response) => {
+                    onHide();
+                    if (successCallback) successCallback();
+                },
+                (error) => {
+                    if (errorCallback) errorCallback(error);
+                }
+            );
+        }
+    }
+
+    const apartmentsListComponents = apartmentsToEdit.current.map((a, index) => {
         return (
             <tr key={a.apartmentId}>
                 <td className="bold">{a.apartmentId}</td>
                 <td>
-                    <Form.Control defaultValue={a.name} onChange={(e) => apartmentsToEdit[index].name = e.target.value} />
+                    <Form.Control defaultValue={a.name} onChange={(e) => apartmentsToEdit.current[index].name = e.target.value} required />
+                    <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
                 </td>
                 <td>
-                    <Form.Control defaultValue={a.rooms} onChange={(e) => apartmentsToEdit[index].rooms = e.target.value} />
+                    <Form.Control defaultValue={a.rooms} onChange={(e) => apartmentsToEdit.current[index].rooms = e.target.value} type="number" min="1" step="1" required />
+                    <Form.Control.Feedback type="invalid">*Obligatorio (entero mayor que 0)</Form.Control.Feedback>
                 </td>
                 <td>
-                    <Form.Control as="textarea" style={{height:"38px"}} defaultValue={a.description} onChange={(e) => apartmentsToEdit[index].description = e.target.value} />
+                    <Form.Control as="textarea" style={{height:"38px"}} defaultValue={a.description} onChange={(e) => apartmentsToEdit.current[index].description = e.target.value} />
                 </td>
             </tr>
         )}
@@ -88,7 +97,7 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                 </Modal.Title>
             </Modal.Header>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} noValidate validated={validated}>
                 <Modal.Body>
                     <Form.Group as={Row}>
                         <Form.Label column sm={2}>
@@ -104,7 +113,8 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                             Nombre
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control ref={estateName} defaultValue={estate.name} />
+                            <Form.Control ref={estateName} defaultValue={estate.name} required />
+                            <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
                         </Col>
                     </Form.Group>
 
@@ -113,7 +123,8 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                             Dirección
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control ref={estateAddress} defaultValue={estate.address} />
+                            <Form.Control ref={estateAddress} defaultValue={estate.address} required />
+                            <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
                         </Col>
                     </Form.Group>
 

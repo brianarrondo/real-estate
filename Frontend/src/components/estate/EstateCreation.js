@@ -19,8 +19,6 @@ const EstateCreation = () => {
     function handleSubmit(event) {
         let validationOk = true;
 
-        console.log(apartments);
-
         event.preventDefault();
 
         // realizamos la validacion del form
@@ -31,22 +29,12 @@ const EstateCreation = () => {
         setValidated(true);
 
         if (validationOk) {
-            // TODO: realizar el request con los datos correspondientes
-            /*
-            let apartmentsToSet = [];
-            if (estateApartments && estateApartments.length) {
-                const apartmentsIds = estateApartments.map(a => { return a.value });
-                apartmentsToSet = apartments
-                    .filter(a => { return apartmentsIds.includes(a.apartmentId) })
-                    .map(a => new Apartment(a.apartmentId, a.estate, a.rooms, a.name, a.description));
-            }*/
-
             let estate = new Estate(
                 null,
                 estateName.current.value,
                 estateAddress.current.value,
                 estateDescription.current.value,
-                apartments.current
+                apartments
             );
 
             estateService.createEstate(estate,
@@ -55,6 +43,7 @@ const EstateCreation = () => {
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> La propiedad <strong>{estate && estate.name}</strong> fue agregada con éxito</div>);
                     setValidated(false);
+                    setApartments([]);
                     form.reset();
                 },
                 (error) => {
@@ -89,7 +78,7 @@ const EstateCreation = () => {
                 </Table>
             );
         } else {
-            return (<div className="align-center">No hay departamentos para esta propiedad.</div>);
+            return (<div className="align-center padding-bottom-15">No hay departamentos para esta propiedad.</div>);
         }
     }
 
@@ -100,26 +89,28 @@ const EstateCreation = () => {
     }
 
     const apartmentsRows = apartments.map((apartment, index) => {
-        // TODO: realizar validaciones en los inputs
         return (
         <tr key={index}>
             <td>
-                <Form.Control value={apartment.name} onChange={(e) => handleInputChange(e, index, "name")} />
+                <Form.Control value={apartment.name} onChange={(e) => handleInputChange(e, index, "name")} required />
+                <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
             </td>
             <td>
-                <Form.Control value={apartment.rooms} onChange={(e) => handleInputChange(e, index, "rooms")} />
+                <Form.Control value={apartment.rooms} onChange={(e) => handleInputChange(e, index, "rooms")} type="number" min="1" step="1" required />
+                <Form.Control.Feedback type="invalid">*Obligatorio (entero mayor que 0)</Form.Control.Feedback>
             </td>
             <td>
                 <Form.Control as="textarea" style={{height:"38px"}} value={apartment.description} onChange={(e) => handleInputChange(e, index, "description")} />
             </td>
             <td>
-                <Button variant="danger" onClick={() => removeApartment(index)}><i className="bi bi-x-square-fill" style={{fontSize: "20px"}}/></Button>
+                <Button className="trash-button d-flex align-items-center" variant="danger" onClick={() => removeApartment(index)}><i className="bi bi-trash" style={{fontSize: "20px"}}/></Button>
             </td>
         </tr>);
-    });
+    })
 
     function addApartment() {
-        setApartments(prevState => [...prevState, new Apartment(null, null, "", "", "")]);
+        setValidated(false);
+        setApartments(prevState => [...prevState, new Apartment(null, null, 1, "", "")]);
     }
 
     function removeApartment(index) {
@@ -142,7 +133,7 @@ const EstateCreation = () => {
                     </Form.Label>
                     <Col sm={8}>
                         <Form.Control type="text" ref={estateName} placeholder="Nombre" required />
-                        <Form.Control.Feedback type="invalid">Por favor ingresar el nombre de la propiedad</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
                     </Col>
                 </Form.Group>
 
@@ -152,7 +143,7 @@ const EstateCreation = () => {
                     </Form.Label>
                     <Col sm={8}>
                         <Form.Control type="text" ref={estateAddress} placeholder="Dirección" required />
-                        <Form.Control.Feedback type="invalid">Por favor ingresar la dirección de la propiedad</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
                     </Col>
                 </Form.Group>
 
@@ -165,9 +156,8 @@ const EstateCreation = () => {
                     </Col>
                 </Form.Group>
 
-                <div>
-                    <hr />
-                    <h4>Detalle de departmantos</h4>
+                <div className="padding-top-15">
+                    <h3>Departamentos</h3><hr />
                 </div>
 
                 <div className="detail-table-padding">
@@ -178,7 +168,7 @@ const EstateCreation = () => {
                     {getApartmentsTable()}
                 </div>
 
-                <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
+                <div className="align-center"><Button variant="dark" type="submit">Agregar</Button></div>
             </Form>
         </div>
 
