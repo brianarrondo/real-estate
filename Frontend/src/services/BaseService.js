@@ -34,7 +34,7 @@ export default class BaseService {
     doGet(resource, queryParams, successCallback, errorCallback) {
         axios.get(this.baseURI + resource)
             .then((response) => {
-                if (response.data.length > 0 && successCallback) {
+                if (response.data.length >= 0 && successCallback) {
                     successCallback(response);
                 }
             })

@@ -28,7 +28,6 @@ const EstateModalDetail = ({ setModalShow, estate }) => {
         } else {
             return (<div className="align-center">No hay departamentos para esta propiedad.</div>);
         }
-
     }
 
     const apartmentsListComponents = (estate.apartments || []).map(a => {

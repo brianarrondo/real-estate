@@ -51,11 +51,11 @@ const Login = () => {
                 <div className="basic-padding-20 ">
                     <Form onSubmit={handleSubmit}>
                         <Form.Group>
-                            <Form.Control ref={userName} type="text" placeholder="Usuario" maxLength="20" required />
+                            <Form.Control ref={userName} type="text" autoComplete="username" placeholder="Usuario" maxLength="20" required />
                             <Form.Control.Feedback type="invalid">Por favor ingresar el nombre de usuario</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Control ref={password} type="password" placeholder="Password" maxLength="20" required />
+                            <Form.Control ref={password} type="password" autoComplete="current-password" placeholder="Password" maxLength="20" required />
                             <Form.Control.Feedback type="invalid">Por favor ingresar la password del usuario</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group>

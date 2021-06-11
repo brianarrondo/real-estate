@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.entities.Estate;
+import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.services.EstateService;
 
@@ -54,7 +55,7 @@ public class EstateController {
 	public ResponseEntity<Estate> update(@RequestBody Estate estate) {
 		try {
 			return ResponseEntity.ok(estateService.update(estate));
-		} catch (EstateDoesNotExistException e) {
+		} catch (EstateDoesNotExistException | ApartmentDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -66,6 +67,8 @@ public class EstateController {
 			return ResponseEntity.ok().build();
 		} catch (EstateDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (ApartmentDoesNotExistException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 }
