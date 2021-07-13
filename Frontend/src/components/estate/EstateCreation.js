@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState, createRef} from 'react';
-import {Button, Col, Form, Row, Table} from "react-bootstrap";
+import {Button, Col, Form, Row, Spinner, Table} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
@@ -15,6 +15,7 @@ const EstateCreation = () => {
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [validated, setValidated] = useState(false);
     const [apartments, setApartments] = useState([]);
+    const [isLoading, setLoading ] = useState(false);
 
     function handleSubmit(event) {
         let validationOk = true;
@@ -29,6 +30,7 @@ const EstateCreation = () => {
         setValidated(true);
 
         if (validationOk) {
+            setLoading(true);
             let estate = new Estate(
                 null,
                 estateName.current.value,
@@ -43,12 +45,14 @@ const EstateCreation = () => {
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> La propiedad <strong>{estate && estate.name}</strong> fue agregada con éxito</div>);
                     setValidated(false);
+                    setLoading(false);
                     setApartments([]);
                     form.reset();
                 },
                 (error) => {
                     setAlertType("danger");
                     setShowAlert(true);
+                    setLoading(false);
                     setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear la propiedad: "{error.message}"</div>);
                 }
             );
@@ -119,6 +123,12 @@ const EstateCreation = () => {
         setApartments(newApartments);
     }
 
+    function showSpinner() {
+        if (isLoading) {
+            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
+        }
+    }
+
     return (
         <div className="container">
             <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
@@ -168,6 +178,7 @@ const EstateCreation = () => {
                     {getApartmentsTable()}
                 </div>
 
+                {showSpinner()}
                 <div className="align-center"><Button variant="dark" type="submit">Agregar</Button></div>
             </Form>
         </div>

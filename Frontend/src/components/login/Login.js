@@ -1,6 +1,5 @@
-import React, {useContext} from "react";
-import {Col, Form} from "react-bootstrap";
-import {AlertContext} from "../utils/GenericAlert";
+import React, {useContext, useState} from "react";
+import {Col, Form, Spinner} from "react-bootstrap";
 import {TokenLoggerContext} from "./TokenLogger";
 import {Redirect} from "react-router-dom";
 import {ServicesContext} from "../../services/Services";
@@ -8,12 +7,15 @@ import {ServicesContext} from "../../services/Services";
 const Login = () => {
     let userName = React.createRef();
     let password = React.createRef();
-    const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const { loginService } = useContext(ServicesContext);
     const { token, saveToken } = useContext(TokenLoggerContext);
+    const [isLoading, setLoading ] = useState(false);
+    const [errorLoginMsg, setErrorLoginMsg] = useState(null);
 
     function handleSubmit(event) {
         event.preventDefault();
+        setLoading(true);
+        setErrorLoginMsg(null);
         loginService.login(
             {
                 "userName": userName.current.value,
@@ -25,19 +27,27 @@ const Login = () => {
                 }
             },
             (error) => {
+                setLoading(false);
                 if (error.response && error.response.status === 401) {
-                    setAlertType("warning");
                     const msg = error.response.data.msg;
-                    setShowAlert(true);
-                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Acceso no autorizado: "{msg}"</div>);
+                    setErrorLoginMsg("Acceso no autorizado: " + msg);
                 } else {
-                    setAlertType("danger");
-                    setShowAlert(true);
-                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al loguearse: "{error.message}"</div>);
+                    setErrorLoginMsg("Hubo un error al loguearse: " + error.message);
                 }
             }
         )
-        ;
+    }
+
+    function showSpinner() {
+        if (isLoading) {
+            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
+        }
+    }
+
+    function showErrorMsg() {
+        if (errorLoginMsg) {
+            return <div className="error-login-msg">{errorLoginMsg}</div>
+        }
     }
 
     if (token == null) return (
@@ -59,6 +69,8 @@ const Login = () => {
                             <Form.Control.Feedback type="invalid">Por favor ingresar la password del usuario</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group>
+                            {showSpinner()}
+                            {showErrorMsg()}
                             <button className="btn btn-dark text-white ">Acceder</button>
                         </Form.Group>
                     </Form>

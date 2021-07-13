@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Form, Row, Spinner} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
@@ -14,6 +14,7 @@ const TenantCreation = () => {
     const { tenantService } = useContext(ServicesContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [validated, setValidated] = useState(false);
+    const [isLoading, setLoading ] = useState(false);
 
     function handleSubmit(event) {
         let validationOk = true;
@@ -29,6 +30,7 @@ const TenantCreation = () => {
 
 
         if (validationOk) {
+            setLoading(true);
             let tenant = new Tenant(
                 null,
                 tenantFullName.current.value,
@@ -43,16 +45,24 @@ const TenantCreation = () => {
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenant && tenant.fullName}</strong> fue agregado con éxito</div>);
                     setValidated(false);
+                    setLoading(false);
                     form.reset();
                 },
                 (error) => {
                     setAlertType("danger");
                     setShowAlert(true);
+                    setLoading(false);
                     setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear el inquilino: "{error.message}"</div>);
                 }
             );
         }
 
+    }
+
+    function showSpinner() {
+        if (isLoading) {
+            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
+        }
     }
 
     return (
@@ -100,6 +110,7 @@ const TenantCreation = () => {
                     </Col>
                 </Form.Group>
 
+                {showSpinner()}
                 <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
             </Form>
         </div>

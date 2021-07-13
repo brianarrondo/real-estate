@@ -68,7 +68,7 @@ hr {
 }
 
 .login-box-background {
-	background: rgba(255, 255, 255, 0.5);
+	background: rgba(255, 255, 255, 0.8);
 	border: 0px;
 }
 
@@ -90,4 +90,16 @@ hr {
 
 .trash-button {
 	height: 38px;
+}
+
+.spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 10px;
+}
+
+.error-login-msg {
+	color: red;
+	padding-bottom: 15px;
 }
