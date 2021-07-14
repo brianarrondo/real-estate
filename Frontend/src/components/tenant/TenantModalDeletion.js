@@ -1,17 +1,22 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const TenantModalDeletion = ({setModalShow, tenant, successCallback, errorCallback}) => {
     const { tenantService } = useContext(ServicesContext);
+    const [isLoading, setLoading] = useState(false);
     function deleteTenant(tenant) {
+        setLoading(true);
         tenantService.deleteTenant(tenant,
                 (response) => {
+                    setLoading(false);
                     setModalShow(false);
                     if(successCallback) successCallback();
                 },
                 (error) => {
+                    setLoading(false);
                     if (errorCallback) errorCallback(error);
                 }
             );
@@ -31,7 +36,9 @@ const TenantModalDeletion = ({setModalShow, tenant, successCallback, errorCallba
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => setModalShow(false)}>Cerrar</Button>
-                <Button variant="success" onClick={() => deleteTenant(tenant)}>Borrar</Button>
+                <Button variant="success" onClick={() => deleteTenant(tenant)} className="form-submit-button" disabled={isLoading}>
+                    <GenericSpinner show={isLoading}>Borrar</GenericSpinner>
+                </Button>
             </Modal.Footer>
        </>
     );

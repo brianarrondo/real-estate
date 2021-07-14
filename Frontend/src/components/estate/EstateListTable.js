@@ -5,23 +5,28 @@ import {ServicesContext} from "../../services/Services";
 import EstateModalDetail from "./EstateModalDetail";
 import EstateModalDeletion from "./EstateModalDeletion";
 import EstateModalEdition from "./EstateModalEdition";
+import {Spinner} from "react-bootstrap";
 
 const EstateListTable = () => {
     const { estateService } = useContext(ServicesContext);
     const {setModalShow, setModalContent, setSize} = useContext(ModalContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [estates, setEstates] = useState([]);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         getAllEstates();
     }, []);
 
     const getAllEstates = () => {
+        setLoading(true);
         estateService.getAllEstates(
             (response) => {
+                setLoading(false);
                 setEstates(response.data);
             },
             (error) => {
+                setLoading(false);
                 setAlertType("danger");
                 setShowAlert(true);
                 setAlertContent(<div><i className="bi bi-exclamation-circle"/> Hubo un error al obtener el listado de propiedades: "{error.message}"</div>);
@@ -110,21 +115,28 @@ const EstateListTable = () => {
     });
 
     return (
-        <table className="table table-hover">
-            <thead>
-                <tr className="basic-padding">
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Dirección</th>
-                    <th scope="col" />
-                    <th scope="col" />
-                    <th scope="col" />
-                </tr>
-            </thead>
+        <>
+            {isLoading ?
+                <div className="spinner"><Spinner animation="border" variant="dark"/></div>
+                :
+                <table className="table table-hover">
+                    <thead>
+                    <tr className="basic-padding">
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col"/>
+                        <th scope="col"/>
+                        <th scope="col"/>
+                    </tr>
+                    </thead>
 
-            <tbody>
-            {estateListComponents}
-            </tbody>
-        </table>
+                    <tbody>
+                    {estateListComponents}
+                    </tbody>
+                </table>
+            }
+        </>
+
     );
 };
 

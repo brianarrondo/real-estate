@@ -4,24 +4,29 @@ import {AlertContext} from "../utils/GenericAlert";
 import TenantModalEdition from "./TenantModalEdition";
 import TenantModalDeletion from "./TenantModalDeletion";
 import {ServicesContext} from "../../services/Services";
+import {Spinner} from "react-bootstrap";
 
 const TenantListTable = () => {
     const { tenantService } = useContext(ServicesContext);
     const {setModalShow, setModalContent, setSize} = useContext(ModalContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [tenants, setTenants] = useState([]);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         getAllTenants();
     }, []);
 
     const getAllTenants = () => {
+        setLoading(true);
         tenantService.getAllTenants(
             (response) => {
+                setLoading(false);
                 setTenants(response.data);
             },
             (error) => {
                 setAlertType("danger");
+                setLoading(false);
                 setShowAlert(true);
                 setAlertContent(<div><i className="bi bi-exclamation-circle"/> Hubo un error al obtener el listado de inquilinos: "{error.message}"</div>);
             }
@@ -95,22 +100,28 @@ const TenantListTable = () => {
     });
 
     return (
-        <table className="table table-hover">
-            <thead>
-            <tr className="basic-padding">
-                <th scope="col">Nombre</th>
-                <th scope="col">Dni</th>
-                <th scope="col">Teléfono</th>
-                <th scope="col">Descripción</th>
-                <th scope="col"/>
-                <th scope="col"/>
-            </tr>
-            </thead>
+        <>
+            {isLoading ?
+                <div className="spinner"><Spinner animation="border" variant="dark"/></div>
+                :
+                <table className="table table-hover">
+                    <thead>
+                    <tr className="basic-padding">
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Dni</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col"/>
+                        <th scope="col"/>
+                    </tr>
+                    </thead>
 
-            <tbody>
-            {tenantListComponents}
-            </tbody>
-        </table>
+                    <tbody>
+                    {tenantListComponents}
+                    </tbody>
+                </table>
+            }
+        </>
     );
 };
 
