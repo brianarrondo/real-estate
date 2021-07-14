@@ -1,8 +1,9 @@
 import React, {useContext, useState} from "react";
-import {Col, Form, Spinner} from "react-bootstrap";
+import {Button, Col, Form, Spinner} from "react-bootstrap";
 import {TokenLoggerContext} from "./TokenLogger";
 import {Redirect} from "react-router-dom";
 import {ServicesContext} from "../../services/Services";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const Login = () => {
     let userName = React.createRef();
@@ -15,7 +16,6 @@ const Login = () => {
     function handleSubmit(event) {
         event.preventDefault();
         setLoading(true);
-        setErrorLoginMsg(null);
         loginService.login(
             {
                 "userName": userName.current.value,
@@ -38,15 +38,9 @@ const Login = () => {
         )
     }
 
-    function showSpinner() {
-        if (isLoading) {
-            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
-        }
-    }
-
     function showErrorMsg() {
         if (errorLoginMsg) {
-            return <div className="error-login-msg">{errorLoginMsg}</div>
+            return <div className="error-login-msg"><i className="bi bi-exclamation-circle"/> {errorLoginMsg}</div>
         }
     }
 
@@ -69,9 +63,10 @@ const Login = () => {
                             <Form.Control.Feedback type="invalid">Por favor ingresar la password del usuario</Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group>
-                            {showSpinner()}
                             {showErrorMsg()}
-                            <button className="btn btn-dark text-white ">Acceder</button>
+                            <button className="btn btn-dark text-white form-submit-button" disabled={isLoading}>
+                                <GenericSpinner show={isLoading}>Acceder</GenericSpinner>
+                            </button>
                         </Form.Group>
                     </Form>
                 </div>

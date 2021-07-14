@@ -1,8 +1,9 @@
 import React, {useState, useContext, createRef, useRef} from "react";
 import Modal from "react-bootstrap/Modal";
-import {Button, Col, Form, Row, Table} from "react-bootstrap";
+import {Button, Col, Form, Row, Spinner, Table} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallback }) => {
     let apartmentsToEdit = useRef(JSON.parse(JSON.stringify(estate.apartments)));
@@ -11,6 +12,7 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
     let estateDescription = createRef();
     const { estateService } = useContext(ServicesContext);
     const [validated, setValidated] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     function onHide() {
         setModalShow(false);
@@ -51,6 +53,7 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
         setValidated(true);
 
         if (validationOk) {
+            setLoading(true);
             estateService.editEstate(
                 new Estate(
                     estate.estateId,
@@ -60,10 +63,12 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                     apartmentsToEdit.current
                 ),
                 (response) => {
+                    setLoading(false);
                     onHide();
                     if (successCallback) successCallback();
                 },
                 (error) => {
+                    setLoading(false);
                     if (errorCallback) errorCallback(error);
                 }
             );
@@ -149,7 +154,9 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onHide}>Cerrar</Button>
-                    <Button variant="success" type="submit">Editar</Button>
+                    <Button variant="success" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Editar</GenericSpinner>
+                    </Button>
                 </Modal.Footer>
             </Form>
         </>

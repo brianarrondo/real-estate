@@ -3,6 +3,7 @@ import {Button, Col, Form, Row, Spinner} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const TenantCreation = () => {
     let tenantFullName = React.createRef();
@@ -59,12 +60,6 @@ const TenantCreation = () => {
 
     }
 
-    function showSpinner() {
-        if (isLoading) {
-            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
-        }
-    }
-
     return (
         <div className="container">
             <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
@@ -110,8 +105,11 @@ const TenantCreation = () => {
                     </Col>
                 </Form.Group>
 
-                {showSpinner()}
-                <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
+                <div className="align-center basic-padding-10">
+                    <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Agregar</GenericSpinner>
+                    </Button>
+                </div>
             </Form>
         </div>
 

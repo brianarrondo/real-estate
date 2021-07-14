@@ -103,3 +103,7 @@ hr {
 	color: red;
 	padding-bottom: 15px;
 }
+
+.form-submit-button {
+	min-width: 83px;
+}

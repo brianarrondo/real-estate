@@ -4,6 +4,7 @@ import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
 import Apartment from "../../models/Apartment";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const EstateCreation = () => {
     let estateName = createRef();
@@ -123,12 +124,6 @@ const EstateCreation = () => {
         setApartments(newApartments);
     }
 
-    function showSpinner() {
-        if (isLoading) {
-            return <div className="spinner"><Spinner animation="border" variant="dark" size="sm" /></div>
-        }
-    }
-
     return (
         <div className="container">
             <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
@@ -178,8 +173,11 @@ const EstateCreation = () => {
                     {getApartmentsTable()}
                 </div>
 
-                {showSpinner()}
-                <div className="align-center"><Button variant="dark" type="submit">Agregar</Button></div>
+                <div className="align-center">
+                    <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Agregar</GenericSpinner>
+                    </Button>
+                </div>
             </Form>
         </div>
 

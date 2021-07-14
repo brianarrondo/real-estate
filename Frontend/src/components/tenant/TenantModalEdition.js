@@ -3,9 +3,11 @@ import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     let tenantFullName = React.createRef();
     let tenantDni = React.createRef();
     let tenantPhone = React.createRef();
@@ -30,6 +32,7 @@ const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallba
         setValidated(true);
 
         if (validationOk) {
+            setLoading(true);
             tenantService.editTenant(
                 new Tenant(
                     tenant.tenantId,
@@ -39,10 +42,12 @@ const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallba
                     tenantDescription.current.value
                 ),
                 (response) => {
+                    setLoading(false);
                     onHide();
                     if (successCallback) successCallback();
                 },
                 (error) => {
+                    setLoading(false);
                     if (errorCallback) errorCallback(error);
                 }
             );
@@ -99,7 +104,9 @@ const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallba
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={onHide}>Cerrar</Button>
-                    <Button variant="success" type="submit">Editar</Button>
+                    <Button variant="success" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Editar</GenericSpinner>
+                    </Button>
                 </Modal.Footer>
             </Form>
         </>
