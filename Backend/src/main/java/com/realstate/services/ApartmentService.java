@@ -21,7 +21,7 @@ public class ApartmentService {
 	private EstateService estateService;
 	
 	public Apartment getNew(String estateId, int rooms, String name, String description) {
-		Apartment apartment = new Apartment(null, estateId, rooms, name, description);
+		Apartment apartment = new Apartment(null, estateId, rooms, name, description, true);
 		return apartmentRepository.insert(apartment);
 	}
 	
@@ -47,6 +47,7 @@ public class ApartmentService {
 	}
 		
 	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
+		newApartment.setActive(true);
 		return apartmentRepository.insert(newApartment);
 	}
 	

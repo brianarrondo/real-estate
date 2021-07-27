@@ -4,6 +4,7 @@ import {Button, Col, Form, Row, Spinner, Table} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
 import GenericSpinner from "../utils/GenericSpinner";
+import Apartment from "../../models/Apartment";
 
 const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallback }) => {
     let apartmentsToEdit = useRef(JSON.parse(JSON.stringify(estate.apartments)));
@@ -13,13 +14,20 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
     const { estateService } = useContext(ServicesContext);
     const [validated, setValidated] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [newApartments, setNewApartments] = useState([]);
 
     function onHide() {
         setModalShow(false);
     }
 
+    function addNewApartment() {
+        setValidated(false);
+        setNewApartments(prevState => [...prevState, new Apartment(null, null, 1, "", "")]);
+    }
+
     const getApartmentsTable = () => {
-        if (estate.apartments && estate.apartments.length) {
+        let apartments = [...estate.apartments, ...newApartments];
+        if (apartments && apartments.length) {
             return(
                 <Table className="table-hover" id="apartment-table">
                     <thead>
@@ -28,11 +36,13 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                         <th scope="col">Nombre</th>
                         <th scope="col">Ambientes</th>
                         <th scope="col">Descripción</th>
+                        <th scope="col">Activo</th>
                     </tr>
                     </thead>
 
                     <tbody>
                     {apartmentsListComponents}
+                    {newApartmentsRows}
                     </tbody>
                 </Table>
             );
@@ -60,7 +70,7 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                     estateName.current.value,
                     estateAddress.current.value,
                     estateDescription.current.value,
-                    apartmentsToEdit.current
+                    [...apartmentsToEdit.current, ...newApartments]
                 ),
                 (response) => {
                     setLoading(false);
@@ -74,6 +84,42 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
             );
         }
     }
+
+    function removeApartment(index) {
+        let newApartmentsToAdd = [...newApartments];
+        newApartmentsToAdd.splice(index, 1)
+        setNewApartments(newApartmentsToAdd);
+    }
+
+    function handleInputChange(e, i, name) {
+        const newApartmentsToAdd = [...newApartments];
+        newApartmentsToAdd[i][name] = e.target.value;
+        setNewApartments(newApartmentsToAdd);
+    }
+
+    const newApartmentsRows = newApartments.map((apartment, index) => {
+        return (
+            <tr key={index}>
+                <td className="bold">{apartment.apartmentId}</td>
+                <td>
+                    <Form.Control value={apartment.name} onChange={(e) => handleInputChange(e, index, "name")} required />
+                    <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
+                </td>
+                <td>
+                    <Form.Control value={apartment.rooms} onChange={(e) => handleInputChange(e, index, "rooms")} type="number" min="1" step="1" required />
+                    <Form.Control.Feedback type="invalid">*Obligatorio (entero mayor que 0)</Form.Control.Feedback>
+                </td>
+                <td>
+                    <Form.Control as="textarea" style={{height:"38px"}} value={apartment.description} onChange={(e) => handleInputChange(e, index, "description")} />
+                </td>
+                <td>
+                    <Button className="delete-table-row-button" variant="danger" onClick={() => removeApartment(index)} style={{display: "flex"}}>
+                        <i className="bi bi-x x-button" />
+                    </Button>
+                </td>
+            </tr>
+        );
+    });
 
     const apartmentsListComponents = apartmentsToEdit.current.map((a, index) => {
         return (
@@ -89,6 +135,13 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                 </td>
                 <td>
                     <Form.Control as="textarea" style={{height:"38px"}} defaultValue={a.description} onChange={(e) => apartmentsToEdit.current[index].description = e.target.value} />
+                </td>
+                <td>
+                    <Form.Check
+                        type="checkbox"
+                        defaultChecked={a.active}
+                        onChange={(e) => apartmentsToEdit.current[index].active = e.target.checked}
+                    />
                 </td>
             </tr>
         )}
@@ -143,8 +196,12 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
                     </Form.Group>
 
                     <Modal.Title className="detail-table-padding">
-                        Detalle de Departamentos
+                        Departamentos
                     </Modal.Title>
+
+                    <div className="detail-table-padding">
+                        <Button variant="success" style={{fontSize: "12px"}} onClick={addNewApartment}>Agregar</Button>
+                    </div>
 
                     <div className="table-responsive">
                         {getApartmentsTable()}
