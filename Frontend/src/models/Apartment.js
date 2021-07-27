@@ -1,5 +1,3 @@
-import Estate from "./Estate";
-
 export default class {
 
     constructor(apartmentId, estateId, rooms , name, description) {
@@ -8,5 +6,6 @@ export default class {
         this.rooms = rooms;
         this.name = name;
         this.description = description;
+        this.active = true;
     }
 }

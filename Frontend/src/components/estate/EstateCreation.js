@@ -108,7 +108,9 @@ const EstateCreation = () => {
                 <Form.Control as="textarea" style={{height:"38px"}} value={apartment.description} onChange={(e) => handleInputChange(e, index, "description")} />
             </td>
             <td>
-                <Button className="trash-button d-flex align-items-center" variant="danger" onClick={() => removeApartment(index)}><i className="bi bi-trash" style={{fontSize: "20px"}}/></Button>
+                <Button className="delete-table-row-button d-flex align-items-center" variant="danger" onClick={() => removeApartment(index)}>
+                    <i className="bi bi-x x-button"/>
+                </Button>
             </td>
         </tr>);
     })
