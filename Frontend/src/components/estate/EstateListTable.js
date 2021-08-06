@@ -2,9 +2,9 @@ import React, {useContext, useEffect, useState} from "react";
 import {ModalContext} from "../utils/GenericModal";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
-import EstateModalDetail from "./EstateModalDetail";
-import EstateModalDeletion from "./EstateModalDeletion";
-import EstateModalEdition from "./EstateModalEdition";
+import EstateDetailModal from "./EstateDetailModal";
+import EstateDeletionModal from "./EstateDeletionModal";
+import EstateEditionModal from "./EstateEditionModal";
 import {Spinner} from "react-bootstrap";
 
 const EstateListTable = () => {
@@ -36,7 +36,7 @@ const EstateListTable = () => {
 
     function editOnClick(estate) {
         setModalContent(
-            <EstateModalEdition
+            <EstateEditionModal
                 setModalShow={setModalShow}
                 estate={estate}
                 successCallback={() => {
@@ -58,7 +58,7 @@ const EstateListTable = () => {
 
     function deleteOnClick(estate) {
         setModalContent(
-            <EstateModalDeletion
+            <EstateDeletionModal
                 setModalShow={setModalShow}
                 estate={estate}
                 successCallback={() => {
@@ -80,7 +80,7 @@ const EstateListTable = () => {
 
     function seeDetailOnClick(estate) {
         setModalContent(
-            <EstateModalDetail
+            <EstateDetailModal
                 setModalShow={setModalShow}
                 estate={estate}
             />

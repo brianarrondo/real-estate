@@ -4,7 +4,7 @@ import {Button} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
 import GenericSpinner from "../utils/GenericSpinner";
 
-const EstateModalDeletion = ({setModalShow, estate, successCallback, errorCallback}) => {
+const EstateDeletionModal = ({setModalShow, estate, successCallback, errorCallback}) => {
     const { estateService } = useContext(ServicesContext);
     const [isLoading, setLoading] = useState(false);
     function deleteEstate(tenant) {
@@ -44,4 +44,4 @@ const EstateModalDeletion = ({setModalShow, estate, successCallback, errorCallba
     );
 };
 
-export default EstateModalDeletion;
+export default EstateDeletionModal;

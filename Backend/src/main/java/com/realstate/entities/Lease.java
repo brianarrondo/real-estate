@@ -12,8 +12,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "lease")
 public class Lease implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	private String leaseId;
+	@NotNull(message = "cannot be null")
+	private String name;
 	@NotNull(message = "cannot be null")
 	private Tenant tenant;
 	@NotNull(message = "cannot be null")
@@ -21,22 +25,23 @@ public class Lease implements Serializable {
 	@NotNull(message = "cannot be null")
 	private Date startDate;
 	private Date endDate;
-	private boolean active = true;
+	private boolean active;
 	private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
 	private String description;
 	
 	/* Constructors */
 	public Lease() {}
 	
-	public Lease(String leaseId, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
+	public Lease(String leaseId, String name, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
 			String description) {
 		super();
 		this.leaseId = leaseId;
+		this.name = name;
 		this.tenant = tenant;
 		this.apartment = apartment;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.active = active;
+		this.active = true;
 		this.description = description;
 	}
 
@@ -46,6 +51,12 @@ public class Lease implements Serializable {
 	}
 	public void setLeaseId(String leaseId) {
 		this.leaseId = leaseId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Tenant getTenant() {
 		return tenant;

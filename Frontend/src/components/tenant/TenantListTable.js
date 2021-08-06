@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {ModalContext} from "../utils/GenericModal";
 import {AlertContext} from "../utils/GenericAlert";
-import TenantModalEdition from "./TenantModalEdition";
-import TenantModalDeletion from "./TenantModalDeletion";
+import TenantEditionModal from "./TenantEditionModal";
+import TenantDeletionModal from "./TenantDeletionModal";
 import {ServicesContext} from "../../services/Services";
 import {Spinner} from "react-bootstrap";
 
@@ -35,7 +35,7 @@ const TenantListTable = () => {
 
     function editOnClick(tenant) {
         setModalContent(
-            <TenantModalEdition
+            <TenantEditionModal
                 setModalShow={setModalShow}
                 tenant={tenant}
                 successCallback={() => {
@@ -57,7 +57,7 @@ const TenantListTable = () => {
 
     function deleteOnClick(tenant) {
         setModalContent(
-            <TenantModalDeletion
+            <TenantDeletionModal
                 setModalShow={setModalShow}
                 tenant={tenant}
                 successCallback={() => {

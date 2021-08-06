@@ -5,7 +5,7 @@ import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
 import GenericSpinner from "../utils/GenericSpinner";
 
-const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallback }) => {
+const TenantEditionModal = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
     const [isLoading, setLoading] = useState(false);
     let tenantFullName = React.createRef();
@@ -113,4 +113,4 @@ const TenantModalEdition = ({ setModalShow, tenant, successCallback, errorCallba
     );
 };
 
-export default TenantModalEdition;
+export default TenantEditionModal;
