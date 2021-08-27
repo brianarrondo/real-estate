@@ -107,7 +107,7 @@ public class RentalBillService {
 	}
 	
 	public RentalBill generateRentalBill(String leaseId, Date date, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
-		if (leaseId == null || date == null) { throw new InvalidParametersException(); }
+		if (leaseId == null || date == null) { throw new InvalidParametersException("Parametros invalidos"); }
 		Lease lease = leaseService.findById(leaseId);
 		if (lease.getStartDate().compareTo(date) > 0 || lease.getEndDate().compareTo(date) < 0) { throw new RentalBillDateIsOutOfLeaseDateException(); }
 		if (!lease.isActive()) { throw new LeaseIsNotActiveException(); }
@@ -117,7 +117,7 @@ public class RentalBillService {
 	}
 	
 	public Payment generatePayment(String rentalBillId, float amountToPay, Date date) throws RentalBillDoesNotExistException, AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, LeaseDoesNotExistException, InvalidParametersException {
-		if (rentalBillId == null || date == null) { throw new InvalidParametersException(); }
+		if (rentalBillId == null || date == null) { throw new InvalidParametersException("Parametros invalidos"); }
 		RentalBill rentalBill = findById(rentalBillId);
 		
 		if(rentalBillIsPaid(rentalBill)) {

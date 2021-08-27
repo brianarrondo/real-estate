@@ -85,8 +85,11 @@ public class EstateService {
 
 	public void delete(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
-			for (Apartment apartment : estate.getApartments()) {
-				apartmentService.delete(apartment);
+			List<Apartment> apartments = estate.getApartments();
+			if (apartments != null && apartments.size() > 0) {
+				for (Apartment apartment : apartments) {
+					apartmentService.delete(apartment);
+				}
 			}
 			estateRepository.delete(estate);
 		} else {

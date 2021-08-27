@@ -7,12 +7,18 @@ import Utils from "../../utils/Utils";
 import {ModalContext} from "../utils/GenericModal";
 import ExistingTenantAdditionModal from "./ExistingTenantAdditionModal";
 import Tenant from "../../models/Tenant";
+import Estate from "../../models/Estate";
+import Lease from "../../models/Lease";
 
 const LeaseCreation = () => {
     let form = React.createRef();
     let leaseName = React.createRef();
+    let apartmentId = React.createRef();
+    let startDate = React.createRef();
+    let endDate = React.createRef();
     let leaseDescription = React.createRef();
 
+    const [tenants, setTenants] = useState([]);
     const [estates, setEstates] = useState([]);
     const [apartments, setApartments] = useState([]);
     const [newTenants, setNewTenants] = useState([]);
@@ -23,18 +29,58 @@ const LeaseCreation = () => {
 
     const {setModalShow, setModalContent, setSize} = useContext(ModalContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
-    const { tenantService, apartmentService, estateService } = useContext(ServicesContext);
+    const { tenantService, leaseService, apartmentService, estateService } = useContext(ServicesContext);
 
-    function handleSubmit(event) {
+    function handleSubmit(e) {
         let validationOk = true;
+        e.preventDefault();
 
-        event.preventDefault();
-        console.log("submit");
+        // realizamos la validacion del form
+        const form = e.currentTarget;
+        if (form.checkValidity() === false || [...newTenants, ...existingTenants].length === 0) {
+            validationOk = false;
+        }
+        setValidated(true);
+
+        if (validationOk) {
+            setLoading(true);
+            let lease = new Lease (
+                "0",
+                leaseName.current.value,
+                [...newTenants, ...existingTenants],
+                apartmentId.current.value,
+                startDate.current.value,
+                endDate.current.value,
+                true,
+                [],
+                leaseDescription.current.value
+            );
+
+            leaseService.createLease(
+                lease,
+                (response) => {
+                    setAlertType("success");
+                    setShowAlert(true);
+                    setAlertContent(<div><i className="bi bi-check-circle"></i> El contrato <strong>{lease.name}</strong> fue agregado con éxito</div>);
+                    setValidated(false);
+                    setLoading(false);
+                    setNewTenants([]);
+                    setExistingTenants([]);
+                    getApartments();
+                    form.reset();
+                },
+                (error) => {
+                    setAlertType("danger");
+                    setShowAlert(true);
+                    setLoading(false);
+                    setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear el contrato: "{error.message}"</div>);
+                }
+            );
+        }
     }
 
-    useEffect(() => {
-        setLoading(true);
-        apartmentService.getAllApartment(
+    function getApartments() {
+        apartmentService.getAllWithoutLease(
             (response) => {
                 setApartments(response.data);
             },
@@ -42,6 +88,34 @@ const LeaseCreation = () => {
                 setAlertType("danger");
                 setShowAlert(true);
                 setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al cargar los departamentos: "{error.message}"</div>);
+            }
+        );
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        getApartments();
+
+        apartmentService.getAllWithoutLease(
+            (response) => {
+                setApartments(response.data);
+            },
+            (error) => {
+                setAlertType("danger");
+                setShowAlert(true);
+                setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al cargar los departamentos: "{error.message}"</div>);
+            }
+        );
+
+        tenantService.getAllTenants(
+            (response) => {
+                setTenants(response.data);
+            },
+            (error) => {
+                setAlertType("danger");
+                setShowAlert(true);
+                setLoading(false);
+                setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al cargar los inquilinos: "{error.message}"</div>);
             }
         );
 
@@ -64,6 +138,7 @@ const LeaseCreation = () => {
             <ExistingTenantAdditionModal
                 setModalShow={setModalShow}
                 setExistingTenants={setExistingTenants}
+                tenants={tenants.filter(t => !existingTenants.includes(t))}
             />
         )
         setSize("md");
@@ -135,7 +210,7 @@ const LeaseCreation = () => {
     });
 
     function getTenantsTable() {
-        if (apartments.length > 0) {
+        if ([...existingTenants, ...newTenants].length > 0) {
             return(
                 <div className="table-responsive">
                     <Table className="table-hover">
@@ -157,7 +232,7 @@ const LeaseCreation = () => {
                 </div>
             );
         } else {
-            return (<div className="align-center padding-bottom-15">No hay departamentos para esta propiedad.</div>);
+            return (<div className="align-center padding-bottom-15 red-font">*Debe agregar al menos un inquilino.</div>);
         }
     }
 
@@ -190,8 +265,8 @@ const LeaseCreation = () => {
                     <Col sm={8}>
                         <Form.Control
                             type="date"
-                            ref={leaseName}
-                            placeholder="Fecha de caducidad"
+                            ref={startDate}
+                            placeholder="Fecha de Inicio"
                             defaultValue={Utils.getCurrentDate()}
                             required />
                         <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de inicio</Form.Control.Feedback>
@@ -203,7 +278,7 @@ const LeaseCreation = () => {
                     <Col sm={8}>
                         <Form.Control
                             type="date"
-                            ref={leaseName}
+                            ref={endDate}
                             placeholder="Fecha de caducidad"
                             defaultValue={Utils.getCurrentDate()}
                             min={Utils.getCurrentDate()}
@@ -226,8 +301,8 @@ const LeaseCreation = () => {
                 <Form.Group as={Row} className="justify-content-center">
                     <Form.Label column sm={3}>Departamento</Form.Label>
                     <Col sm={8}>
-                        <Form.Control as="select">
-                            <option key="0">Seleccione un departamento</option>
+                        <Form.Control as="select" ref={apartmentId} defaultValue={apartmentId} required>
+                            <option key="0" value="">Seleccione un departamento</option>
                             {apartmentsSelectOptions}
                         </Form.Control>
                         <Form.Control.Feedback type="invalid">Por favor seleccione un departamento</Form.Control.Feedback>
@@ -247,7 +322,7 @@ const LeaseCreation = () => {
 
                 <div className="table-responsive">
                     {getTenantsTable()}
-                </div>
+                </div><hr />
 
                 <div className="align-center basic-padding-10">
                     <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>

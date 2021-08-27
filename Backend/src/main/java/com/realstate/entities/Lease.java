@@ -19,7 +19,7 @@ public class Lease implements Serializable {
 	@NotNull(message = "cannot be null")
 	private String name;
 	@NotNull(message = "cannot be null")
-	private Tenant tenant;
+	private List<Tenant> tenants = new ArrayList<Tenant>();
 	@NotNull(message = "cannot be null")
 	private Apartment apartment;
 	@NotNull(message = "cannot be null")
@@ -32,16 +32,16 @@ public class Lease implements Serializable {
 	/* Constructors */
 	public Lease() {}
 	
-	public Lease(String leaseId, String name, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
+	public Lease(String leaseId, String name, List<Tenant> tenants, Apartment apartment, Date startDate, Date endDate, boolean active,
 			String description) {
 		super();
 		this.leaseId = leaseId;
 		this.name = name;
-		this.tenant = tenant;
+		this.tenants = tenants;
 		this.apartment = apartment;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.active = true;
+		this.active = active;
 		this.description = description;
 	}
 
@@ -58,11 +58,11 @@ public class Lease implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Tenant getTenant() {
-		return tenant;
+	public List<Tenant> getTenants() {
+		return tenants;
 	}
-	public void setTenant(Tenant tenant) {
-		this.tenant = tenant;
+	public void setTenants(List<Tenant> tenants) {
+		this.tenants = tenants;
 	}
 	public Apartment getApartment() {
 		return apartment;

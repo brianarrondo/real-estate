@@ -17,7 +17,7 @@ public class TenantService {
 	@Autowired
 	private TenantRepository tenantRepository;
 	
-	public Tenant getNew(String fullName, String dni, String phone, String description) {
+	public Tenant create(String fullName, String dni, String phone, String description) {
 		Tenant tenant = new Tenant(null, fullName, dni, phone, description);
 		return tenantRepository.insert(tenant);
 	}
