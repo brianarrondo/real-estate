@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, Col, Form, Row, Spinner} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";

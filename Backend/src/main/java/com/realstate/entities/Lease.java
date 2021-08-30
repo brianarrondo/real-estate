@@ -12,27 +12,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "lease")
 public class Lease implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	private String leaseId;
 	@NotNull(message = "cannot be null")
-	private Tenant tenant;
+	private String name;
+	@NotNull(message = "cannot be null")
+	private List<Tenant> tenants = new ArrayList<Tenant>();
 	@NotNull(message = "cannot be null")
 	private Apartment apartment;
 	@NotNull(message = "cannot be null")
 	private Date startDate;
 	private Date endDate;
-	private boolean active = true;
+	private boolean active;
 	private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
 	private String description;
 	
 	/* Constructors */
 	public Lease() {}
 	
-	public Lease(String leaseId, Tenant tenant, Apartment apartment, Date startDate, Date endDate, boolean active,
+	public Lease(String leaseId, String name, List<Tenant> tenants, Apartment apartment, Date startDate, Date endDate, boolean active,
 			String description) {
 		super();
 		this.leaseId = leaseId;
-		this.tenant = tenant;
+		this.name = name;
+		this.tenants = tenants;
 		this.apartment = apartment;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -47,11 +52,17 @@ public class Lease implements Serializable {
 	public void setLeaseId(String leaseId) {
 		this.leaseId = leaseId;
 	}
-	public Tenant getTenant() {
-		return tenant;
+	public String getName() {
+		return name;
 	}
-	public void setTenant(Tenant tenant) {
-		this.tenant = tenant;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<Tenant> getTenants() {
+		return tenants;
+	}
+	public void setTenants(List<Tenant> tenants) {
+		this.tenants = tenants;
 	}
 	public Apartment getApartment() {
 		return apartment;

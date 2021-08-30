@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row, Table} from "react-bootstrap";
 
-const EstateModalDetail = ({ setModalShow, estate }) => {
+const EstateDetailModal = ({ setModalShow, estate }) => {
     function onHide() {
         setModalShow(false);
     }
@@ -105,4 +105,4 @@ const EstateModalDetail = ({ setModalShow, estate }) => {
     )
 }
 
-export default EstateModalDetail;
+export default EstateDetailModal;

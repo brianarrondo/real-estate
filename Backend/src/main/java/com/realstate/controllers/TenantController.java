@@ -33,6 +33,11 @@ public class TenantController {
 		return ResponseEntity.ok(tenantService.findAll());
 	}
 	
+	@GetMapping("allWithoutLease")
+	public ResponseEntity<List<Tenant>> findAllWithoutLease() {
+		return ResponseEntity.ok(tenantService.findAllWithoutLease());
+	}
+	
 	@GetMapping(value = "{tenantId}")
 	public ResponseEntity<Tenant> findById(@PathVariable("tenantId") String tenantId) {
 		try {

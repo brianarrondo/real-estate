@@ -19,6 +19,8 @@ import Styles from "../css/styles.css";
 import PrivateRoute from "./route/PrivateRoute";
 import Services from "../services/Services";
 import EstateCreation from "./estate/EstateCreation";
+import LeaseCreation from "./lease/LeaseCreation";
+import LeaseList from "./lease/LeaseList";
 
 const App = () => {
 	return (
@@ -31,6 +33,8 @@ const App = () => {
 						<GenericModal>
 							<Header />
 							<PrivateRoute path="/" exact component={Home} />
+							<PrivateRoute path="/lease/all" exact component={LeaseList} />
+							<PrivateRoute path="/lease/creation" exact component={LeaseCreation} />
 							<PrivateRoute path="/estate/all" exact component={EstateList} />
 							<PrivateRoute path="/estate/creation" exact component={EstateCreation} />
 							<PrivateRoute path="/tenant/all" exact component={TenantList} />

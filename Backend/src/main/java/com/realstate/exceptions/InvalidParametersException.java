@@ -1,7 +1,10 @@
 package com.realstate.exceptions;
 
 public class InvalidParametersException extends Exception{
-	public InvalidParametersException() {
-		super("Los parametros del json del request son invalidos.");
+	
+	private static final long serialVersionUID = 1L;
+	
+	public InvalidParametersException(String message) {
+		super(message);
 	}
 }

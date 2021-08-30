@@ -6,7 +6,7 @@ import Estate from "../../models/Estate";
 import GenericSpinner from "../utils/GenericSpinner";
 import Apartment from "../../models/Apartment";
 
-const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallback }) => {
+const EstateEditionModal = ({ setModalShow, estate, successCallback, errorCallback }) => {
     let apartmentsToEdit = useRef(JSON.parse(JSON.stringify(estate.apartments)));
     let estateName = createRef();
     let estateAddress = createRef();
@@ -220,4 +220,4 @@ const EstateModalEdition = ({ setModalShow, estate, successCallback, errorCallba
     );
 };
 
-export default EstateModalEdition;
+export default EstateEditionModal;
