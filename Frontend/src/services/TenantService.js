@@ -12,6 +12,10 @@ export default class TenantService extends baseService {
         this.doGet(this.baseResourcePath + "/all", {}, successCallback, errorCallback);
     }
 
+    getAllWithoutLease(successCallback, errorCallback) {
+        this.doGet(this.baseResourcePath + "/allWithoutLease", {}, successCallback, errorCallback);
+    }
+
     createTenant(tenant, successCallback, errorCallback) {
         this.doPost(this.baseResourcePath, tenant, successCallback, errorCallback);
     }

@@ -67,6 +67,7 @@ const LeaseCreation = () => {
                     setNewTenants([]);
                     setExistingTenants([]);
                     getApartments();
+                    getTenants();
                     form.reset();
                 },
                 (error) => {
@@ -92,22 +93,8 @@ const LeaseCreation = () => {
         );
     }
 
-    useEffect(() => {
-        setLoading(true);
-        getApartments();
-
-        apartmentService.getAllWithoutLease(
-            (response) => {
-                setApartments(response.data);
-            },
-            (error) => {
-                setAlertType("danger");
-                setShowAlert(true);
-                setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al cargar los departamentos: "{error.message}"</div>);
-            }
-        );
-
-        tenantService.getAllTenants(
+    function getTenants() {
+        tenantService.getAllWithoutLease(
             (response) => {
                 setTenants(response.data);
             },
@@ -118,6 +105,13 @@ const LeaseCreation = () => {
                 setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al cargar los inquilinos: "{error.message}"</div>);
             }
         );
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        getApartments();
+
+        getTenants();
 
         estateService.getAllEstates(
             (response) => {
