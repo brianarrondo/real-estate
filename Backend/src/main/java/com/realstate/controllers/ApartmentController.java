@@ -32,6 +32,11 @@ public class ApartmentController {
 		return ResponseEntity.ok(apartmentService.findAll());
 	}
 	
+	@GetMapping("allWithoutLease")
+	public ResponseEntity<List<Apartment>> findAllWithoutLease() {
+		return ResponseEntity.ok(apartmentService.findAllWithoutLease());
+	}
+	
 	@GetMapping("allWithNoEstateAssigned")
 	public ResponseEntity<List<Apartment>> findAllNoEstateAssigned() {
 		return ResponseEntity.ok(apartmentService.findAllNoEstateAssigned());

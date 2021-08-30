@@ -24,20 +24,20 @@ class LeaseServiceTests extends BaseServiceTests {
 	
 	@Test
 	void leaseCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException, LeaseDoesNotExistException, InvalidParametersException {
-		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
+		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
 		
 		Date startDate = new Date();
 		Date endDate = new Date();
 		String desc = "Descripcion de contrato";
-		Lease newLease = leaseService.getNew(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
+		Lease newLease = leaseService.create(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
 		
 		Optional<Lease> optionalLeaseFromDb = leaseRepository.findById(new ObjectId(newLease.getLeaseId()));
 		assertTrue(optionalLeaseFromDb.isPresent());
 		Lease leaseFromDb = optionalLeaseFromDb.get();
 		
-		assertEquals(leaseFromDb.getTenant(), tenant);
+		assertEquals(leaseFromDb.getTenants(), tenant);
 		assertEquals(leaseFromDb.getApartment(), apartment);
 		assertEquals(leaseFromDb.getStartDate(), startDate);
 		assertEquals(leaseFromDb.getEndDate(), endDate);
@@ -54,7 +54,7 @@ class LeaseServiceTests extends BaseServiceTests {
 	
 	@Test
 	void exceptionIsThrownWhenLeaseCreatingWithoutTenantTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
-		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
+		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
 		tenantService.delete(tenant);
@@ -63,7 +63,7 @@ class LeaseServiceTests extends BaseServiceTests {
 		Date endDate = new Date();
 		String desc = "Descripcion de contrato";
 		Exception exception = assertThrows(TenantDoesNotExistException.class, () -> {
-			leaseService.getNew(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
+			leaseService.create(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
 		});
 		
 		assertEquals(exception.getClass(), TenantDoesNotExistException.class);
@@ -74,7 +74,7 @@ class LeaseServiceTests extends BaseServiceTests {
 	
 	@Test
 	void exceptionIsThrownWhenLeaseCreatingWithoutApartmentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
-		Tenant tenant = tenantService.getNew("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
+		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
 		apartmentService.delete(apartment);
@@ -83,7 +83,7 @@ class LeaseServiceTests extends BaseServiceTests {
 		Date endDate = new Date();
 		String desc = "Descripcion de contrato";
 		Exception exception = assertThrows(ApartmentDoesNotExistException.class, () -> {
-			leaseService.getNew(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
+			leaseService.create(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
 		});
 		
 		assertEquals(exception.getClass(), ApartmentDoesNotExistException.class);

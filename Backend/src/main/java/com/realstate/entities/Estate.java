@@ -18,15 +18,17 @@ public class Estate implements Serializable {
 	private String address;
 	private String description;
 	private List<Apartment> apartments = new ArrayList<Apartment>();
+	private boolean active;
 	
 	/* Constructors */
-	public Estate(String estateId, String name, String address, String description, List<Apartment> apartments) {
+	public Estate(String estateId, String name, String address, String description, List<Apartment> apartments, boolean active) {
 		super();
 		this.estateId = estateId;
 		this.name = name;
 		this.address = address;
 		this.description = description;
 		this.apartments = apartments;
+		this.active = active;
 	}
 	
 	/* Getters and Setters */
@@ -63,11 +65,18 @@ public class Estate implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((apartments == null) ? 0 : apartments.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -85,6 +94,8 @@ public class Estate implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Estate other = (Estate) obj;
+		if (active != other.active)
+			return false;
 		if (address == null) {
 			if (other.address != null)
 				return false;

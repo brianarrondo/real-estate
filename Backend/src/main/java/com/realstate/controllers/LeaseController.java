@@ -1,13 +1,9 @@
 package com.realstate.controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.realstate.dto.LeaseCreationDto;
 import com.realstate.entities.Lease;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.LeaseDoesNotExistException;
@@ -26,6 +23,7 @@ import com.realstate.services.LeaseService;
 import com.realstate.utils.Utils;
 
 @RestController
+@CrossOrigin(origins = "https://real-estate-adm-frontend.herokuapp.com", maxAge = 3600)
 @RequestMapping("lease")
 public class LeaseController {
 	
@@ -53,18 +51,9 @@ public class LeaseController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<String> createNewLease(@RequestBody Map<String, String> jsonParsed) {
+	public ResponseEntity<String> createNewLease(@RequestBody LeaseCreationDto leaseDto) {
 		try {
-			String tenantId = jsonParsed.get("tenantId");
-			String endDateString = jsonParsed.get("endDate");
-			String description = jsonParsed.get("description");
-			String apartmentId = jsonParsed.get("apartmentId");
-			String startDateString = jsonParsed.get("startDate");
-			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
-			Date endDate = formatter.parse(endDateString);
-			Date startDate = formatter.parse(startDateString);
-			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(leaseService.getNew(tenantId, apartmentId, startDate, endDate, true, description)));
+			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(leaseService.create(leaseDto)));
 		} catch (TenantDoesNotExistException | ApartmentDoesNotExistException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {

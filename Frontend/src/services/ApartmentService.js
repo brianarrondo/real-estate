@@ -15,6 +15,10 @@ class ApartmentService extends BaseService {
         this.doGet(this.baseResourcePath + "/allWithNoEstateAssigned", {}, successCallback, errorCallback);
     }
 
+    getAllWithoutLease(successCallback, errorCallback) {
+        this.doGet(this.baseResourcePath + "/allWithoutLease", {}, successCallback, errorCallback);
+    }
+
     createApartment(apartment, successCallback, errorCallback) {
         this.doPost(this.baseResourcePath, apartment, successCallback, errorCallback);
     }

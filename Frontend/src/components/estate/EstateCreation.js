@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState, createRef} from 'react';
-import {Button, Col, Form, Row, Table} from "react-bootstrap";
+import {Button, Col, Form, Row, Spinner, Table} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Estate from "../../models/Estate";
 import Apartment from "../../models/Apartment";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const EstateCreation = () => {
     let estateName = createRef();
@@ -15,6 +16,7 @@ const EstateCreation = () => {
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [validated, setValidated] = useState(false);
     const [apartments, setApartments] = useState([]);
+    const [isLoading, setLoading ] = useState(false);
 
     function handleSubmit(event) {
         let validationOk = true;
@@ -29,6 +31,7 @@ const EstateCreation = () => {
         setValidated(true);
 
         if (validationOk) {
+            setLoading(true);
             let estate = new Estate(
                 null,
                 estateName.current.value,
@@ -43,12 +46,14 @@ const EstateCreation = () => {
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> La propiedad <strong>{estate && estate.name}</strong> fue agregada con éxito</div>);
                     setValidated(false);
+                    setLoading(false);
                     setApartments([]);
                     form.reset();
                 },
                 (error) => {
                     setAlertType("danger");
                     setShowAlert(true);
+                    setLoading(false);
                     setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear la propiedad: "{error.message}"</div>);
                 }
             );
@@ -103,7 +108,9 @@ const EstateCreation = () => {
                 <Form.Control as="textarea" style={{height:"38px"}} value={apartment.description} onChange={(e) => handleInputChange(e, index, "description")} />
             </td>
             <td>
-                <Button className="trash-button d-flex align-items-center" variant="danger" onClick={() => removeApartment(index)}><i className="bi bi-trash" style={{fontSize: "20px"}}/></Button>
+                <Button className="delete-table-row-button d-flex align-items-center" variant="danger" onClick={() => removeApartment(index)}>
+                    <i className="bi bi-x x-button"/>
+                </Button>
             </td>
         </tr>);
     })
@@ -168,7 +175,11 @@ const EstateCreation = () => {
                     {getApartmentsTable()}
                 </div>
 
-                <div className="align-center"><Button variant="dark" type="submit">Agregar</Button></div>
+                <div className="align-center">
+                    <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Agregar</GenericSpinner>
+                    </Button>
+                </div>
             </Form>
         </div>
 

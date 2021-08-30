@@ -60,7 +60,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(newRentalBill);
 	}
 	
@@ -88,7 +88,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(newRentalBill);
 	}
 	
@@ -113,7 +113,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(newRentalBill1);
 		rentalBillService.delete(newRentalBill2);
 	}
@@ -143,7 +143,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(rentalBill);
 		paymentService.delete(newPayment);
 	}
@@ -179,7 +179,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(rentalBill);
 		paymentService.delete(newPayment1);
 		paymentService.delete(newPayment2);
@@ -214,7 +214,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 		Estate estate = estateService.findById(lease.getApartment().getEstateId());
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
-		tenantService.delete(lease.getTenant());
+		tenantService.delete(lease.getTenants().get(0));
 		rentalBillService.delete(rentalBill);
 		paymentService.delete(newPayment1);
 	}

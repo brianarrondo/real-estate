@@ -1,13 +1,17 @@
 package com.realstate.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.realstate.entities.Apartment;
+import com.realstate.entities.Lease;
 import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.repositories.ApartmentRepository;
@@ -19,9 +23,11 @@ public class ApartmentService {
 	private ApartmentRepository apartmentRepository;
 	@Autowired
 	private EstateService estateService;
+	@Autowired
+	private LeaseService leaseService;
 	
 	public Apartment getNew(String estateId, int rooms, String name, String description) {
-		Apartment apartment = new Apartment(null, estateId, rooms, name, description);
+		Apartment apartment = new Apartment(null, estateId, rooms, name, description, true);
 		return apartmentRepository.insert(apartment);
 	}
 	
@@ -29,6 +35,20 @@ public class ApartmentService {
 		return apartmentRepository.findAll();
 	}
 	
+	public List<Apartment> findAllWithoutLease() {
+		Date currentTime = new Date();
+		List<String> apartmentsIdsWithoutLease = leaseService.findAll()
+				.stream()
+				.filter(l -> ((l.getEndDate() .after(currentTime) || l.getEndDate().equals(currentTime)) && l.isActive() && l.getApartment() != null))
+				.map(l -> (l.getApartment().getApartmentId()))
+				.collect(Collectors.toList());
+
+		return apartmentRepository.findAll()
+				.stream()
+				.filter(a -> (!apartmentsIdsWithoutLease.contains(a.getApartmentId())))
+				.collect(Collectors.toList());
+	}
+
 	public List<Apartment> findAllNoEstateAssigned() {
 		return apartmentRepository.findByEstateIdIsNull();
 	}
@@ -47,6 +67,7 @@ public class ApartmentService {
 	}
 		
 	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
+		newApartment.setActive(true);
 		return apartmentRepository.insert(newApartment);
 	}
 	

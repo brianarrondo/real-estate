@@ -22,7 +22,7 @@ public class EstateService {
 	private ApartmentService apartmentService;
 	
 	public Estate getNew(String name, String address, String description) {
-		Estate newEstate = new Estate(null, name, address, description, null);
+		Estate newEstate = new Estate(null, name, address, description, null, true);
 		return estateRepository.insert(newEstate);
 	}
 
@@ -44,6 +44,7 @@ public class EstateService {
 	}
 	
 	public Estate createEstate(Estate newEstate) throws ApartmentDoesNotExistException, EstateDoesNotExistException {
+		newEstate.setActive(true);
 		// Insertamos el estate sin los apartments
 		List<Apartment> apartments = newEstate.getApartments();
 		newEstate.setApartments(null);
@@ -70,7 +71,11 @@ public class EstateService {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
 			for (Apartment apartment : estate.getApartments()) {
 				apartment.setEstateId(estate.getEstateId());
-				apartmentService.update(apartment);
+				if (apartment.getApartmentId() == null) {
+					apartment = apartmentService.insert(apartment);
+				} else {
+					apartmentService.update(apartment);
+				}
 			}
 			return estateRepository.save(estate);
 		} else {
@@ -80,8 +85,11 @@ public class EstateService {
 
 	public void delete(Estate estate) throws EstateDoesNotExistException, ApartmentDoesNotExistException {
 		if (estateRepository.existsById(new ObjectId(estate.getEstateId()))) {
-			for (Apartment apartment : estate.getApartments()) {
-				apartmentService.delete(apartment);
+			List<Apartment> apartments = estate.getApartments();
+			if (apartments != null && apartments.size() > 0) {
+				for (Apartment apartment : apartments) {
+					apartmentService.delete(apartment);
+				}
 			}
 			estateRepository.delete(estate);
 		} else {
