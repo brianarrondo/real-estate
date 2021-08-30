@@ -14,15 +14,17 @@ public class Apartment implements Serializable {
 	private int rooms;
 	private String name;
 	private String description;
+	private boolean active;
 	
 	/* Constructors */
-	public Apartment(String apartmentId, String estateId, int rooms, String name, String description) {
+	public Apartment(String apartmentId, String estateId, int rooms, String name, String description, boolean active) {
 		super();
 		this.apartmentId = apartmentId;
 		this.estateId = estateId;
 		this.rooms = rooms;
 		this.name = name;
 		this.description = description;
+		this.active = active;
 	}
 
 	/* Getters and Setters */
@@ -56,11 +58,19 @@ public class Apartment implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((apartmentId == null) ? 0 : apartmentId.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((estateId == null) ? 0 : estateId.hashCode());
@@ -78,6 +88,8 @@ public class Apartment implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Apartment other = (Apartment) obj;
+		if (active != other.active)
+			return false;
 		if (apartmentId == null) {
 			if (other.apartmentId != null)
 				return false;

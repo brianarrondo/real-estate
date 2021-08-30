@@ -1,17 +1,22 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import {ServicesContext} from "../../services/Services";
+import GenericSpinner from "../utils/GenericSpinner";
 
-const EstateModalDeletion = ({setModalShow, estate, successCallback, errorCallback}) => {
+const EstateDeletionModal = ({setModalShow, estate, successCallback, errorCallback}) => {
     const { estateService } = useContext(ServicesContext);
+    const [isLoading, setLoading] = useState(false);
     function deleteEstate(tenant) {
+        setLoading(true);
         estateService.deleteEstate(tenant,
             (response) => {
+                setLoading(false);
                 setModalShow(false);
                 if(successCallback) successCallback();
             },
             (error) => {
+                setLoading(false);
                 if (errorCallback) errorCallback(error);
             }
         );
@@ -31,10 +36,12 @@ const EstateModalDeletion = ({setModalShow, estate, successCallback, errorCallba
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => setModalShow(false)}>Cerrar</Button>
-                <Button variant="success" onClick={() => deleteEstate(estate)}>Borrar</Button>
+                <Button variant="success" onClick={() => deleteEstate(estate)} className="form-submit-button" disabled={isLoading}>
+                    <GenericSpinner show={isLoading}>Borrar</GenericSpinner>
+                </Button>
             </Modal.Footer>
         </>
     );
 };
 
-export default EstateModalDeletion;
+export default EstateDeletionModal;

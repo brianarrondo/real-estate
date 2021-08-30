@@ -3,6 +3,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import {AlertContext} from "../utils/GenericAlert";
 import {ServicesContext} from "../../services/Services";
 import Tenant from "../../models/Tenant";
+import GenericSpinner from "../utils/GenericSpinner";
 
 const TenantCreation = () => {
     let tenantFullName = React.createRef();
@@ -14,6 +15,7 @@ const TenantCreation = () => {
     const { tenantService } = useContext(ServicesContext);
     const {setShowAlert, setAlertType, setAlertContent} = useContext(AlertContext);
     const [validated, setValidated] = useState(false);
+    const [isLoading, setLoading ] = useState(false);
 
     function handleSubmit(event) {
         let validationOk = true;
@@ -29,6 +31,7 @@ const TenantCreation = () => {
 
 
         if (validationOk) {
+            setLoading(true);
             let tenant = new Tenant(
                 null,
                 tenantFullName.current.value,
@@ -43,11 +46,13 @@ const TenantCreation = () => {
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> El inquilino <strong>{tenant && tenant.fullName}</strong> fue agregado con éxito</div>);
                     setValidated(false);
+                    setLoading(false);
                     form.reset();
                 },
                 (error) => {
                     setAlertType("danger");
                     setShowAlert(true);
+                    setLoading(false);
                     setAlertContent(<div><i className="bi bi-exclamation-circle"></i> Hubo un error al crear el inquilino: "{error.message}"</div>);
                 }
             );
@@ -100,7 +105,11 @@ const TenantCreation = () => {
                     </Col>
                 </Form.Group>
 
-                <div className="align-center basic-padding-10"><Button variant="dark" type="submit">Agregar</Button></div>
+                <div className="align-center basic-padding-10">
+                    <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
+                        <GenericSpinner show={isLoading}>Agregar</GenericSpinner>
+                    </Button>
+                </div>
             </Form>
         </div>
 
