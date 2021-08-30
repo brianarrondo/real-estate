@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default class BaseService {
 
-    baseURI = "http://localhost:8080";
+    baseURI = "https://real-estate-adm-backend.herokuapp.com";
 
     constructor(unauthorizedCallback) {
         // Interceptamos los requests que retornan 401 (acceso no autorizado)
