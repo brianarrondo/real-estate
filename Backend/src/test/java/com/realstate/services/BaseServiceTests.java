@@ -38,8 +38,9 @@ public class BaseServiceTests {
 	public RentalBillService rentalBillService;
 	@Autowired
 	public RentalBillRepository rentalBillRepository;
-
+/*
 	public Lease getValidLease() throws TenantDoesNotExistException, ApartmentDoesNotExistException, InvalidParametersException {
+		
 		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
@@ -53,7 +54,8 @@ public class BaseServiceTests {
 		Lease newLease = leaseService.create(tenant.getTenantId(), apartment.getApartmentId(), startDate, endDate, true, desc);
 		
 		return newLease;
-	}
+		Lease newLease = leaseService.create();
+	}*/
 	
 	public RentalBill setRentalBill(Lease lease, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Date date = new Date();
