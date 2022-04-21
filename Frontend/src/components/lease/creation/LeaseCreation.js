@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useState, useRef} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Button, ButtonGroup, Col, Form, Row, Table} from "react-bootstrap";
-import GenericSpinner from "../utils/GenericSpinner";
-import {ServicesContext} from "../../services/Services";
-import {AlertContext} from "../utils/GenericAlert";
-import Utils from "../../utils/Utils";
-import {ModalContext} from "../utils/GenericModal";
+import GenericSpinner from "../../utils/GenericSpinner";
+import {ServicesContext} from "../../../services/Services";
+import {AlertContext} from "../../utils/GenericAlert";
+import Utils from "../../../utils/Utils";
+import {ModalContext} from "../../utils/GenericModal";
 import ExistingTenantAdditionModal from "./ExistingTenantAdditionModal";
-import Tenant from "../../models/Tenant";
-import Estate from "../../models/Estate";
-import Lease from "../../models/Lease";
+import Tenant from "../../../models/Tenant";
+import CreationLeaseDto from "../model/CreationLeaseDto";
 
 const LeaseCreation = () => {
     let form = React.createRef();
@@ -44,11 +43,12 @@ const LeaseCreation = () => {
 
         if (validationOk) {
             setLoading(true);
-            let lease = new Lease (
-                "0",
+            console.log(apartmentId.current.value);
+            let lease = new CreationLeaseDto(
+                0,
                 leaseName.current.value,
                 [...newTenants, ...existingTenants],
-                apartmentId.current.value,
+                parseInt(apartmentId.current.value),
                 startDate.current.value,
                 endDate.current.value,
                 true,
@@ -232,8 +232,8 @@ const LeaseCreation = () => {
 
     const apartmentsSelectOptions = apartments.map((a) => {
         return (
-            <option key={a.apartmentId} value={a.apartmentId}>
-                {a.name} ({estates && estates.length && estates.find((e) => e.estateId === a.estateId).name})
+            <option key={a.id} value={a.id}>
+                {a.name} ({estates && estates.length && estates.find((e) => e.id === a.estateId).name})
             </option>
         );
     });

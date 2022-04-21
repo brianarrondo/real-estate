@@ -4,7 +4,7 @@ import com.realstate.entities.User;
 
 public class UserLoggedDto {
 	
-	private String userId;
+	private long userId;
 	private String name;
 	private String password;
 	private String email;
@@ -13,7 +13,7 @@ public class UserLoggedDto {
 	
 	/* Constructor */
 	public UserLoggedDto(User user, String token) {
-		userId = user.getUserId();
+		userId = user.getId();
 		name = user.getName();
 		password = user.getPassword();
 		email = user.getEmail();
@@ -22,10 +22,10 @@ public class UserLoggedDto {
 	}
 	
 	/* Getters and Setters */
-	public String getUserId() {
+	public long getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 	public String getToken() {

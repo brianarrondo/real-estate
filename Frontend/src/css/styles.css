@@ -17,6 +17,16 @@
 	color: white;
 }
 
+.lease-table-titles {
+	padding: 0px 15px 15px 15px;
+}
+
+.lease-table-titles div {
+	font-weight: bold;
+	color: black;
+	font-size: 16px;
+}
+
 .bold {
 	font-weight: bold;
 }

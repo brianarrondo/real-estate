@@ -1,8 +1,8 @@
 import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
-import {ServicesContext} from "../../services/Services";
-import GenericSpinner from "../utils/GenericSpinner";
+import {ServicesContext} from "../../../services/Services";
+import GenericSpinner from "../../utils/GenericSpinner";
 
 const TenantDeletionModal = ({setModalShow, tenant, successCallback, errorCallback}) => {
     const { tenantService } = useContext(ServicesContext);

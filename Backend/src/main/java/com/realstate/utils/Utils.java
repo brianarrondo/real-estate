@@ -3,14 +3,21 @@ package com.realstate.utils;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @Component
 public class Utils {
 	static ObjectMapper mapper = new ObjectMapper().configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false);
+	
+	@Autowired
+    static ModelMapper modelMapper;
 	
 	public static boolean sameMonthAndYear(Date date1, Date date2) {
 		Calendar calendar1 = Calendar.getInstance();
@@ -30,5 +37,14 @@ public class Utils {
 	
 	public static String getResponseMsg(String msg) {
 		return "{\"msg\": \""+ msg +"\"}";
+	}
+	
+	@Bean
+	public ModelMapper modelMapper() {
+	    return new ModelMapper();
+	}
+	
+	public static <T> T map(Object source, Class<T> destinationType) {
+		return new ModelMapper().map(source, destinationType);
 	}
 }

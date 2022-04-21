@@ -2,27 +2,31 @@ package com.realstate.entities;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Document(collection = "user")
+@Entity
+@Table(name = "user")
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 42L;
 	
-	@Id
-	private String userId;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 	private String name;
 	private String password;
 	private String email;
 	private boolean active;
 	
 	/* Getters and Setters */
-	public String getUserId() {
-		return userId;
+	public long getId() {
+		return id;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setId(long id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -47,5 +51,8 @@ public class User implements Serializable {
 	}
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

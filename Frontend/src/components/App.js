@@ -4,9 +4,9 @@ import {BrowserRouter, Redirect, Route} from "react-router-dom";
 import Header from "./Header";
 
 import Home from "./Home";
-import TenantList from "./tenant/TenantList";
+import TenantList from "./tenant/list/TenantList";
 import EstateList from "./estate/EstateList";
-import TenantCreation from "./tenant/TenantCreation";
+import TenantCreation from "./tenant/creation/TenantCreation";
 
 import Logout from "./login/Logout";
 import Login from "./login/Login";
@@ -19,8 +19,8 @@ import Styles from "../css/styles.css";
 import PrivateRoute from "./route/PrivateRoute";
 import Services from "../services/Services";
 import EstateCreation from "./estate/EstateCreation";
-import LeaseCreation from "./lease/LeaseCreation";
-import LeaseList from "./lease/LeaseList";
+import LeaseCreation from "./lease/creation/LeaseCreation";
+import LeaseList from "./lease/list/LeaseList";
 
 const App = () => {
 	return (

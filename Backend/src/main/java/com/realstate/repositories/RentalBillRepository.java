@@ -2,13 +2,12 @@ package com.realstate.repositories;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.realstate.entities.RentalBill;
 
 @Repository
-public interface RentalBillRepository extends MongoRepository<RentalBill, ObjectId> {
-	public List<RentalBill> findAllByLeaseId(String leaseId);
+public interface RentalBillRepository extends JpaRepository<RentalBill, Long> {
+	public List<RentalBill> findAllByLeaseId(long leaseId);
 }

@@ -2,17 +2,31 @@ package com.realstate.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "rental_fees")
 public class RentalFees {
-	private String rentalFeeId;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 	private float fee;
 	private Date startDate;
 	private Date endDate;
+	@ManyToOne (cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	private Lease lease;
 
-	public String getRentalFeeId() {
-		return rentalFeeId;
+	public long getId() {
+		return id;
 	}
-	public void setRentalFeeId(String rentalFeeId) {
-		this.rentalFeeId = rentalFeeId;
+	public void setId(long id) {
+		this.id = id;
 	}
 	public float getFee() {
 		return fee;
@@ -31,5 +45,11 @@ public class RentalFees {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public Lease getLease() {
+		return lease;
+	}
+	public void setLease(Lease lease) {
+		this.lease = lease;
 	}
 }

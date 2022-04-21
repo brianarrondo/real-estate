@@ -66,7 +66,7 @@ const EstateEditionModal = ({ setModalShow, estate, successCallback, errorCallba
             setLoading(true);
             estateService.editEstate(
                 new Estate(
-                    estate.estateId,
+                    estate.id,
                     estateName.current.value,
                     estateAddress.current.value,
                     estateDescription.current.value,
@@ -100,7 +100,7 @@ const EstateEditionModal = ({ setModalShow, estate, successCallback, errorCallba
     const newApartmentsRows = newApartments.map((apartment, index) => {
         return (
             <tr key={index}>
-                <td className="bold">{apartment.apartmentId}</td>
+                <td className="bold">{apartment.id}</td>
                 <td>
                     <Form.Control value={apartment.name} onChange={(e) => handleInputChange(e, index, "name")} required />
                     <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
@@ -123,8 +123,8 @@ const EstateEditionModal = ({ setModalShow, estate, successCallback, errorCallba
 
     const apartmentsListComponents = apartmentsToEdit.current.map((a, index) => {
         return (
-            <tr key={a.apartmentId}>
-                <td className="bold">{a.apartmentId}</td>
+            <tr key={a.id}>
+                <td className="bold">{a.id}</td>
                 <td>
                     <Form.Control defaultValue={a.name} onChange={(e) => apartmentsToEdit.current[index].name = e.target.value} required />
                     <Form.Control.Feedback type="invalid">*Obligatorio</Form.Control.Feedback>
@@ -162,7 +162,7 @@ const EstateEditionModal = ({ setModalShow, estate, successCallback, errorCallba
                             Id
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control readOnly defaultValue={estate.estateId} className="details" />
+                            <Form.Control readOnly defaultValue={estate.id} className="details" />
                         </Col>
                     </Form.Group>
 
