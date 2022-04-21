@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.realstate.entities.RentalBill;
-import com.realstate.exceptions.LeaseDoesNotExistException;
-import com.realstate.exceptions.RentalBillDoesNotExistException;
+import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.services.RentalBillService;
 import com.realstate.utils.Utils;
 
@@ -33,10 +32,10 @@ public class BillManagerController {
 	private RentalBillService rentalBillService;
 	
 	@GetMapping(value = "{rentalBillId}")
-	public ResponseEntity<String> findById(@PathVariable("rentalBillId") String rentalBillId) {
+	public ResponseEntity<String> findById(@PathVariable("rentalBillId") long rentalBillId) {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.findById(rentalBillId)));
-		} catch (RentalBillDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -56,13 +55,13 @@ public class BillManagerController {
 	public ResponseEntity<String> generateRentalBill(@RequestBody Map<String, String> parsedJson) {
 		try {
 			String dateString = parsedJson.get("date");
-			String leaseId = parsedJson.get("leaseId");
+			long leaseId = Long.parseLong(parsedJson.get("leaseId"));
 			float amount = Float.parseFloat(parsedJson.get("amount"));
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
 			Date date = formatter.parse(dateString);
 			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(rentalBillService.generateRentalBill(leaseId, date, amount)));
-		} catch (LeaseDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -73,13 +72,13 @@ public class BillManagerController {
 	public ResponseEntity<String> generatePayment(@RequestBody Map<String, String> parsedJson) {
 		try {
 			String dateString = parsedJson.get("date");
-			String rentalBillId = parsedJson.get("rentalBillId");
+			long rentalBillId = Long.parseLong(parsedJson.get("rentalBillId"));
 			float amountToPay = Float.parseFloat(parsedJson.get("amount"));
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
 			Date date = formatter.parse(dateString);
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(rentalBillId, amountToPay, date)));
-		} catch (RentalBillDoesNotExistException | LeaseDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -100,7 +99,7 @@ public class BillManagerController {
 	public ResponseEntity<String> update(@RequestBody RentalBill rentalBill) {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.update(rentalBill)));
-		} catch (RentalBillDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -112,7 +111,7 @@ public class BillManagerController {
 		try {
 			rentalBillService.delete(rentalBill);
 			return ResponseEntity.ok().build();
-		} catch (RentalBillDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));

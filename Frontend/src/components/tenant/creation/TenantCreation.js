@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
 import {Button, Col, Form, Row} from "react-bootstrap";
-import {AlertContext} from "../utils/GenericAlert";
-import {ServicesContext} from "../../services/Services";
-import Tenant from "../../models/Tenant";
-import GenericSpinner from "../utils/GenericSpinner";
+import {AlertContext} from "../../utils/GenericAlert";
+import {ServicesContext} from "../../../services/Services";
+import Tenant from "../../../models/Tenant";
+import GenericSpinner from "../../utils/GenericSpinner";
 
 const TenantCreation = () => {
     let tenantFullName = React.createRef();

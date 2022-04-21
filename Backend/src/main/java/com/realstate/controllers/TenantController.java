@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.realstate.entities.Tenant;
-import com.realstate.exceptions.TenantDoesNotExistException;
+import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.services.TenantService;
 
 @RestController
@@ -39,10 +39,10 @@ public class TenantController {
 	}
 	
 	@GetMapping(value = "{tenantId}")
-	public ResponseEntity<Tenant> findById(@PathVariable("tenantId") String tenantId) {
+	public ResponseEntity<Tenant> findById(@PathVariable("tenantId") long tenantId) {
 		try {
 			return ResponseEntity.ok(tenantService.findById(tenantId));
-		} catch (TenantDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -65,7 +65,7 @@ public class TenantController {
 	public ResponseEntity<Tenant> update(@RequestBody Tenant tenant) {
 		try {
 			return ResponseEntity.ok(tenantService.update(tenant));
-		} catch (TenantDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -75,7 +75,7 @@ public class TenantController {
 		try {
 			tenantService.delete(tenant);
 			return ResponseEntity.ok().build();
-		} catch (TenantDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}	

@@ -92,7 +92,7 @@ const EstateListTable = () => {
     /* Llenamos la tabla con los objetos correspondientes */
     const estateListComponents = estates.map((estate) => {
         return (
-            <tr key={estate.estateId}>
+            <tr key={estate.id}>
                 <td className="bold">{estate.name}</td>
                 <td>{estate.address}</td>
                 <td>

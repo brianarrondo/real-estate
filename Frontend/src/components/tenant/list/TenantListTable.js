@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
-import {ModalContext} from "../utils/GenericModal";
-import {AlertContext} from "../utils/GenericAlert";
-import TenantEditionModal from "./TenantEditionModal";
-import TenantDeletionModal from "./TenantDeletionModal";
-import {ServicesContext} from "../../services/Services";
+import {ModalContext} from "../../utils/GenericModal";
+import {AlertContext} from "../../utils/GenericAlert";
+import TenantEditionModal from "../edition/TenantEditionModal";
+import TenantDeletionModal from "../deletion/TenantDeletionModal";
+import {ServicesContext} from "../../../services/Services";
 import {Spinner} from "react-bootstrap";
 
 const TenantListTable = () => {

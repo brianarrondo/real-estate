@@ -3,90 +3,71 @@ package com.realstate.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Document(collection = "payment")
+@Entity
+@Table(name = "payment")
 public class Payment implements Serializable {
-	@Id
-	private String paymentId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 	private float amount;
-	private String rentalBillId;
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	private RentalBill rentalBill;
 	private Date date;
 
 	/* Constructors */
-	public Payment(String paymentId, float amount, String rentalBillId, Date date) {
+	public Payment(long paymentId, float amount, RentalBill rentalBill, Date date) {
 		super();
-		this.paymentId = paymentId;
+		this.id = paymentId;
 		this.amount = amount;
-		this.rentalBillId = rentalBillId;
+		this.rentalBill = rentalBill;
 		this.date = date;
 	}
-	
-	/* Getters and Setters */
-	public String getPaymentId() {
-		return paymentId;
+
+	public long getId() {
+		return id;
 	}
-	public void setPaymentId(String paymentId) {
-		this.paymentId = paymentId;
+
+	public void setId(long id) {
+		this.id = id;
 	}
+
 	public float getAmount() {
 		return amount;
 	}
+
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
-	public String getRentalBillId() {
-		return rentalBillId;
+
+	public RentalBill getRentalBill() {
+		return rentalBill;
 	}
-	public void setRentalBillId(String leaseId) {
-		this.rentalBillId = leaseId;
+
+	public void setRentalBill(RentalBill rentalBill) {
+		this.rentalBill = rentalBill;
 	}
+
 	public Date getDate() {
 		return date;
 	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Float.floatToIntBits(amount);
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((paymentId == null) ? 0 : paymentId.hashCode());
-		result = prime * result + ((rentalBillId == null) ? 0 : rentalBillId.hashCode());
-		return result;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Payment other = (Payment) obj;
-		if (Float.floatToIntBits(amount) != Float.floatToIntBits(other.amount))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (paymentId == null) {
-			if (other.paymentId != null)
-				return false;
-		} else if (!paymentId.equals(other.paymentId))
-			return false;
-		if (rentalBillId == null) {
-			if (other.rentalBillId != null)
-				return false;
-		} else if (!rentalBillId.equals(other.rentalBillId))
-			return false;
-		return true;
-	}
-	
 }

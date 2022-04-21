@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.realstate.dto.ApartmentDto;
 import com.realstate.entities.Apartment;
-import com.realstate.entities.Lease;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
-import com.realstate.exceptions.EstateDoesNotExistException;
+import com.realstate.entities.Estate;
+import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.repositories.ApartmentRepository;
+import com.realstate.repositories.LeaseRepository;
 
 @Service
 public class ApartmentService {
@@ -22,68 +22,74 @@ public class ApartmentService {
 	@Autowired
 	private ApartmentRepository apartmentRepository;
 	@Autowired
-	private EstateService estateService;
+	private LeaseRepository leaseRepo;
 	@Autowired
-	private LeaseService leaseService;
+    private ModelMapper modelMapper;
 	
-	public Apartment getNew(String estateId, int rooms, String name, String description) {
-		Apartment apartment = new Apartment(null, estateId, rooms, name, description, true);
-		return apartmentRepository.insert(apartment);
+	public Apartment getNew(Estate estate, int rooms, String name, String description) {
+		Apartment apartment = new Apartment(estate, rooms, name, description, true);
+		return apartmentRepository.save(apartment);
 	}
 	
-	public List<Apartment> findAll() {
-		return apartmentRepository.findAll();
+	public List<ApartmentDto> findAll() {
+		return apartmentRepository.findAll().stream().map(a -> modelMapper.map(a, ApartmentDto.class)).collect(Collectors.toList());
 	}
 	
-	public List<Apartment> findAllWithoutLease() {
+	public List<ApartmentDto> findAllWithoutLease() {
 		Date currentTime = new Date();
-		List<String> apartmentsIdsWithoutLease = leaseService.findAll()
+		List<Long> apartmentsIdsWithoutLease = leaseRepo.findAll()
 				.stream()
-				.filter(l -> ((l.getEndDate() .after(currentTime) || l.getEndDate().equals(currentTime)) && l.isActive() && l.getApartment() != null))
-				.map(l -> (l.getApartment().getApartmentId()))
+				.filter(l -> ((l.getEndDate() .after(currentTime) || l.getEndDate().equals(currentTime)) && l.isActive() && l.getApartment().getId() != 0))
+				.map(l -> (l.getApartment().getId()))
 				.collect(Collectors.toList());
 
 		return apartmentRepository.findAll()
 				.stream()
-				.filter(a -> (!apartmentsIdsWithoutLease.contains(a.getApartmentId())))
+				.filter(a -> (!apartmentsIdsWithoutLease.contains(a.getId())))
+				.map(a -> modelMapper.map(a, ApartmentDto.class))
 				.collect(Collectors.toList());
 	}
 
-	public List<Apartment> findAllNoEstateAssigned() {
-		return apartmentRepository.findByEstateIdIsNull();
+	public List<ApartmentDto> findAllNoEstateAssigned() {
+		return apartmentRepository.findByEstateIdIsNull().stream().map(a -> modelMapper.map(a, ApartmentDto.class)).collect(Collectors.toList());
 	}
 	
-	public Apartment findById(String apartmentId) throws ApartmentDoesNotExistException {
-		Optional<Apartment> optionalApartment = apartmentRepository.findById(new ObjectId(apartmentId));
+	public Apartment findById(long apartmentId) throws EntityNotFoundException {
+		Optional<Apartment> optionalApartment = apartmentRepository.findById(apartmentId);
 		if (optionalApartment.isPresent()) {
 			return optionalApartment.get();
 		} else {
-			throw new ApartmentDoesNotExistException();
+			throw new EntityNotFoundException("El departamento con el ID especificado no existe.");
 		}
 	}
 	
-	public boolean existById(String apartmentId) {
-		return apartmentRepository.existsById(new ObjectId(apartmentId));
+	public boolean existById(long apartmentId) {
+		return apartmentRepository.existsById(apartmentId);
 	}
 		
-	public Apartment insert(Apartment newApartment) throws EstateDoesNotExistException {
+	public Apartment insert(Apartment newApartment) {
 		newApartment.setActive(true);
-		return apartmentRepository.insert(newApartment);
+		return apartmentRepository.save(newApartment);
 	}
 	
-	public Apartment update(Apartment apartment) throws ApartmentDoesNotExistException {
-		if (apartmentRepository.existsById(new ObjectId(apartment.getApartmentId()))) {
+	public List<Apartment> insertAll(List<Apartment> newApartments) {
+		return apartmentRepository.saveAll(newApartments);
+	}
+	
+	public Apartment update(Apartment apartment) throws EntityNotFoundException {
+		if (apartmentRepository.existsById(apartment.getId())) {
 			return apartmentRepository.save(apartment);
 		} else {
-			throw new ApartmentDoesNotExistException();
+			throw new EntityNotFoundException("El departamento con el ID especificado no existe.");
 		}
 	}
 	
-	public void delete(Apartment apartment) throws ApartmentDoesNotExistException {
-		if (apartmentRepository.existsById(new ObjectId(apartment.getApartmentId()))) {
-			apartmentRepository.delete(apartment);
+	public void delete(ApartmentDto a) throws EntityNotFoundException {
+		long id = a.getId();
+		if (apartmentRepository.existsById(id)) {
+			apartmentRepository.deleteById(id);
 		} else {
-			throw new ApartmentDoesNotExistException();
+			throw new EntityNotFoundException("El departamento con el ID especificado no existe.");
 		}
 	}
 }

@@ -32,8 +32,8 @@ const EstateDetailModal = ({ setModalShow, estate }) => {
 
     const apartmentsListComponents = (estate.apartments || []).map(a => {
         return (
-            <tr key={a.apartmentId}>
-                <td className="bold">{a.apartmentId}</td>
+            <tr key={a.id}>
+                <td className="bold">{a.id}</td>
                 <td>{a.name}</td>
                 <td>{a.rooms}</td>
                 <td>{a.description}</td>
@@ -56,7 +56,7 @@ const EstateDetailModal = ({ setModalShow, estate }) => {
                             Id
                         </Form.Label>
                         <Col sm={9}>
-                            <Form.Control readOnly defaultValue={estate.estateId} className="details" />
+                            <Form.Control readOnly defaultValue={estate.id} className="details" />
                         </Col>
                     </Form.Group>
 

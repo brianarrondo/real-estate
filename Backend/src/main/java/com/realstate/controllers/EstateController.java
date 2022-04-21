@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.realstate.dto.EstateDto;
 import com.realstate.entities.Estate;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
-import com.realstate.exceptions.EstateDoesNotExistException;
+import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.services.EstateService;
 
 @RestController
@@ -29,46 +29,44 @@ public class EstateController {
 	private EstateService estateService;
 	
 	@GetMapping("all")
-	public ResponseEntity<List<Estate>> findAll() {
+	public ResponseEntity<List<EstateDto>> findAll() {
 		return ResponseEntity.ok(estateService.findAll());
 	}
 	
 	@GetMapping(value = "{estateId}")
-	public ResponseEntity<Estate> findById(@PathVariable("estateId") String estateId) {
+	public ResponseEntity<?> findById(@PathVariable("estateId") long estateId) {
 		try {
 			return ResponseEntity.ok(estateService.findById(estateId));
-		} catch (EstateDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 	
 	@PostMapping
-	public ResponseEntity<Estate> insert(@RequestBody Estate newEstate) {
+	public ResponseEntity<?> insert(@RequestBody EstateDto newEstateDto) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(estateService.createEstate(newEstate));
+			return ResponseEntity.status(HttpStatus.CREATED).body(estateService.createEstate(newEstateDto));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 
 	@PutMapping
-	public ResponseEntity<Estate> update(@RequestBody Estate estate) {
+	public ResponseEntity<?> update(@RequestBody EstateDto estateDto) {
 		try {
-			return ResponseEntity.ok(estateService.update(estate));
-		} catch (EstateDoesNotExistException | ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			return ResponseEntity.ok(estateService.update(estateDto));
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 
 	@DeleteMapping
-	public ResponseEntity<Estate> delete(@RequestBody Estate estate) {
+	public ResponseEntity<?> delete(@RequestBody EstateDto estateDto) {
 		try {
-			estateService.delete(estate);
+			estateService.delete(estateDto);
 			return ResponseEntity.ok().build();
-		} catch (EstateDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		} catch (ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 }
