@@ -21,7 +21,7 @@ import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.services.EstateService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = "https://real-estate-adm-frontend.herokuapp.com", maxAge = 3600)
 @RequestMapping("estate")
 public class EstateController {
 

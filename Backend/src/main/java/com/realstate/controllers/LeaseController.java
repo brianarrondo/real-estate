@@ -22,7 +22,7 @@ import com.realstate.services.LeaseService;
 import com.realstate.utils.Utils;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = "https://real-estate-adm-frontend.herokuapp.com", maxAge = 3600)
 @RequestMapping("lease")
 public class LeaseController {
 	
