@@ -13,18 +13,14 @@ import com.realstate.entities.Apartment;
 import com.realstate.entities.Estate;
 import com.realstate.entities.Lease;
 import com.realstate.entities.Tenant;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
-import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
-import com.realstate.exceptions.LeaseDoesNotExistException;
-import com.realstate.exceptions.TenantDoesNotExistException;
 
 @SpringBootTest
 class LeaseServiceTests extends BaseServiceTests {
-	
+	/*
 	@Test
 	void leaseCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException, LeaseDoesNotExistException, InvalidParametersException {
-		/*
+		
 		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
@@ -49,13 +45,13 @@ class LeaseServiceTests extends BaseServiceTests {
 		tenantService.delete(tenant);
 		estateService.delete(estate);
 		apartmentService.delete(apartment);
-		leaseService.delete(newLease);*/
+		leaseService.delete(newLease);
 		
 	}
 	
 	@Test
 	void exceptionIsThrownWhenLeaseCreatingWithoutTenantTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
-		/*
+		
 		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
@@ -71,12 +67,12 @@ class LeaseServiceTests extends BaseServiceTests {
 		assertEquals(exception.getClass(), TenantDoesNotExistException.class);
 		
 		estateService.delete(estate);
-		apartmentService.delete(apartment);*/
+		apartmentService.delete(apartment);
 	}
 	
 	@Test
 	void exceptionIsThrownWhenLeaseCreatingWithoutApartmentTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, EstateDoesNotExistException {
-		/*
+		
 		Tenant tenant = tenantService.create("John Connor", "35111222", "4444-5555", "Altura 1.80 - Peso 80Kg - Edad: 50");
 		Estate estate = estateService.getNew("Propiedad 1", "Calle Falsa 123 - Localidad San Martin", "Propiedad amplia con patio");
 		Apartment apartment = apartmentService.getNew(estate.getEstateId(), 3, "Departamento 1", "Departamento con baño, dormitorio y cocina. Muy pequeño");
@@ -92,6 +88,6 @@ class LeaseServiceTests extends BaseServiceTests {
 		assertEquals(exception.getClass(), ApartmentDoesNotExistException.class);
 		
 		estateService.delete(estate);
-		tenantService.delete(tenant);*/
-	}
+		tenantService.delete(tenant);
+	}*/
 }

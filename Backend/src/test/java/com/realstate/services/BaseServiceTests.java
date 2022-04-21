@@ -10,12 +10,9 @@ import com.realstate.entities.Estate;
 import com.realstate.entities.Lease;
 import com.realstate.entities.RentalBill;
 import com.realstate.entities.Tenant;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
-import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
 import com.realstate.exceptions.RentalBillDateIsOutOfLeaseDateException;
-import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
 import com.realstate.repositories.LeaseRepository;
 import com.realstate.repositories.RentalBillRepository;
@@ -55,11 +52,11 @@ public class BaseServiceTests {
 		
 		return newLease;
 		Lease newLease = leaseService.create();
-	}*/
+	}
 	
 	public RentalBill setRentalBill(Lease lease, float amount) throws LeaseDoesNotExistException, LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		Date date = new Date();
 		RentalBill newRentallBill = rentalBillService.generateRentalBill(lease.getLeaseId(), date, amount);
 		return newRentallBill;
-	}
+	}*/
 }

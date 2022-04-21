@@ -16,21 +16,16 @@ import com.realstate.entities.Payment;
 import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
 import com.realstate.exceptions.AmountToPaidIsZeroException;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
-import com.realstate.exceptions.EstateDoesNotExistException;
 import com.realstate.exceptions.InvalidParametersException;
-import com.realstate.exceptions.LeaseDoesNotExistException;
 import com.realstate.exceptions.LeaseIsNotActiveException;
 import com.realstate.exceptions.PaymentDoesNotExistException;
 import com.realstate.exceptions.RentalBillDateIsOutOfLeaseDateException;
-import com.realstate.exceptions.RentalBillDoesNotExistException;
 import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
-import com.realstate.exceptions.TenantDoesNotExistException;
 import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
 
 @SpringBootTest
 class RentalBillServiceTests extends BaseServiceTests {
-		
+	/*	
 	@Test
 	void exceptionIsThrownWhenRentalBillCreatingWithoutLeaseTest() {
 		Date date = new Date();
@@ -45,7 +40,7 @@ class RentalBillServiceTests extends BaseServiceTests {
 
 	@Test
 	void rentalBillCreationTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
-		/*
+		
 		Lease lease =  getValidLease();
 		Date date = new Date();
 		float amount = 10.500f;
@@ -62,9 +57,9 @@ class RentalBillServiceTests extends BaseServiceTests {
 		estateService.delete(estate);
 		apartmentService.delete(lease.getApartment());
 		tenantService.delete(lease.getTenants().get(0));
-		rentalBillService.delete(newRentalBill);*/
+		rentalBillService.delete(newRentalBill);
 	}
-	/*
+	
 	@Test
 	void rentalBillIsNotCreatedWhenAlreadyExistsInMonthTest() throws TenantDoesNotExistException, ApartmentDoesNotExistException, LeaseDoesNotExistException, RentalBillDoesNotExistException, LeaseIsNotActiveException, EstateDoesNotExistException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException {
 		
