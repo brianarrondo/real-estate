@@ -1,7 +1,7 @@
 export default class {
 
-    constructor(apartmentId, estateId, rooms , name, description) {
-        this.apartmentId = apartmentId;
+    constructor(id, estateId, rooms , name, description) {
+        this.id = id;
         this.estateId = estateId;
         this.rooms = rooms;
         this.name = name;

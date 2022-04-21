@@ -4,26 +4,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-@Document(collection = "estate")
+@Entity
+@Table(name = "estate")
 public class Estate implements Serializable {
 	
 	private static final long serialVersionUID = 42L;
 	
-	@Id
-	private String estateId;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 	private String name;
 	private String address;
 	private String description;
+	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "estate")
 	private List<Apartment> apartments = new ArrayList<Apartment>();
 	private boolean active;
 	
 	/* Constructors */
-	public Estate(String estateId, String name, String address, String description, List<Apartment> apartments, boolean active) {
+	public Estate(String name, String address, String description, List<Apartment> apartments, boolean active) {
 		super();
-		this.estateId = estateId;
 		this.name = name;
 		this.address = address;
 		this.description = description;
@@ -31,45 +38,59 @@ public class Estate implements Serializable {
 		this.active = active;
 	}
 	
+	public Estate() {}
+
 	/* Getters and Setters */
-	public String getEstateId() {
-		return estateId;
+	public long getId() {
+		return id;
 	}
-	public void setEstateId(String estateId) {
-		this.estateId = estateId;
+
+	public void setId(long id) {
+		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public List<Apartment> getApartments() {
 		return apartments;
 	}
+
 	public void setApartments(List<Apartment> apartments) {
 		this.apartments = apartments;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+
 	public boolean isActive() {
 		return active;
 	}
+
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
@@ -80,7 +101,7 @@ public class Estate implements Serializable {
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((apartments == null) ? 0 : apartments.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((estateId == null) ? 0 : estateId.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -111,10 +132,7 @@ public class Estate implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (estateId == null) {
-			if (other.estateId != null)
-				return false;
-		} else if (!estateId.equals(other.estateId))
+		if (id != other.id)
 			return false;
 		if (name == null) {
 			if (other.name != null)

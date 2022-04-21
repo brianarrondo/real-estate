@@ -1,9 +1,9 @@
 import React, {useContext, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {Button, Col, Form, Row} from "react-bootstrap";
-import {ServicesContext} from "../../services/Services";
-import Tenant from "../../models/Tenant";
-import GenericSpinner from "../utils/GenericSpinner";
+import {ServicesContext} from "../../../services/Services";
+import Tenant from "../../../models/Tenant";
+import GenericSpinner from "../../utils/GenericSpinner";
 
 const TenantEditionModal = ({ setModalShow, tenant, successCallback, errorCallback }) => {
     const [validated, setValidated] = useState(false);
@@ -35,7 +35,7 @@ const TenantEditionModal = ({ setModalShow, tenant, successCallback, errorCallba
             setLoading(true);
             tenantService.editTenant(
                 new Tenant(
-                    tenant.tenantId,
+                    tenant.id,
                     tenantFullName.current.value,
                     tenantDni.current.value,
                     tenantPhone.current.value,

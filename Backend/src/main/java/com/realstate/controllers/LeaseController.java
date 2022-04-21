@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.realstate.dto.LeaseCreationDto;
+import com.realstate.dto.lease.LeaseDto;
 import com.realstate.entities.Lease;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
-import com.realstate.exceptions.LeaseDoesNotExistException;
-import com.realstate.exceptions.TenantDoesNotExistException;
+import com.realstate.exceptions.EntityNotFoundException;
+import com.realstate.exceptions.RealEstateException;
 import com.realstate.services.LeaseService;
 import com.realstate.utils.Utils;
 
@@ -31,19 +30,15 @@ public class LeaseController {
 	private LeaseService leaseService;
 	
 	@GetMapping("all")
-	public ResponseEntity<String> findAll() {
-		try {
-			return ResponseEntity.ok(Utils.objToJson(leaseService.findAll()));
-		} catch (JsonProcessingException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
-		}
+	public ResponseEntity<?> findAll() {
+		return ResponseEntity.ok(leaseService.findAll());
 	}
 	
 	@GetMapping(value = "{leaseId}")
-	public ResponseEntity<String> findById(@PathVariable(value = "leaseId") String leaseId) {
+	public ResponseEntity<String> findById(@PathVariable(value = "leaseId") long leaseId) {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(leaseService.findById(leaseId)));
-		} catch (LeaseDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -51,13 +46,13 @@ public class LeaseController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<String> createNewLease(@RequestBody LeaseCreationDto leaseDto) {
+	public ResponseEntity<?> createNewLease(@RequestBody LeaseDto leaseDto) {
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(Utils.objToJson(leaseService.create(leaseDto)));
-		} catch (TenantDoesNotExistException | ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.CREATED).body(leaseService.create(leaseDto));
+		} catch (RealEstateException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 	
@@ -65,7 +60,7 @@ public class LeaseController {
 	public ResponseEntity<String> update(@RequestBody Lease lease) {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(leaseService.update(lease)));
-		} catch (LeaseDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
@@ -77,7 +72,7 @@ public class LeaseController {
 		try {
 			leaseService.delete(lease);
 			return ResponseEntity.ok().build();
-		} catch (LeaseDoesNotExistException e) {
+		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));

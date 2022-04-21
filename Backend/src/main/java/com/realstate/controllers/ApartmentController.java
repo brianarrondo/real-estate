@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.realstate.dto.ApartmentDto;
 import com.realstate.entities.Apartment;
-import com.realstate.exceptions.ApartmentDoesNotExistException;
+import com.realstate.exceptions.EntityNotFoundException;
+import com.realstate.exceptions.RealEstateException;
 import com.realstate.services.ApartmentService;
+import com.realstate.utils.Utils;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
@@ -28,31 +31,31 @@ public class ApartmentController {
 	private ApartmentService apartmentService;
 	
 	@GetMapping("all")
-	public ResponseEntity<List<Apartment>> findAll() {
+	public ResponseEntity<List<ApartmentDto>> findAll() {
 		return ResponseEntity.ok(apartmentService.findAll());
 	}
 	
 	@GetMapping("allWithoutLease")
-	public ResponseEntity<List<Apartment>> findAllWithoutLease() {
+	public ResponseEntity<List<ApartmentDto>> findAllWithoutLease() {
 		return ResponseEntity.ok(apartmentService.findAllWithoutLease());
 	}
 	
 	@GetMapping("allWithNoEstateAssigned")
-	public ResponseEntity<List<Apartment>> findAllNoEstateAssigned() {
+	public ResponseEntity<List<ApartmentDto>> findAllNoEstateAssigned() {
 		return ResponseEntity.ok(apartmentService.findAllNoEstateAssigned());
 	}
 	
 	@GetMapping(value = "{apartmentId}")
-	public ResponseEntity<Apartment> findById(@PathVariable(value = "apartmentId") String apartmentId) {
+	public ResponseEntity<?> findById(@PathVariable(value = "apartmentId") long apartmentId) {
 		try {
 			return ResponseEntity.ok(apartmentService.findById(apartmentId));
-		} catch (ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 	
 	@PostMapping
-	public ResponseEntity<Apartment> insert(@RequestBody Apartment newApartment) {
+	public ResponseEntity<?> insert(@RequestBody Apartment newApartment) {
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(apartmentService.insert(newApartment));
 		} catch(Exception e) {
@@ -61,21 +64,21 @@ public class ApartmentController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<Apartment> update(@RequestBody Apartment apartment) {	
+	public ResponseEntity<?> update(@RequestBody Apartment apartment) {	
 		try {
 			return ResponseEntity.ok(apartmentService.update(apartment));
-		} catch (ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();	
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());	
 		}
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<Apartment> delete(@RequestBody Apartment apartment) {
+	public ResponseEntity<?> delete(@RequestBody ApartmentDto apartment) {
 		try {
 			apartmentService.delete(apartment);
 			return ResponseEntity.ok().build();
-		} catch (ApartmentDoesNotExistException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
 }

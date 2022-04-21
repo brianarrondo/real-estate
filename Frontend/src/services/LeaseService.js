@@ -6,10 +6,10 @@ class LeaseService extends BaseService {
     constructor(unauthorizedCallback) {
         super(unauthorizedCallback);
     }
-    /*
-    getAllEstates(successCallback, errorCallback) {
+
+    getAllLease(successCallback, errorCallback) {
         this.doGet(this.baseResourcePath + "/all", {}, successCallback, errorCallback);
-    }*/
+    }
 
     createLease(lease, successCallback, errorCallback) {
         this.doPost(this.baseResourcePath, lease, successCallback, errorCallback);

@@ -5,109 +5,90 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-@Document(collection = "rentall_bill")
+@Entity
+@Table(name = "rentall_bill")
 public class RentalBill implements Serializable {
-	@Id
-	private String rentalBillId;
-	private String leaseId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	@ManyToOne (cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	private Lease lease;
 	private Date date;
 	private float amount;
+	@OneToMany (cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "rentalBill")
 	private List<Payment> payments = new ArrayList<Payment>();
 		
 	/* Constructors */
 	public RentalBill() {}
 	
-	public RentalBill(String rentalBillId, String leaseId, Date date, float amount) {
-		this.rentalBillId = rentalBillId;
-		this.leaseId = leaseId;
+	public RentalBill(long id, Lease lease, Date date, float amount) {
+		this.id = id;
+		this.lease = lease;
 		this.date = date;
 		this.amount = amount;
 	}
 	
+	@Override
+	public String toString() {
+		return "RentalBill [rentalBillId=" + id + ", leaseId=" + lease.getId() + ", date=" + date + ", amount="
+				+ amount + ", payments=" + payments + "]";
+	}
+
 	/* Getters and Setters */
-	public String getRentalBillId() {
-		return rentalBillId;
+	public long getId() {
+		return id;
 	}
-	public void setRentalBillId(String rentalBillId) {
-		this.rentalBillId = rentalBillId;
+
+	public void setId(long id) {
+		this.id = id;
 	}
-	public String getLeaseId() {
-		return leaseId;
+
+	public Lease getLease() {
+		return lease;
 	}
-	public void setLeaseId(String leaseId) {
-		this.leaseId = leaseId;
+
+	public void setLease(Lease lease) {
+		this.lease = lease;
 	}
+
 	public Date getDate() {
 		return date;
 	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
 	public float getAmount() {
 		return amount;
 	}
+
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
+
 	public List<Payment> getPayments() {
 		return payments;
 	}
+
 	public void setPayments(List<Payment> payments) {
 		this.payments = payments;
 	}
 
-	@Override
-	public String toString() {
-		return "RentalBill [rentalBillId=" + rentalBillId + ", leaseId=" + leaseId + ", date=" + date + ", amount="
-				+ amount + ", payments=" + payments + "]";
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Float.floatToIntBits(amount);
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((leaseId == null) ? 0 : leaseId.hashCode());
-		result = prime * result + ((payments == null) ? 0 : payments.hashCode());
-		result = prime * result + ((rentalBillId == null) ? 0 : rentalBillId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RentalBill other = (RentalBill) obj;
-		if (Float.floatToIntBits(amount) != Float.floatToIntBits(other.amount))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (leaseId == null) {
-			if (other.leaseId != null)
-				return false;
-		} else if (!leaseId.equals(other.leaseId))
-			return false;
-		if (payments == null) {
-			if (other.payments != null)
-				return false;
-		} else if (!payments.equals(other.payments))
-			return false;
-		if (rentalBillId == null) {
-			if (other.rentalBillId != null)
-				return false;
-		} else if (!rentalBillId.equals(other.rentalBillId))
-			return false;
-		return true;
-	}	
 }

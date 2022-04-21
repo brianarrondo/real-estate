@@ -1,12 +1,11 @@
 package com.realstate.repositories;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.realstate.entities.Estate;
 
 @Repository
-public interface EstateRepository extends MongoRepository<Estate, ObjectId>{
+public interface EstateRepository extends JpaRepository<Estate, Long>{
 
 }
