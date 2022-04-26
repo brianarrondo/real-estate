@@ -20,7 +20,7 @@ public class LeaseDto implements Serializable {
 	public Date startDate;
 	public Date endDate;
 	public boolean active;
-	//private List<RentalFees> rentalFees = new ArrayList<RentalFees>();
+	public float baseAmount;
 	public String description;
 	public List<RentalFeesDto> rentalFees = new ArrayList<RentalFeesDto>();
 
@@ -80,5 +80,11 @@ public class LeaseDto implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public float getBaseAmount() {
+		return baseAmount;
+	}
+	public void setBaseAmount(float baseAmount) {
+		this.baseAmount = baseAmount;
 	}
 }

@@ -31,6 +31,9 @@ public class Lease implements Serializable {
 	@NotNull(message = "cannot be null")
 	@ManyToMany(fetch = FetchType.LAZY)
 	private List<Tenant> tenants = new ArrayList<Tenant>();
+	
+	@NotNull(message = "cannot be null")
+	private float baseAmount;
 
 	@NotNull(message = "cannot be null")
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

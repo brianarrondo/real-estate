@@ -1,11 +1,9 @@
 package com.realstate.services;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.realstate.dto.EstateDto;
 import com.realstate.dto.lease.LeaseDto;
 import com.realstate.dto.lease.LeaseDtoResponse;
 import com.realstate.entities.Apartment;

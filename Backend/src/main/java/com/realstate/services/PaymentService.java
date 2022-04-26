@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.realstate.entities.Payment;
 import com.realstate.entities.RentalBill;
+import com.realstate.entities.User;
 import com.realstate.exceptions.PaymentDoesNotExistException;
 import com.realstate.repositories.PaymentRepository;
 
@@ -21,8 +22,8 @@ public class PaymentService {
 	@Autowired
 	private RentalBillService rentalBillService;
 	
-	public Payment getNew(float amount, RentalBill rentalBill, Date date) throws EntityNotFoundException {
-		Payment newPayment = new Payment(0, amount, rentalBill, date);
+	public Payment getNew(float amount, RentalBill rentalBill, User user, Date date) throws EntityNotFoundException {
+		Payment newPayment = new Payment(0, amount, rentalBill, user, date);
 		return insert(newPayment);
 	}
 		

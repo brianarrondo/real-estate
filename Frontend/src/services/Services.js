@@ -5,12 +5,14 @@ import {TokenLoggerContext} from "../components/login/TokenLogger";
 import EstateService from "./EstateService";
 import ApartmentService from "./ApartmentService";
 import LeaseService from "./LeaseService";
+import PaymentService from "./PaymentService";
 
 export const ServicesContext = createContext({
     loginService: null,
     tenantService: null,
     estateService: null,
-    apartmentService: null
+    apartmentService: null,
+    paymentService: null
 });
 
 const Services = ({children}) => {
@@ -26,13 +28,15 @@ const Services = ({children}) => {
     const tenantService = new TenantService(unauthorizedCallback);
     const estateService = new EstateService(unauthorizedCallback);
     const apartmentService = new ApartmentService(unauthorizedCallback);
+    const paymentService = new PaymentService(unauthorizedCallback);
 
     const context = {
         loginService,
         leaseService,
         tenantService,
         estateService,
-        apartmentService
+        apartmentService,
+        paymentService
     };
 
     return (

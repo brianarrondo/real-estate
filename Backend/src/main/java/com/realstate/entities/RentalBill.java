@@ -43,7 +43,7 @@ public class RentalBill implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "RentalBill [rentalBillId=" + id + ", leaseId=" + lease.getId() + ", date=" + date + ", amount="
+		return "RentalBill [leaseId=" + id + ", leaseId=" + lease.getId() + ", date=" + date + ", amount="
 				+ amount + ", payments=" + payments + "]";
 	}
 

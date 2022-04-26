@@ -5,23 +5,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.realstate.dto.payment.PaymentDto;
 import com.realstate.entities.Lease;
 import com.realstate.entities.Payment;
 import com.realstate.entities.RentalBill;
-import com.realstate.exceptions.AmountPaymentHigherThanRentalBillException;
-import com.realstate.exceptions.AmountToPaidIsZeroException;
+import com.realstate.entities.User;
 import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.exceptions.InvalidParametersException;
-import com.realstate.exceptions.LeaseIsNotActiveException;
-import com.realstate.exceptions.RentalBillDateIsOutOfLeaseDateException;
-import com.realstate.exceptions.RentalBillHasAlreadyBeenPaidException;
-import com.realstate.exceptions.ThereIsAlreadyARentalBillInMonthException;
+import com.realstate.exceptions.RealEstateException;
+import com.realstate.exceptions.RentalBillPaymentException;
 import com.realstate.repositories.RentalBillRepository;
+import com.realstate.repositories.UserRepository;
 import com.realstate.utils.Utils;
 
+@Transactional
 @Service
 public class RentalBillService {
 	
@@ -31,6 +33,10 @@ public class RentalBillService {
 	private LeaseService leaseService;
 	@Autowired
 	private PaymentService paymentService;
+	@Autowired
+	private UserRepository userRepo;
+	@Autowired
+    private ModelMapper modelMapper;
 	
 	public RentalBill getNew(Lease lease, Date date, float amount) throws EntityNotFoundException {
 		RentalBill newRentalBill = new RentalBill(0, lease, date, amount);
@@ -79,7 +85,7 @@ public class RentalBillService {
 		rentalBillRepository.delete(rentalBill);
 	}
 	
-	public float totalPaid(RentalBill rentalBill) {
+	private float totalPaid(RentalBill rentalBill) {
 		List<Payment> payments = rentalBill.getPayments();
 		float totalPaid = 0;
 		for (Iterator<Payment> iterator = payments.iterator(); iterator.hasNext();) {
@@ -89,46 +95,57 @@ public class RentalBillService {
 		return totalPaid;
 	}
 	
-	public boolean rentalBillIsPaid(RentalBill rentalBill) {
+	private boolean rentalBillIsPaid(RentalBill rentalBill) {
 		return totalPaid(rentalBill) >= rentalBill.getAmount();
 	}
 		
-	public boolean existRentalBillInMonth(long leaseId, Date dateNewRentalBill) {
+	private boolean existRentalBillInMonth(long leaseId, Date dateNewRentalBill) {
 		List<RentalBill> rentalBillsForLease = rentalBillRepository.findAllByLeaseId(leaseId);
-		for (Iterator<RentalBill> iterator = rentalBillsForLease.iterator(); iterator.hasNext();) {
-			RentalBill rentalBill = (RentalBill) iterator.next();
-			if (Utils.sameMonthAndYear(dateNewRentalBill, rentalBill.getDate())) {
-				return true;
-			}
-		}
-		return false;
+		return rentalBillsForLease.stream().anyMatch(r -> Utils.sameMonthAndYear(dateNewRentalBill, r.getDate()));
 	}
 	
-	public RentalBill generateRentalBill(long leaseId, Date date, float amount) throws LeaseIsNotActiveException, ThereIsAlreadyARentalBillInMonthException, InvalidParametersException, RentalBillDateIsOutOfLeaseDateException, EntityNotFoundException {
+	private RentalBill getRentalBillForMonth(long leaseId, Date date) throws EntityNotFoundException {
+		List<RentalBill> rentalBillsForLease = rentalBillRepository.findAllByLeaseId(leaseId);
+		RentalBill rentalBill = rentalBillsForLease.stream().filter(r -> Utils.sameMonthAndYear(date, r.getDate()))
+				.findAny().orElse(null);
+		if (rentalBill != null) {
+			return rentalBill;
+		} else {
+			throw new EntityNotFoundException("La factura con el ID especificado no existe.");
+		}
+	}
+	
+	public RentalBill generateRentalBill(long leaseId, Date date, float amount) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
 		if (leaseId == 0 || date == null) { throw new InvalidParametersException("Parametros invalidos"); }
 		Lease lease = leaseService.findById(leaseId);
-		if (lease.getStartDate().compareTo(date) > 0 || lease.getEndDate().compareTo(date) < 0) { throw new RentalBillDateIsOutOfLeaseDateException(); }
-		if (!lease.isActive()) { throw new LeaseIsNotActiveException(); }
-		if (existRentalBillInMonth(leaseId, date)) { throw new ThereIsAlreadyARentalBillInMonthException(); }
+		if (lease.getStartDate().compareTo(date) > 0 || lease.getEndDate().compareTo(date) < 0) { throw new RentalBillPaymentException("La fecha de la factura esta por fuera de las fechas del contrato."); }
+		if (!lease.isActive()) { throw new RealEstateException("El contrato de alquiler no se encuentra activo."); }
+		if (existRentalBillInMonth(leaseId, date)) { throw new RentalBillPaymentException("Ya existe una factura en el mes"); }
 		RentalBill rentalBill = getNew(lease, date, amount);
 		return rentalBill;
 	}
 	
-	public Payment generatePayment(long rentalBillId, float amountToPay, Date date) throws AmountPaymentHigherThanRentalBillException, AmountToPaidIsZeroException, RentalBillHasAlreadyBeenPaidException, InvalidParametersException, EntityNotFoundException {
-		if (rentalBillId == 0 || date == null) { throw new InvalidParametersException("Parametros invalidos"); }
-		RentalBill rentalBill = findById(rentalBillId);
-		
-		if(rentalBillIsPaid(rentalBill)) {
-			throw new RentalBillHasAlreadyBeenPaidException();
-		} else if ((amountToPay > rentalBill.getAmount()) || (totalPaid(rentalBill) + amountToPay > rentalBill.getAmount())) {
-			throw new AmountPaymentHigherThanRentalBillException();
-		} else if (rentalBill.getAmount() == 0) {
-			throw new AmountToPaidIsZeroException();
+	public PaymentDto generatePayment(long leaseId, float amountToPay, Date date, long userId) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
+		if (date == null || amountToPay <= 0 || leaseId <= 0 || userId <= 0) { throw new InvalidParametersException("Parametros invalidos"); }
+		leaseService.findById(leaseId);
+		User user = userRepo.findById(userId).orElse(null);
+
+		RentalBill rentalBill;
+		if (!existRentalBillInMonth(leaseId, date)) {
+			rentalBill = generateRentalBill(leaseId, date, 5000);
+		} else {
+			rentalBill = getRentalBillForMonth(leaseId, date);
 		}
 		
-		Payment newPayment = paymentService.getNew(amountToPay, rentalBill, date);
-		rentalBill.getPayments().add(newPayment);
-		update(rentalBill);
-		return newPayment;
+		if(rentalBillIsPaid(rentalBill)) {
+			throw new RentalBillPaymentException("La factura ya fue pagada.");
+		} else if ((amountToPay > rentalBill.getAmount()) || (totalPaid(rentalBill) + amountToPay > rentalBill.getAmount())) {
+			throw new RentalBillPaymentException("El monto a pagar es superior al de la factura.");
+		} else if (rentalBill.getAmount() == 0) {
+			throw new RentalBillPaymentException("El monto a pagar es 0.");
+		}
+
+		Payment newPayment = paymentService.getNew(amountToPay, rentalBill, user, date);
+		return modelMapper.map(paymentService.insert(newPayment), PaymentDto.class);
 	}
 }

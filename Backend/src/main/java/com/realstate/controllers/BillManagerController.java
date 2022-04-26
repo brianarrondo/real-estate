@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.realstate.dto.payment.PaymentCreationDto;
 import com.realstate.entities.RentalBill;
 import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.services.RentalBillService;
@@ -26,13 +28,14 @@ import com.realstate.utils.Utils;
 
 @RestController
 @RequestMapping("billmanager")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class BillManagerController {
 	
 	@Autowired
 	private RentalBillService rentalBillService;
 	
-	@GetMapping(value = "{rentalBillId}")
-	public ResponseEntity<String> findById(@PathVariable("rentalBillId") long rentalBillId) {
+	@GetMapping(value = "{leaseId}")
+	public ResponseEntity<String> findById(@PathVariable("leaseId") long rentalBillId) {
 		try {
 			return ResponseEntity.ok(Utils.objToJson(rentalBillService.findById(rentalBillId)));
 		} catch (EntityNotFoundException e) {
@@ -69,19 +72,24 @@ public class BillManagerController {
 	}
 	
 	@PostMapping("generate_payment")
-	public ResponseEntity<String> generatePayment(@RequestBody Map<String, String> parsedJson) {
+	public ResponseEntity<?> generatePayment(@RequestBody PaymentCreationDto dto) {
 		try {
+			/*
 			String dateString = parsedJson.get("date");
-			long rentalBillId = Long.parseLong(parsedJson.get("rentalBillId"));
+			long leaseId = Long.parseLong(parsedJson.get("leaseId"));
 			float amountToPay = Float.parseFloat(parsedJson.get("amount"));
 
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
-			Date date = formatter.parse(dateString);
-			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(rentalBillId, amountToPay, date)));
+			Date date = formatter.parse(dateString);*/
+			Date date = dto.date;
+			long leaseId = dto.leaseId;
+			float amountToPay = dto.amount;
+			long userId = dto.userId;
+			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(leaseId, amountToPay, date, userId)));
 		} catch (EntityNotFoundException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Utils.getExceptionResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 	
