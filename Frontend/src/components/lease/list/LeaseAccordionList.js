@@ -3,19 +3,25 @@ import {Accordion, Card, Col, Row, Button} from "react-bootstrap";
 import {ServicesContext} from "../../../services/Services";
 import ApartmentAccordionList from "./ApartmentAccordionList";
 import TenantsAccordionList from "./TenantsAccordionList";
+import GenericSpinner from "../../utils/GenericSpinner";
+import GenericTableSpinner from "../../utils/GenericTableSpinner";
 
 const LeaseAccordionList = () => {
     const [leaseList, setLeaseList] = useState([]);
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [isLoading, setLoading] = useState(false);
     const { leaseService } = useContext(ServicesContext);
 
     useEffect(() => {
+        setLoading(true);
         leaseService.getAllLease(
             (response) => {
                 setLeaseList(response.data);
+                setLoading(false);
             },
             (error) => {
                 console.log(error);
+                setLoading(false);
             }
         );
     }, []);
@@ -86,18 +92,20 @@ const LeaseAccordionList = () => {
 
     return (
         <>
-            <Row className="lease-table-titles">
-                <Col xs={'auto'} md={2}>Nombre</Col>
-                <Col xs={'auto'} md={2}>Depto.</Col>
-                <Col xs={'auto'} md={2}>Propiedad</Col>
-                <Col xs={'auto'} md={2}>Inquilino</Col>
-                <Col xs={'auto'} md={2}>Finalizado</Col>
-                <Col xs={'auto'} md={2}></Col>
-            </Row>
-            <Accordion flush="true">
+            <GenericTableSpinner show={isLoading}>
+                <Row className="lease-table-titles">
+                    <Col xs={'auto'} md={2}>Nombre</Col>
+                    <Col xs={'auto'} md={2}>Depto.</Col>
+                    <Col xs={'auto'} md={2}>Propiedad</Col>
+                    <Col xs={'auto'} md={2}>Inquilino</Col>
+                    <Col xs={'auto'} md={2}>Finalizado</Col>
+                    <Col xs={'auto'} md={2}></Col>
+                </Row>
+                <Accordion flush="true">
+                    {leaseListAccordion}
+                </Accordion>
+            </GenericTableSpinner>
 
-                {leaseListAccordion}
-            </Accordion>
         </>
     );
 };

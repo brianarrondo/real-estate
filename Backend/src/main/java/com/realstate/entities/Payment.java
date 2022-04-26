@@ -1,6 +1,7 @@
 package com.realstate.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -24,15 +25,38 @@ public class Payment implements Serializable {
 	private float amount;
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private RentalBill rentalBill;
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	private User user;
 	private Date date;
+	private Date registerDate;
 
 	/* Constructors */
-	public Payment(long paymentId, float amount, RentalBill rentalBill, Date date) {
+	public Payment(long id, float amount, RentalBill rentalBill, User user, Date date) {
 		super();
-		this.id = paymentId;
+		this.id = id;
 		this.amount = amount;
 		this.rentalBill = rentalBill;
 		this.date = date;
+		this.registerDate = java.util.Date.from(Instant.now());
+		this.user = user;
+	}
+	
+	public Payment() {}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
 	}
 
 	public long getId() {

@@ -15,11 +15,6 @@ const Header = () => {
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to="/">Inicio</Nav.Link>
 
-                        <NavDropdown title="Contratos" id="lease">
-                            <NavDropdown.Item as={Link} to="/lease/all">Listar</NavDropdown.Item>
-                            <NavDropdown.Item as={Link} to="/lease/creation">Agregar</NavDropdown.Item>
-                        </NavDropdown>
-
                         <NavDropdown title="Inquilinos" id="tenant">
                             <NavDropdown.Item as={Link} to="/tenant/all">Listar</NavDropdown.Item>
                             <NavDropdown.Item as={Link} to="/tenant/creation">Agregar</NavDropdown.Item>
@@ -28,6 +23,16 @@ const Header = () => {
                         <NavDropdown title="Propiedad" id="estate">
                             <NavDropdown.Item as={Link} to="/estate/all">Listar</NavDropdown.Item>
                             <NavDropdown.Item as={Link} to="/estate/creation">Agregar</NavDropdown.Item>
+                        </NavDropdown>
+
+                        <NavDropdown title="Contratos" id="lease">
+                            <NavDropdown.Item as={Link} to="/lease/all">Listar</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/lease/creation">Agregar</NavDropdown.Item>
+                        </NavDropdown>
+
+                        <NavDropdown title="Pagos" id="payment">
+                            <NavDropdown.Item as={Link} to="/payment/all">Listar</NavDropdown.Item>
+                            <NavDropdown.Item as={Link} to="/payment/creation">Agregar</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
 

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Button, ButtonGroup, Col, Form, Row, Table} from "react-bootstrap";
+import {Button, ButtonGroup, Col, Form, InputGroup, Row, Table} from "react-bootstrap";
 import GenericSpinner from "../../utils/GenericSpinner";
 import {ServicesContext} from "../../../services/Services";
 import {AlertContext} from "../../utils/GenericAlert";
@@ -15,6 +15,7 @@ const LeaseCreation = () => {
     let apartmentId = React.createRef();
     let startDate = React.createRef();
     let endDate = React.createRef();
+    let baseAmount = React.createRef();
     let leaseDescription = React.createRef();
 
     const [tenants, setTenants] = useState([]);
@@ -43,7 +44,6 @@ const LeaseCreation = () => {
 
         if (validationOk) {
             setLoading(true);
-            console.log(apartmentId.current.value);
             let lease = new CreationLeaseDto(
                 0,
                 leaseName.current.value,
@@ -278,6 +278,20 @@ const LeaseCreation = () => {
                             min={Utils.getCurrentDate()}
                             required />
                         <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de caducidad</Form.Control.Feedback>
+                    </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="justify-content-center">
+                    <Form.Label column sm={3}>
+                        Monto base
+                    </Form.Label>
+
+                    <Col sm={8}>
+                        <InputGroup className="mb-2">
+                            <InputGroup.Text>$</InputGroup.Text>
+                            <Form.Control type="number" min="0" step="0.01" ref={baseAmount} placeholder="Monto base" required />
+                            <Form.Control.Feedback type="invalid">Por favor ingresar monto mayor a 0</Form.Control.Feedback>
+                        </InputGroup>
                     </Col>
                 </Form.Group>
 

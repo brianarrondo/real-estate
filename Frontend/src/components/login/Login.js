@@ -9,7 +9,7 @@ const Login = () => {
     let userName = React.createRef();
     let password = React.createRef();
     const { loginService } = useContext(ServicesContext);
-    const { token, saveToken } = useContext(TokenLoggerContext);
+    const { token, saveToken, saveUserId } = useContext(TokenLoggerContext);
     const [isLoading, setLoading ] = useState(false);
     const [errorLoginMsg, setErrorLoginMsg] = useState(null);
 
@@ -23,6 +23,7 @@ const Login = () => {
             },
             (response) => {
                 if (response.data) {
+                    saveUserId(response.data.userId);
                     saveToken(response.data.token);
                 }
             },

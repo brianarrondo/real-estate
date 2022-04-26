@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 export const TokenLoggerContext = React.createContext({
     saveToken: null,
     deleteToken: null,
-    token: null
+    token: null,
+    userId: null,
+    setUserId: null
 });
 
 const TokenLogger = ({ children }) => {
@@ -12,11 +14,16 @@ const TokenLogger = ({ children }) => {
     };
 
     const [token, setToken] = useState(getToken());
+    const [userId, setUserId] = useState();
 
     const saveToken = userToken => {
         localStorage.setItem('token', userToken);
         setToken(userToken);
     };
+
+    const saveUserId = userId => {
+        setUserId(userId);
+    }
 
     const deleteToken = () => {
         localStorage.removeItem('token');
@@ -26,7 +33,9 @@ const TokenLogger = ({ children }) => {
     const context = {
         saveToken,
         deleteToken,
-        token
+        token,
+        userId,
+        saveUserId
     };
 
     return (
