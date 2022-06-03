@@ -3,14 +3,13 @@ import {Button, Col, Form, InputGroup, Row} from "react-bootstrap";
 import GenericSpinner from "../../utils/GenericSpinner";
 import {ServicesContext} from "../../../services/Services";
 import Utils from "../../../utils/Utils";
-import Tenant from "../../../models/Tenant";
 import {AlertContext} from "../../utils/GenericAlert";
 import {TokenLoggerContext} from "../../login/TokenLogger";
 import Payment from "../../../models/Payment";
 
 const PaymentCreation = () => {
     let paymentAmount = React.createRef();
-    let leaseId = React.createRef();
+    let rentalBillId = React.createRef();
     let date = React.createRef();
     let form = React.createRef();
 
@@ -19,6 +18,7 @@ const PaymentCreation = () => {
     const { userId } = useContext(TokenLoggerContext);
 
     const [isLoading, setLoading] = useState(false);
+    const [leaseIdSelected, setLeaseIdSelected] = useState(0);
     const [validated, setValidated] = useState(false);
     const [activeLeases, setActiveLeases] = useState([]);
 
@@ -51,7 +51,7 @@ const PaymentCreation = () => {
             setLoading(true);
             let payment = new Payment(
                 parseInt(userId),
-                parseInt(leaseId.current.value),
+                parseInt(leaseIdSelected),
                 date.current.value,
                 parseInt(paymentAmount.current.value),
             );
@@ -75,9 +75,17 @@ const PaymentCreation = () => {
         }
     }
 
-
     let leaseSelectOptions = activeLeases.map(lease => {
         return <option key={lease.id} value={lease.id}>{lease.name}</option>
+    });
+
+    function getLeaseRentalBills() {
+        let lease = activeLeases.find(s => s.id === leaseIdSelected);
+        return lease ? lease.rentalBills : [];
+    }
+
+    let rentalBillSelectOptions = getLeaseRentalBills().map((rentalBill, index) => {
+        return <option key={index} value={rentalBill.id}>{rentalBill.amount + " [" + Utils.getFormattedDate(rentalBill.startDate) + " - " + Utils.getFormattedDate(rentalBill.endDate) + "]"}</option>
     });
 
     return (
@@ -91,7 +99,7 @@ const PaymentCreation = () => {
                 <Form.Group as={Row} className="justify-content-center">
                     <Form.Label column sm={3}>Contrato</Form.Label>
                     <Col sm={8}>
-                        <Form.Control as="select" ref={leaseId} defaultValue={leaseId} required>
+                        <Form.Control as="select" value={leaseIdSelected} defaultValue={0} onChange={e => setLeaseIdSelected(parseInt(e.target.value))}  required>
                             <option key="0" value="">Seleccione un contrato</option>
                             {leaseSelectOptions}
                         </Form.Control>
@@ -100,15 +108,13 @@ const PaymentCreation = () => {
                 </Form.Group>
 
                 <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Fecha de Pago</Form.Label>
+                    <Form.Label column sm={3}>Factura</Form.Label>
                     <Col sm={8}>
-                        <Form.Control
-                            type="date"
-                            ref={date}
-                            placeholder="Fecha de Pago"
-                            defaultValue={Utils.getCurrentDate()}
-                            required />
-                        <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de pago</Form.Control.Feedback>
+                        <Form.Control as="select" ref={rentalBillId} defaultValue={rentalBillId} required>
+                            <option key="0" value="">Seleccione una factura</option>
+                            {rentalBillSelectOptions}
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">Por favor seleccione un contrato</Form.Control.Feedback>
                     </Col>
                 </Form.Group>
 

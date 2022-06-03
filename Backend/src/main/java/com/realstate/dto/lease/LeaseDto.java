@@ -17,8 +17,8 @@ public class LeaseDto implements Serializable {
 	public String name;
 	public List<Tenant> tenants;
 	public long apartmentId;
-	public Date startDate;
-	public Date endDate;
+	public String startDate;
+	public String endDate;
 	public boolean active;
 	public float baseAmount;
 	public String description;
@@ -48,16 +48,16 @@ public class LeaseDto implements Serializable {
 	public void setApartmentId(long apartmentId) {
 		this.apartmentId = apartmentId;
 	}
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 	public boolean isActive() {

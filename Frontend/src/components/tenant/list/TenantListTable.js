@@ -5,6 +5,7 @@ import TenantEditionModal from "../edition/TenantEditionModal";
 import TenantDeletionModal from "../deletion/TenantDeletionModal";
 import {ServicesContext} from "../../../services/Services";
 import {Spinner} from "react-bootstrap";
+import GenericEmptyTable from "../../utils/GenericEmptyTable";
 
 const TenantListTable = () => {
     const { tenantService } = useContext(ServicesContext);
@@ -100,7 +101,7 @@ const TenantListTable = () => {
     });
 
     return (
-        <>
+        <GenericEmptyTable show={tenantListComponents.length > 0} emptyTableText="No hay inquilinos para mostrar.">
             {isLoading ?
                 <div className="spinner"><Spinner animation="border" variant="dark"/></div>
                 :
@@ -121,7 +122,7 @@ const TenantListTable = () => {
                     </tbody>
                 </table>
             }
-        </>
+        </GenericEmptyTable>
     );
 };
 

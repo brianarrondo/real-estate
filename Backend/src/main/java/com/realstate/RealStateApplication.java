@@ -1,8 +1,11 @@
 package com.realstate;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,11 @@ import com.realstate.utils.JwtAuthorizationFilter;
 
 @SpringBootApplication
 public class RealStateApplication {
+	
+	@PostConstruct
+	public void init() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(RealStateApplication.class, args);

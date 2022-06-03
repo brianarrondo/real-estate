@@ -3,8 +3,10 @@ import {Accordion, Card, Col, Row, Button} from "react-bootstrap";
 import {ServicesContext} from "../../../services/Services";
 import ApartmentAccordionList from "./ApartmentAccordionList";
 import TenantsAccordionList from "./TenantsAccordionList";
-import GenericSpinner from "../../utils/GenericSpinner";
 import GenericTableSpinner from "../../utils/GenericTableSpinner";
+import GenericEmptyTable from "../../utils/GenericEmptyTable";
+import RentalFeesAccordionList from "./RentalFeesAccordionList";
+import Utils from "../../../utils/Utils";
 
 const LeaseAccordionList = () => {
     const [leaseList, setLeaseList] = useState([]);
@@ -64,11 +66,11 @@ const LeaseAccordionList = () => {
                         </Row>
 
                         <Row>
-                            <Col><span className="bold">Fecha de Inicio: </span>{new Date(lease.startDate).toLocaleDateString()}</Col>
+                            <Col><span className="bold">Fecha de Inicio: </span>{Utils.getFormattedDate(lease.startDate)}</Col>
                         </Row>
 
                         <Row>
-                            <Col><span className="bold">Fecha de Fin: </span>{new Date(lease.endDate).toLocaleDateString()}</Col>
+                            <Col><span className="bold">Fecha de Fin: </span>{Utils.getFormattedDate(lease.endDate)}</Col>
                         </Row>
 
                         <Row>
@@ -84,6 +86,11 @@ const LeaseAccordionList = () => {
                             <h5>Inquilinos</h5>
                             <TenantsAccordionList tenants={lease.tenants} />
                         </div>
+
+                        <div className="padding-top-30">
+                            <h5>Incrementos</h5>
+                            <RentalFeesAccordionList rentalFees={lease.rentalFees} />
+                        </div>
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>
@@ -91,7 +98,7 @@ const LeaseAccordionList = () => {
     });
 
     return (
-        <>
+        <GenericEmptyTable show={leaseListAccordion.length > 0} emptyTableText="No hay contratos para mostrar.">
             <GenericTableSpinner show={isLoading}>
                 <Row className="lease-table-titles">
                     <Col xs={'auto'} md={2}>Nombre</Col>
@@ -106,7 +113,7 @@ const LeaseAccordionList = () => {
                 </Accordion>
             </GenericTableSpinner>
 
-        </>
+        </GenericEmptyTable>
     );
 };
 

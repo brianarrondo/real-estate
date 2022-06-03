@@ -22,6 +22,17 @@ public class RentalFees {
 	@ManyToOne (cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private Lease lease;
 
+	public RentalFees(long id, float fee, Date startDate, Date endDate, Lease lease) {
+		super();
+		this.id = id;
+		this.fee = fee;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.lease = lease;
+	}
+	
+	public RentalFees() {}
+
 	public long getId() {
 		return id;
 	}

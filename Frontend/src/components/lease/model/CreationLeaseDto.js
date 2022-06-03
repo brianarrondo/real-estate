@@ -1,5 +1,5 @@
 export default class CreationLeaseDto {
-    constructor(id, name, tenants, apartmentId, startDate, endDate, active, rentalFees, description) {
+    constructor(id, name, tenants, apartmentId, startDate, endDate, active, rentalFees, description, baseAmount) {
         this.id = id;
         this.name = name;
         this.tenants = tenants;
@@ -9,5 +9,6 @@ export default class CreationLeaseDto {
         this.active = active;
         this.rentalFees = rentalFees;
         this.description = description;
+        this.baseAmount = baseAmount;
     }
 }

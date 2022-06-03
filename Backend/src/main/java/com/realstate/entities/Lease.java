@@ -46,14 +46,13 @@ public class Lease implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private boolean active;
-	
 	private String description;
 	
 	/* Constructors */
 	public Lease() {}
 	
 	public Lease(long id, String name, List<Tenant> tenants, Apartment apartment, Date startDate, Date endDate, boolean active,
-			String description) {
+			String description, float baseAmount) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -63,10 +62,20 @@ public class Lease implements Serializable {
 		this.endDate = endDate;
 		this.active = active;
 		this.description = description;
+		this.baseAmount = baseAmount;
 	}
 
 	public long getId() {
 		return id;
+	}
+	
+
+	public float getBaseAmount() {
+		return baseAmount;
+	}
+
+	public void setBaseAmount(float baseAmount) {
+		this.baseAmount = baseAmount;
 	}
 
 	public void setId(long id) {
