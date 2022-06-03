@@ -56,8 +56,8 @@ const LeaseCreation = () => {
                 leaseName.current.value,
                 [...newTenants, ...existingTenants],
                 parseInt(apartmentId.current.value),
-                new Date(startDate.getFullYear(), startDate.getMonth(), parseInt(payDay)).toLocaleDateString(),
-                new Date(endDate.getFullYear(), endDate.getMonth(), parseInt(payDay)).toLocaleDateString(),
+                new Date(startDate.getFullYear(), startDate.getMonth(), parseInt(payDay)),
+                new Date(endDate.getFullYear(), endDate.getMonth(), parseInt(payDay)),
                 true,
                 mapRentalFees(),
                 leaseDescription.current.value,
@@ -97,7 +97,7 @@ const LeaseCreation = () => {
         return rentalFees.map(e => {
             let startDate = new Date(e.startDate);
             let endDate = new Date(e.endDate);
-            return new RentalFee(parseInt(e.fee), startDate.toLocaleDateString(), endDate.toLocaleDateString());
+            return new RentalFee(parseInt(e.fee), new Date(startDate), new Date(endDate));
         });
     }
 

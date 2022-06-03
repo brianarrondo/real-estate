@@ -141,17 +141,23 @@ public class RentalBillService {
 		int startYear = Utils.getYear(lease.getStartDate());
 		int startMonth = Utils.getMonth(lease.getStartDate());
 		int startDay = Utils.getDay(lease.getStartDate());
+		int startHours = Utils.getHours(lease.getStartDate());
+		int startMinutes = Utils.getMinutes(lease.getStartDate());
+		int startSeconds = Utils.getSeconds(lease.getStartDate());
 
 		int endYear = Utils.getYear(lease.getEndDate());
 		int endMonth = Utils.getMonth(lease.getEndDate());
 		int endDay = Utils.getDay(lease.getEndDate());
+		int endHours = Utils.getHours(lease.getEndDate());
+		int endMinutes = Utils.getMinutes(lease.getEndDate());
+		int endSeconds = Utils.getSeconds(lease.getEndDate());
 		
 		for (int year = startYear; year <= endYear; year++) {
 			int firstMonth = startYear == year ? startMonth : 0;
 			int finalMonth = endYear == year ? endMonth : 12;
 			for (int month = firstMonth; month < finalMonth; month++) {
-				Date startDate = Utils.getDate(startDay, month, year);
-				Date endDate = getBillEndDate(month, year, endYear, endMonth, endDay, startDay);
+				Date startDate = Utils.getDate(startDay, month, year, startHours, startMinutes, startSeconds);
+				Date endDate = getBillEndDate(month, year, endYear, endMonth, endDay, startDay, endHours, endMinutes, endSeconds);
 				float amount = getAmount(lease, fees, startDate, endDate);
 				RentalBill rentalBill = new RentalBill(0, lease, startDate, endDate, amount);
 				rentalBillRepository.save(rentalBill);
@@ -165,9 +171,9 @@ public class RentalBillService {
 		return lease.getBaseAmount() * (1 + (fee == null ? 0 : fee.getFee()));
 	}
 	
-	private Date getBillEndDate(int month, int year, int endYear, int endMonth, int endDay, int startDay) {
+	private Date getBillEndDate(int month, int year, int endYear, int endMonth, int endDay, int startDay, int hours, int minutes, int seconds) {
 		boolean isLastMonth = month == 11;
 		int nextMonth = month + 1;
-		return Utils.getDate(endYear == year && nextMonth  == endMonth? endDay : startDay, isLastMonth ? 0 : nextMonth, isLastMonth ? year + 1 : year);
+		return Utils.getDate(endYear == year && nextMonth  == endMonth? endDay : startDay, isLastMonth ? 0 : nextMonth, isLastMonth ? year + 1 : year, hours, minutes, seconds);
 	}
 }

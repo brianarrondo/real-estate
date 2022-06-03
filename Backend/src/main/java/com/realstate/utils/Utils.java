@@ -52,7 +52,7 @@ public class Utils {
 	}
 	
 	public static int getMonth(Date date) {
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		return cal.get(Calendar.MONTH);
 	}
@@ -62,21 +62,39 @@ public class Utils {
 		cal.setTime(date);
 		return cal.get(Calendar.DAY_OF_MONTH);
 	}
-	
+
 	public static int getYear(Date date) {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.setTime(date);
 		return cal.get(Calendar.YEAR);
 	}
-	
-	public static Date getDate(int day, int month, int year) {
+
+	public static int getHours(Date date) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.setTime(date);
+		return cal.get(Calendar.HOUR_OF_DAY);
+	}
+
+	public static int getMinutes(Date date) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.setTime(date);
+		return cal.get(Calendar.MINUTE);
+	}
+
+	public static int getSeconds(Date date) {
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.setTime(date);
+		return cal.get(Calendar.SECOND);
+	}
+
+	public static Date getDate(int day, int month, int year, int hours, int minutes, int seconds) {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.set(Calendar.DAY_OF_MONTH, day);
 		cal.set(Calendar.MONTH, month);
 		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.HOUR_OF_DAY, hours);
+		cal.set(Calendar.MINUTE, minutes);
+		cal.set(Calendar.SECOND, seconds);
 		cal.set(Calendar.MILLISECOND, 0);
 		return cal.getTime();
 	}

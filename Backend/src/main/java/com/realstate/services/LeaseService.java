@@ -46,8 +46,8 @@ public class LeaseService {
 		
 		String description = leaseDto.description;
 		long apartmentId = leaseDto.apartmentId;
-		Date endDate = Utils.getDateFromString(leaseDto.endDate);
-		Date startDate = Utils.getDateFromString(leaseDto.startDate);
+		Date endDate = leaseDto.endDate;
+		Date startDate = leaseDto.startDate;
 
 		if (tenants.size() == 0 || apartmentId == 0 || startDate == null || endDate == null) {
 			throw new InvalidParametersException("Parametros invalidos");

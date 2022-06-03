@@ -21,7 +21,7 @@ public class RentalFeesService {
 	
 	public List<RentalFees> InsertAll(List<RentalFeesDto> dtos, Lease lease) {
 		List<RentalFees> rentalFees = dtos.stream()
-				.map(s -> new RentalFees(0, s.getFee(), Utils.getDateFromString(s.getStartDate()), Utils.getDateFromString(s.getEndDate()), lease))
+				.map(s -> new RentalFees(0, s.getFee(), s.getStartDate(), s.getEndDate(), lease))
 				.collect(Collectors.toList());
 		return rentalFeeRepo.saveAll(rentalFees);
 	}
