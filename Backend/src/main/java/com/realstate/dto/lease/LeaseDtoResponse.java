@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.realstate.dto.ApartmentDto;
+import com.realstate.dto.RentalBillDto;
 import com.realstate.dto.RentalFeesDto;
 import com.realstate.entities.Lease;
 import com.realstate.entities.Tenant;
@@ -23,8 +24,9 @@ public class LeaseDtoResponse {
 	public boolean isEnded;
 	public String description;
 	public List<RentalFeesDto> rentalFees = new ArrayList<RentalFeesDto>();
+	public List<RentalBillDto> rentalBills = new ArrayList<RentalBillDto>();
 	
-	public LeaseDtoResponse(Lease lease) {
+	public LeaseDtoResponse(Lease lease, List<RentalBillDto> rentalBills) {
 		Date currentDate = new Date();
 		this.id = lease.getId();
 		this.name = lease.getName();
@@ -36,6 +38,7 @@ public class LeaseDtoResponse {
 		this.active = lease.isActive();
 		this.isEnded = currentDate.after(endDate);
 		this.description = lease.getDescription();
-		this.rentalFees = rentalFees.stream().map(s -> Utils.map(s, RentalFeesDto.class)).collect(Collectors.toList());
+		this.rentalFees = lease.getRentalFees().stream().map(s -> Utils.map(s, RentalFeesDto.class)).collect(Collectors.toList());
+		this.rentalBills = rentalBills;
 	}
 }

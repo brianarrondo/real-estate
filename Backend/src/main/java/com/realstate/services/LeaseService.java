@@ -16,11 +16,13 @@ import com.realstate.dto.lease.LeaseDto;
 import com.realstate.dto.lease.LeaseDtoResponse;
 import com.realstate.entities.Apartment;
 import com.realstate.entities.Lease;
+import com.realstate.entities.RentalFees;
 import com.realstate.entities.Tenant;
 import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.exceptions.InvalidParametersException;
 import com.realstate.exceptions.RealEstateException;
 import com.realstate.repositories.LeaseRepository;
+import com.realstate.utils.Utils;
 
 @Service
 @Transactional
@@ -33,8 +35,12 @@ public class LeaseService {
 	@Autowired
 	private ApartmentService apartmentService;
 	@Autowired
+	private RentalBillService rentalBillService;
+	@Autowired
+	private RentalFeesService rentalFeesService;
+	@Autowired
     private ModelMapper modelMapper;
-	
+
 	public LeaseDto create(LeaseDto leaseDto) throws EntityNotFoundException, InvalidParametersException, ParseException, RealEstateException {
 		List<Tenant> tenants = leaseDto.tenants;
 		
@@ -57,12 +63,17 @@ public class LeaseService {
 			}
 		}
 
-		Lease lease = new Lease(0, leaseDto.name, tenants, apartment, startDate, endDate, true, description);
+		Lease lease = new Lease(0, leaseDto.name, tenants, apartment, startDate, endDate, true, description, leaseDto.baseAmount);
+		List<RentalFees> fees = rentalFeesService.InsertAll(leaseDto.getRentalFees(), lease);
+		rentalBillService.generateRentalBills(lease, fees);
+
 		return modelMapper.map(insert(lease), LeaseDto.class);
 	}
-		
+
 	public List<LeaseDtoResponse> findAll() {
-		return leaseRepository.findAll().stream().map(e -> new LeaseDtoResponse(e)).collect(Collectors.toList());
+		return leaseRepository.findAll().stream()
+				.map(e -> new LeaseDtoResponse(e, rentalBillService.findAllByLease(e.getId())))
+				.collect(Collectors.toList());
 	}
 	
 	public Lease findById(long leaseId) throws EntityNotFoundException {
@@ -107,6 +118,5 @@ public class LeaseService {
 		} else {
 			throw new EntityNotFoundException("El contrato de alquiler con el ID especificado no existe.");
 		}
-		
 	}
 }

@@ -1,10 +1,7 @@
 package com.realstate.controllers;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,6 +51,7 @@ public class BillManagerController {
 		}
 	}
 	
+	/*
 	@PostMapping("generate_bill")
 	public ResponseEntity<String> generateRentalBill(@RequestBody Map<String, String> parsedJson) {
 		try {
@@ -69,7 +67,7 @@ public class BillManagerController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Utils.getExceptionResponseMsg(e));
 		}
-	}
+	}*/
 	
 	@PostMapping("generate_payment")
 	public ResponseEntity<?> generatePayment(@RequestBody PaymentCreationDto dto) {

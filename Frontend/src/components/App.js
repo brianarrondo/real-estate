@@ -16,6 +16,8 @@ import GenericModal from "./utils/GenericModal";
 import GenericAlert from "./utils/GenericAlert";
 
 import Styles from "../css/styles.css";
+import "react-datepicker/dist/react-datepicker.css";
+import es from 'date-fns/locale/es';
 import PrivateRoute from "./route/PrivateRoute";
 import Services from "../services/Services";
 import EstateCreation from "./estate/EstateCreation";

@@ -26,7 +26,8 @@ public class RentalBill implements Serializable {
 	private long id;
 	@ManyToOne (cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private Lease lease;
-	private Date date;
+	private Date startDate;
+	private Date endDate;
 	private float amount;
 	@OneToMany (cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "rentalBill")
 	private List<Payment> payments = new ArrayList<Payment>();
@@ -34,17 +35,12 @@ public class RentalBill implements Serializable {
 	/* Constructors */
 	public RentalBill() {}
 	
-	public RentalBill(long id, Lease lease, Date date, float amount) {
+	public RentalBill(long id, Lease lease, Date startDate, Date endDate, float amount) {
 		this.id = id;
 		this.lease = lease;
-		this.date = date;
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.amount = amount;
-	}
-	
-	@Override
-	public String toString() {
-		return "RentalBill [leaseId=" + id + ", leaseId=" + lease.getId() + ", date=" + date + ", amount="
-				+ amount + ", payments=" + payments + "]";
 	}
 
 	/* Getters and Setters */
@@ -64,12 +60,20 @@ public class RentalBill implements Serializable {
 		this.lease = lease;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public float getAmount() {

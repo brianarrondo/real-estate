@@ -3,25 +3,32 @@ import {Button, ButtonGroup, Col, Form, InputGroup, Row, Table} from "react-boot
 import GenericSpinner from "../../utils/GenericSpinner";
 import {ServicesContext} from "../../../services/Services";
 import {AlertContext} from "../../utils/GenericAlert";
-import Utils from "../../../utils/Utils";
 import {ModalContext} from "../../utils/GenericModal";
 import ExistingTenantAdditionModal from "./ExistingTenantAdditionModal";
 import Tenant from "../../../models/Tenant";
 import CreationLeaseDto from "../model/CreationLeaseDto";
+import RentalFeesCreationList from "./RentalFeesCreationList";
+import DatePicker, { registerLocale } from "react-datepicker";
+import es from "date-fns/locale/es";
+import RentalFee from "../../../models/RentalFee";
+import Utils from "../../../utils/Utils";
+registerLocale("es", es);
 
 const LeaseCreation = () => {
     let form = React.createRef();
     let leaseName = React.createRef();
     let apartmentId = React.createRef();
-    let startDate = React.createRef();
-    let endDate = React.createRef();
     let baseAmount = React.createRef();
     let leaseDescription = React.createRef();
 
     const [tenants, setTenants] = useState([]);
+    const [payDay, setPayDay] = useState("");
     const [estates, setEstates] = useState([]);
     const [apartments, setApartments] = useState([]);
     const [newTenants, setNewTenants] = useState([]);
+    const [rentalFees, setRentalFees] = useState([]);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [existingTenants, setExistingTenants] = useState([]);
 
     const [isLoading, setLoading ] = useState(false);
@@ -37,7 +44,7 @@ const LeaseCreation = () => {
 
         // realizamos la validacion del form
         const form = e.currentTarget;
-        if (form.checkValidity() === false || [...newTenants, ...existingTenants].length === 0) {
+        if (form.checkValidity() === false || [...newTenants, ...existingTenants].length === 0 || !checkIncrements()) {
             validationOk = false;
         }
         setValidated(true);
@@ -49,11 +56,12 @@ const LeaseCreation = () => {
                 leaseName.current.value,
                 [...newTenants, ...existingTenants],
                 parseInt(apartmentId.current.value),
-                startDate.current.value,
-                endDate.current.value,
+                new Date(startDate.getFullYear(), startDate.getMonth(), parseInt(payDay)),
+                new Date(endDate.getFullYear(), endDate.getMonth(), parseInt(payDay)),
                 true,
-                [],
-                leaseDescription.current.value
+                mapRentalFees(),
+                leaseDescription.current.value,
+                baseAmount.current.value
             );
 
             leaseService.createLease(
@@ -62,13 +70,7 @@ const LeaseCreation = () => {
                     setAlertType("success");
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> El contrato <strong>{lease.name}</strong> fue agregado con éxito</div>);
-                    setValidated(false);
-                    setLoading(false);
-                    setNewTenants([]);
-                    setExistingTenants([]);
-                    getApartments();
-                    getTenants();
-                    form.reset();
+                    clearForm(form);
                 },
                 (error) => {
                     setAlertType("danger");
@@ -78,6 +80,33 @@ const LeaseCreation = () => {
                 }
             );
         }
+    }
+
+    function clearForm(form) {
+        setValidated(false);
+        setLoading(false);
+
+        setStartDate(new Date());
+        setEndDate(new Date());
+        setPayDay("");
+        setNewTenants([]);
+        setExistingTenants([]);
+        getApartments();
+        getTenants();
+        form.reset();
+    }
+
+    function checkIncrements() {
+        return true;
+        //return !rentalFees.some(e => new Date(e.startDate).getDate() !== Number(payDay) || new Date(e.endDate).getDate() !== Number(payDay));
+    }
+
+    function mapRentalFees() {
+        return rentalFees.map(e => {
+            let startDate = new Date(e.startDate);
+            let endDate = new Date(e.endDate);
+            return new RentalFee(parseInt(e.fee), new Date(startDate), new Date(endDate));
+        });
     }
 
     function getApartments() {
@@ -240,102 +269,130 @@ const LeaseCreation = () => {
 
     return (
         <div className="container">
-            <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
-                <div>
-                    <h3>Crear contrato</h3>
-                    <hr />
+            <Form ref={form} onSubmit={handleSubmit} noValidate validated={validated} className="">
+                {/* INFO DEL CONTRATO */}
+                <div className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+                    <div>
+                        <h3>Crear contrato</h3>
+                        <hr />
+                    </div>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Nombre</Form.Label>
+                        <Col sm={8}>
+                            <Form.Control type="text" ref={leaseName} placeholder="Nombre" required />
+                            <Form.Control.Feedback type="invalid">Por favor ingresar el nombre del contrato</Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Día de Pago</Form.Label>
+                        <Col sm={8}>
+                            <Form.Control type="number" min="1" max="31" value={payDay} onChange={e => setPayDay(e.target.value)} placeholder="Día de pago" required />
+                            <Form.Control.Feedback type="invalid">Por favor ingresar el nombre del contrato</Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Fecha de Inicio</Form.Label>
+                        <Col sm={8}>
+                            <DatePicker
+                                dateFormat="MMMM yyyy"
+                                showMonthYearPicker
+                                selected={startDate}
+                                locale="es"
+                                onChange={date => setStartDate(date)}
+                            />
+                            <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de inicio</Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Fecha de Caducidad</Form.Label>
+                        <Col sm={8}>
+                            <DatePicker
+                                dateFormat="MMMM yyyy"
+                                showMonthYearPicker
+                                selected={endDate}
+                                locale="es"
+                                onChange={date => setEndDate(date)}
+                            />
+                            <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de caducidad</Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>
+                            Monto base
+                        </Form.Label>
+
+                        <Col sm={8}>
+                            <InputGroup className="mb-2">
+                                <InputGroup.Text>$</InputGroup.Text>
+                                <Form.Control type="number" min="0" step="0.01" ref={baseAmount} placeholder="Monto base" required />
+                                <Form.Control.Feedback type="invalid">Por favor ingresar monto mayor a 0</Form.Control.Feedback>
+                            </InputGroup>
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Descripción</Form.Label>
+                        <Col sm={8}>
+                            <Form.Control type="textarea" ref={leaseDescription} placeholder="Descripcion" />
+                        </Col>
+                    </Form.Group>
                 </div>
 
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Nombre</Form.Label>
-                    <Col sm={8}>
-                        <Form.Control type="text" ref={leaseName} placeholder="Nombre" required />
-                        <Form.Control.Feedback type="invalid">Por favor ingresar el nombre del contrato</Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
+                {/* DEPARTAMENTOS */}
+                <div style={{"marginTop": "20px"}} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+                    <div className="padding-top-15">
+                        <h5>Departamento</h5><hr />
+                    </div>
 
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Fecha de Inicio</Form.Label>
-                    <Col sm={8}>
-                        <Form.Control
-                            type="date"
-                            ref={startDate}
-                            placeholder="Fecha de Inicio"
-                            defaultValue={Utils.getCurrentDate()}
-                            required />
-                        <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de inicio</Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Fecha de Caducidad</Form.Label>
-                    <Col sm={8}>
-                        <Form.Control
-                            type="date"
-                            ref={endDate}
-                            placeholder="Fecha de caducidad"
-                            defaultValue={Utils.getCurrentDate()}
-                            min={Utils.getCurrentDate()}
-                            required />
-                        <Form.Control.Feedback type="invalid">Por favor seleccione una fecha de caducidad</Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>
-                        Monto base
-                    </Form.Label>
-
-                    <Col sm={8}>
-                        <InputGroup className="mb-2">
-                            <InputGroup.Text>$</InputGroup.Text>
-                            <Form.Control type="number" min="0" step="0.01" ref={baseAmount} placeholder="Monto base" required />
-                            <Form.Control.Feedback type="invalid">Por favor ingresar monto mayor a 0</Form.Control.Feedback>
-                        </InputGroup>
-                    </Col>
-                </Form.Group>
-
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Descripción</Form.Label>
-                    <Col sm={8}>
-                        <Form.Control type="textarea" ref={leaseDescription} placeholder="Descripcion" />
-                    </Col>
-                </Form.Group>
-
-                <div className="padding-top-15">
-                    <h5>Departamento</h5><hr />
+                    <Form.Group as={Row} className="justify-content-center">
+                        <Form.Label column sm={3}>Departamento</Form.Label>
+                        <Col sm={8}>
+                            <Form.Control as="select" ref={apartmentId} defaultValue={apartmentId} required>
+                                <option key="0" value="">Seleccione un departamento</option>
+                                {apartmentsSelectOptions}
+                            </Form.Control>
+                            <Form.Control.Feedback type="invalid">Por favor seleccione un departamento</Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
                 </div>
 
-                <Form.Group as={Row} className="justify-content-center">
-                    <Form.Label column sm={3}>Departamento</Form.Label>
-                    <Col sm={8}>
-                        <Form.Control as="select" ref={apartmentId} defaultValue={apartmentId} required>
-                            <option key="0" value="">Seleccione un departamento</option>
-                            {apartmentsSelectOptions}
-                        </Form.Control>
-                        <Form.Control.Feedback type="invalid">Por favor seleccione un departamento</Form.Control.Feedback>
-                    </Col>
-                </Form.Group>
+                {/* INCREMENTOS */}
+                <div style={{"marginTop": "20px"}} className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+                    <div className="padding-top-15">
+                        <h5>Incrementos</h5><hr />
+                    </div>
 
-                <div className="padding-top-15">
-                    <h5>Inquilinos</h5><hr />
+                    <RentalFeesCreationList rentalFees={rentalFees} setRentalFees={setRentalFees} payDay={payDay} />
+                    {validated && !checkIncrements()? <div className="invalid">El día de uno o más incrementos no se corresponde con el día de pago (día de pago actual: {payDay})</div> : ""}
                 </div>
 
-                <div className="detail-table-padding">
-                    <ButtonGroup size="sm" className="mb-2">
-                        <Button style={{fontSize: "12px"}} variant="success" onClick={addNewTenant}>Agregar nuevo</Button>
-                        <Button style={{fontSize: "12px", marginLeft: "1px"}} variant="success" onClick={addExistingTenant}>Agregar existente</Button>
-                    </ButtonGroup>
-                </div>
+                {/* INQUILINOS */}
+                <div style={{"marginTop": "20px", "marginBottom": "30px"}}  className="basic-padding-20 shadow justify-content-center rounded-bottom border border-light">
+                    <div className="padding-top-15">
+                        <h5>Inquilinos</h5><hr />
+                    </div>
 
-                <div className="table-responsive">
-                    {getTenantsTable()}
-                </div><hr />
+                    <div className="detail-table-padding">
+                        <ButtonGroup size="sm" className="mb-2">
+                            <Button style={{fontSize: "12px"}} variant="success" onClick={addNewTenant}>Agregar nuevo</Button>
+                            <Button style={{fontSize: "12px", marginLeft: "1px"}} variant="success" onClick={addExistingTenant}>Agregar existente</Button>
+                        </ButtonGroup>
+                    </div>
 
-                <div className="align-center basic-padding-10">
-                    <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
-                        <GenericSpinner show={isLoading}>Crear</GenericSpinner>
-                    </Button>
+                    <div className="table-responsive">
+                        {getTenantsTable()}
+                    </div><hr />
+
+                    <div className="align-center">
+                        <Button variant="dark" type="submit" className="form-submit-button" disabled={isLoading}>
+                            <GenericSpinner show={isLoading}>Crear</GenericSpinner>
+                        </Button>
+                    </div>
                 </div>
             </Form>
         </div>

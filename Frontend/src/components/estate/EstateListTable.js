@@ -6,6 +6,7 @@ import EstateDetailModal from "./EstateDetailModal";
 import EstateDeletionModal from "./EstateDeletionModal";
 import EstateEditionModal from "./EstateEditionModal";
 import {Spinner} from "react-bootstrap";
+import GenericEmptyTable from "../utils/GenericEmptyTable";
 
 const EstateListTable = () => {
     const { estateService } = useContext(ServicesContext);
@@ -115,7 +116,7 @@ const EstateListTable = () => {
     });
 
     return (
-        <>
+        <GenericEmptyTable show={estateListComponents.length > 0} emptyTableText="No hay propiedades para mostrar.">
             {isLoading ?
                 <div className="spinner"><Spinner animation="border" variant="dark"/></div>
                 :
@@ -135,7 +136,7 @@ const EstateListTable = () => {
                     </tbody>
                 </table>
             }
-        </>
+        </GenericEmptyTable>
 
     );
 };

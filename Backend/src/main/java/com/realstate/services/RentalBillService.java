@@ -4,16 +4,19 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.realstate.dto.RentalBillDto;
 import com.realstate.dto.payment.PaymentDto;
 import com.realstate.entities.Lease;
 import com.realstate.entities.Payment;
 import com.realstate.entities.RentalBill;
+import com.realstate.entities.RentalFees;
 import com.realstate.entities.User;
 import com.realstate.exceptions.EntityNotFoundException;
 import com.realstate.exceptions.InvalidParametersException;
@@ -38,8 +41,8 @@ public class RentalBillService {
 	@Autowired
     private ModelMapper modelMapper;
 	
-	public RentalBill getNew(Lease lease, Date date, float amount) throws EntityNotFoundException {
-		RentalBill newRentalBill = new RentalBill(0, lease, date, amount);
+	public RentalBill getNew(Lease lease, Date startDate, Date endDate, float amount) throws EntityNotFoundException {
+		RentalBill newRentalBill = new RentalBill(0, lease, startDate, endDate, amount);
 		return insert(newRentalBill);
 	}
 	
@@ -54,6 +57,10 @@ public class RentalBillService {
 	
 	public List<RentalBill> findAll() {
 		return rentalBillRepository.findAll();
+	}
+	
+	public List<RentalBillDto> findAllByLease(long leaseId) {
+		return rentalBillRepository.findAllByLeaseId(leaseId).stream().map(s -> modelMapper.map(s, RentalBillDto.class)).collect(Collectors.toList());
 	}
 	
 	public boolean existsById(long rentalBillId) {
@@ -98,31 +105,17 @@ public class RentalBillService {
 	private boolean rentalBillIsPaid(RentalBill rentalBill) {
 		return totalPaid(rentalBill) >= rentalBill.getAmount();
 	}
-		
-	private boolean existRentalBillInMonth(long leaseId, Date dateNewRentalBill) {
-		List<RentalBill> rentalBillsForLease = rentalBillRepository.findAllByLeaseId(leaseId);
-		return rentalBillsForLease.stream().anyMatch(r -> Utils.sameMonthAndYear(dateNewRentalBill, r.getDate()));
-	}
 	
 	private RentalBill getRentalBillForMonth(long leaseId, Date date) throws EntityNotFoundException {
 		List<RentalBill> rentalBillsForLease = rentalBillRepository.findAllByLeaseId(leaseId);
-		RentalBill rentalBill = rentalBillsForLease.stream().filter(r -> Utils.sameMonthAndYear(date, r.getDate()))
+		
+		RentalBill rentalBill = rentalBillsForLease.stream().filter(r -> (date.after(r.getStartDate()) || date.equals(r.getStartDate())) && date.before(r.getEndDate()))
 				.findAny().orElse(null);
 		if (rentalBill != null) {
 			return rentalBill;
 		} else {
-			throw new EntityNotFoundException("La factura con el ID especificado no existe.");
+			throw new EntityNotFoundException(".");
 		}
-	}
-	
-	public RentalBill generateRentalBill(long leaseId, Date date, float amount) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
-		if (leaseId == 0 || date == null) { throw new InvalidParametersException("Parametros invalidos"); }
-		Lease lease = leaseService.findById(leaseId);
-		if (lease.getStartDate().compareTo(date) > 0 || lease.getEndDate().compareTo(date) < 0) { throw new RentalBillPaymentException("La fecha de la factura esta por fuera de las fechas del contrato."); }
-		if (!lease.isActive()) { throw new RealEstateException("El contrato de alquiler no se encuentra activo."); }
-		if (existRentalBillInMonth(leaseId, date)) { throw new RentalBillPaymentException("Ya existe una factura en el mes"); }
-		RentalBill rentalBill = getNew(lease, date, amount);
-		return rentalBill;
 	}
 	
 	public PaymentDto generatePayment(long leaseId, float amountToPay, Date date, long userId) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
@@ -130,12 +123,7 @@ public class RentalBillService {
 		leaseService.findById(leaseId);
 		User user = userRepo.findById(userId).orElse(null);
 
-		RentalBill rentalBill;
-		if (!existRentalBillInMonth(leaseId, date)) {
-			rentalBill = generateRentalBill(leaseId, date, 5000);
-		} else {
-			rentalBill = getRentalBillForMonth(leaseId, date);
-		}
+		RentalBill rentalBill = getRentalBillForMonth(leaseId, date);
 		
 		if(rentalBillIsPaid(rentalBill)) {
 			throw new RentalBillPaymentException("La factura ya fue pagada.");
@@ -147,5 +135,45 @@ public class RentalBillService {
 
 		Payment newPayment = paymentService.getNew(amountToPay, rentalBill, user, date);
 		return modelMapper.map(paymentService.insert(newPayment), PaymentDto.class);
+	}
+
+	public void generateRentalBills(Lease lease, List<RentalFees> fees) {
+		int startYear = Utils.getYear(lease.getStartDate());
+		int startMonth = Utils.getMonth(lease.getStartDate());
+		int startDay = Utils.getDay(lease.getStartDate());
+		int startHours = Utils.getHours(lease.getStartDate());
+		int startMinutes = Utils.getMinutes(lease.getStartDate());
+		int startSeconds = Utils.getSeconds(lease.getStartDate());
+
+		int endYear = Utils.getYear(lease.getEndDate());
+		int endMonth = Utils.getMonth(lease.getEndDate());
+		int endDay = Utils.getDay(lease.getEndDate());
+		int endHours = Utils.getHours(lease.getEndDate());
+		int endMinutes = Utils.getMinutes(lease.getEndDate());
+		int endSeconds = Utils.getSeconds(lease.getEndDate());
+		
+		for (int year = startYear; year <= endYear; year++) {
+			int firstMonth = startYear == year ? startMonth : 0;
+			int finalMonth = endYear == year ? endMonth : 12;
+			for (int month = firstMonth; month < finalMonth; month++) {
+				Date startDate = Utils.getDate(startDay, month, year, startHours, startMinutes, startSeconds);
+				Date endDate = getBillEndDate(month, year, endYear, endMonth, endDay, startDay, endHours, endMinutes, endSeconds);
+				float amount = getAmount(lease, fees, startDate, endDate);
+				RentalBill rentalBill = new RentalBill(0, lease, startDate, endDate, amount);
+				rentalBillRepository.save(rentalBill);
+			}
+		}
+	}
+	
+	private float getAmount(Lease lease, List<RentalFees> fees, Date startDate, Date endDate) {
+		RentalFees fee = fees.stream().filter(e -> (e.getStartDate().before(startDate) || e.getStartDate().equals(startDate))
+				&& (e.getEndDate().after(endDate) || e.getEndDate().equals(endDate))).findAny().orElse(null);
+		return lease.getBaseAmount() * (1 + (fee == null ? 0 : fee.getFee() / 100));
+	}
+	
+	private Date getBillEndDate(int month, int year, int endYear, int endMonth, int endDay, int startDay, int hours, int minutes, int seconds) {
+		boolean isLastMonth = month == 11;
+		int nextMonth = month + 1;
+		return Utils.getDate(endYear == year && nextMonth  == endMonth? endDay : startDay, isLastMonth ? 0 : nextMonth, isLastMonth ? year + 1 : year, hours, minutes, seconds);
 	}
 }
