@@ -70,13 +70,7 @@ const LeaseCreation = () => {
                     setAlertType("success");
                     setShowAlert(true);
                     setAlertContent(<div><i className="bi bi-check-circle"></i> El contrato <strong>{lease.name}</strong> fue agregado con éxito</div>);
-                    setValidated(false);
-                    setLoading(false);
-                    setNewTenants([]);
-                    setExistingTenants([]);
-                    getApartments();
-                    getTenants();
-                    form.reset();
+                    clearForm(form);
                 },
                 (error) => {
                     setAlertType("danger");
@@ -86,6 +80,20 @@ const LeaseCreation = () => {
                 }
             );
         }
+    }
+
+    function clearForm(form) {
+        setValidated(false);
+        setLoading(false);
+
+        setStartDate(new Date());
+        setEndDate(new Date());
+        setPayDay("");
+        setNewTenants([]);
+        setExistingTenants([]);
+        getApartments();
+        getTenants();
+        form.reset();
     }
 
     function checkIncrements() {

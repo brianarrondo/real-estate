@@ -166,9 +166,9 @@ public class RentalBillService {
 	}
 	
 	private float getAmount(Lease lease, List<RentalFees> fees, Date startDate, Date endDate) {
-		RentalFees fee = fees.stream().filter(e -> (e.getStartDate().after(startDate) || e.getStartDate().equals(startDate))
-				&& (e.getEndDate().before(endDate) || e.getEndDate().equals(endDate))).findAny().orElse(null);
-		return lease.getBaseAmount() * (1 + (fee == null ? 0 : fee.getFee()));
+		RentalFees fee = fees.stream().filter(e -> (e.getStartDate().before(startDate) || e.getStartDate().equals(startDate))
+				&& (e.getEndDate().after(endDate) || e.getEndDate().equals(endDate))).findAny().orElse(null);
+		return lease.getBaseAmount() * (1 + (fee == null ? 0 : fee.getFee() / 100));
 	}
 	
 	private Date getBillEndDate(int month, int year, int endYear, int endMonth, int endDay, int startDay, int hours, int minutes, int seconds) {
