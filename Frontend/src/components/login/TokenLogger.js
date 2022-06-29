@@ -13,8 +13,12 @@ const TokenLogger = ({ children }) => {
         return localStorage.getItem('token');
     };
 
+    const getUserId = () => {
+        return localStorage.getItem('userId');
+    };
+
     const [token, setToken] = useState(getToken());
-    const [userId, setUserId] = useState();
+    const [userId, setUserId] = useState(getUserId());
 
     const saveToken = userToken => {
         localStorage.setItem('token', userToken);
@@ -22,6 +26,7 @@ const TokenLogger = ({ children }) => {
     };
 
     const saveUserId = userId => {
+        localStorage.setItem('userId', userId);
         setUserId(userId);
     }
 

@@ -80,10 +80,10 @@ public class BillManagerController {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy", Locale.ENGLISH);
 			Date date = formatter.parse(dateString);*/
 			Date date = dto.date;
-			long leaseId = dto.leaseId;
+			long rentalBillId = dto.rentalBillId;
 			float amountToPay = dto.amount;
 			long userId = dto.userId;
-			return ResponseEntity.ok(Utils.objToJson(rentalBillService.generatePayment(leaseId, amountToPay, date, userId)));
+			return ResponseEntity.ok(rentalBillService.generatePayment(rentalBillId, amountToPay, date, userId));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		} catch (Exception e) {

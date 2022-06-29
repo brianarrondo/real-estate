@@ -1,8 +1,8 @@
 export default class Payment {
 
-    constructor(userId, leaseId, date, amount) {
+    constructor(userId, rentalBillId, date, amount) {
         this.userId = userId;
-        this.leaseId = leaseId;
+        this.rentalBillId = rentalBillId;
         this.date = date;
         this.amount = amount;
     }

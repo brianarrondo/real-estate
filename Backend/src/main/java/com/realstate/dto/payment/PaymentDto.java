@@ -8,7 +8,7 @@ public class PaymentDto {
 	public long id;
 	public float amount;
 	public long rentalBillId;
-	public User user;
+	public long userId;
 	public Date date;
 	public Date registerDate;
 
@@ -30,11 +30,11 @@ public class PaymentDto {
 	public void setRentalBillId(long rentalBillId) {
 		this.rentalBillId = rentalBillId;
 	}
-	public User getUser() {
-		return user;
+	public long getUserId() {
+		return userId;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(long user) {
+		this.userId = user;
 	}
 	public Date getDate() {
 		return date;

@@ -35,6 +35,8 @@ public class RentalBillService {
 	@Autowired
 	private LeaseService leaseService;
 	@Autowired
+	private RentalBillService rentalBillService;
+	@Autowired
 	private PaymentService paymentService;
 	@Autowired
 	private UserRepository userRepo;
@@ -60,7 +62,7 @@ public class RentalBillService {
 	}
 	
 	public List<RentalBillDto> findAllByLease(long leaseId) {
-		return rentalBillRepository.findAllByLeaseId(leaseId).stream().map(s -> modelMapper.map(s, RentalBillDto.class)).collect(Collectors.toList());
+		return rentalBillRepository.findAllByLeaseId(leaseId).stream().map(s -> new RentalBillDto(s)).collect(Collectors.toList());
 	}
 	
 	public boolean existsById(long rentalBillId) {
@@ -118,12 +120,12 @@ public class RentalBillService {
 		}
 	}
 	
-	public PaymentDto generatePayment(long leaseId, float amountToPay, Date date, long userId) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
-		if (date == null || amountToPay <= 0 || leaseId <= 0 || userId <= 0) { throw new InvalidParametersException("Parametros invalidos"); }
-		leaseService.findById(leaseId);
+	public PaymentDto generatePayment(long rentalBillId, float amountToPay, Date date, long userId) throws InvalidParametersException, EntityNotFoundException, RentalBillPaymentException, RealEstateException {
+		if (date == null || amountToPay <= 0 || rentalBillId <= 0 || userId <= 0) { throw new InvalidParametersException("Parametros invalidos"); }
+		RentalBill rentalBill = rentalBillService.findById(rentalBillId);
 		User user = userRepo.findById(userId).orElse(null);
 
-		RentalBill rentalBill = getRentalBillForMonth(leaseId, date);
+		//RentalBill rentalBill = getRentalBillForMonth(leaseId, date);
 		
 		if(rentalBillIsPaid(rentalBill)) {
 			throw new RentalBillPaymentException("La factura ya fue pagada.");
